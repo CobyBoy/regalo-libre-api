@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MercadoLibreAuthRepo extends JpaRepository<MercadoLibreAccessToken, Integer> {
+public interface MercadoLibreAccessTokenRepo extends JpaRepository<MercadoLibreAccessToken, Integer> {
 }
