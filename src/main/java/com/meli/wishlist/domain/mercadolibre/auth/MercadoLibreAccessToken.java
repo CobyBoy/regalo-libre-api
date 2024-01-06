@@ -1,6 +1,7 @@
 package com.meli.wishlist.domain.mercadolibre.auth;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -13,10 +14,14 @@ import lombok.*;
 @Entity
 public class MercadoLibreAccessToken {
     @Id
-    private Integer user_id;
-    private String access_token;
-    private int expires_in;
+    @JsonProperty("user_id")
+    private Integer userId;
+    @JsonProperty("access_token")
+    private String accessToken;
+    @JsonProperty("expires_in")
+    private int expiresIn;
     private String scope;
-    private String token_type;
+    @JsonProperty("token_type")
+    private String tokenType;
 
 }
