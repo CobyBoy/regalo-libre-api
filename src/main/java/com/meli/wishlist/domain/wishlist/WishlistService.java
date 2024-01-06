@@ -14,7 +14,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class WishListService {
+public class WishlistService {
     private final WishlistRepository wishlistRepository;
     private final MercadoLibreProductRepo mercadoLibreProductRepo;
 

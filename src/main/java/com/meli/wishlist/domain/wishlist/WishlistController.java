@@ -13,8 +13,8 @@ import java.util.List;
 @RequestMapping("/api/list")
 @CrossOrigin(origins = "https://localhost:4200")
 @RequiredArgsConstructor
-public class ListController {
-    private final WishListService wishListService;
+public class WishlistController {
+    private final WishlistService wishListService;
 
     @GetMapping()
     public ResponseEntity<List<WishListDto>> getLists() {
