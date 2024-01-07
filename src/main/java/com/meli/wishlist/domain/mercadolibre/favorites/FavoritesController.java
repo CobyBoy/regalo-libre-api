@@ -1,4 +1,4 @@
-package com.meli.wishlist.domain.mercadolibre;
+package com.meli.wishlist.domain.mercadolibre.favorites;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

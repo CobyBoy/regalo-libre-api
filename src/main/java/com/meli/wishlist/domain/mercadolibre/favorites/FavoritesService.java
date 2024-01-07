@@ -1,5 +1,7 @@
-package com.meli.wishlist.domain.mercadolibre;
+package com.meli.wishlist.domain.mercadolibre.favorites;
 
+import com.meli.wishlist.domain.mercadolibre.MercadoLibreProduct;
+import com.meli.wishlist.domain.mercadolibre.MercadoLibreProductRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
