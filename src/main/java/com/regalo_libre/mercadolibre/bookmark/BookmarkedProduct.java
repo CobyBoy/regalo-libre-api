@@ -1,9 +1,9 @@
-package com.meli.mercadolibre.model;
+package com.regalo_libre.mercadolibre.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.meli.mercadolibre.auth.model.MercadoLibreUser;
-import com.meli.wishlist.model.WishList;
+import com.regalo_libre.mercadolibre.auth.MercadoLibreUser;
+import com.regalo_libre.wishlist.model.WishList;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,9 +28,6 @@ public class BookmarkedProduct {
     @JsonProperty("currency_id")
     private String currencyId;
     private String permalink;
-    /*@OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval=true,fetch = FetchType.EAGER)
-    @JsonIgnore
-    private List<MercadoLibreBookmarkPicture> pictures = new ArrayList<>();*/
 
     @ManyToMany(mappedBy = "gifts")
     @JsonIgnore
@@ -54,6 +51,7 @@ public class BookmarkedProduct {
             picture.setProduct(this);
         }
     }*/
+
 
     public void setUsers(List<MercadoLibreUser> users) {
         this.users = users;

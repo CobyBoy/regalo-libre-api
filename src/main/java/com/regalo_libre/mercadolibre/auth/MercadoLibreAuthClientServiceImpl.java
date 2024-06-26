@@ -1,7 +1,5 @@
-package com.meli.mercadolibre.auth;
+package com.regalo_libre.mercadolibre.auth;
 
-import com.meli.mercadolibre.auth.model.MercadoLibreAccessToken;
-import com.meli.mercadolibre.auth.model.MercadoLibreUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -11,19 +9,19 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.util.Optional;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MercadoLibreAuthClient {
-    private final MercadoLibreAccessTokenRepo mercadoLibreAccessTokenRepo;
-    private final MercadoLibreUserRepo mercadoLibreUserRepo;
+public class MercadoLibreAuthClientServiceImpl {
+    private final MercadoLibreAccessTokenRepository mercadoLibreAccessTokenRepository;
+    private final MercadoLibreUserRepository mercadoLibreUserRepository;
 
     public MercadoLibreUser getMercadoLibreUserData(String authorizationCode) {
         WebClient webClient = WebClient.create();
         MercadoLibreAccessToken accessToken = getAccessToken(webClient, authorizationCode);
-        var user = saveAccessToken(accessToken);
-        return user;
-        //return saveUserInfo(accessToken);
+        return saveAccessToken(accessToken);
     }
 
     private MercadoLibreAccessToken getAccessToken(WebClient webClient, String authorizationCode) {
@@ -47,30 +45,23 @@ public class MercadoLibreAuthClient {
     }
 
     private MercadoLibreUser saveAccessToken(MercadoLibreAccessToken accessToken) {
-        var optionalUser = mercadoLibreUserRepo.findById(accessToken.getUserId());
+        Optional<MercadoLibreUser> optionalUser = mercadoLibreUserRepository.findById(accessToken.getUserId());
         MercadoLibreUser user;
         if (optionalUser.isEmpty()) {
             WebClient webClient = getWebClientWithAuthorizationHeader(accessToken.getAccessToken());
             user = getUserInfoFromApi(webClient);
-            mercadoLibreUserRepo.save(user);
+            mercadoLibreUserRepository.save(user);
         } else {
             user = optionalUser.get();
-            var token = mercadoLibreAccessTokenRepo.findById(accessToken.getUserId());
-            if (token.isPresent()) {
-                token.get().setAccessToken(accessToken.getAccessToken());
-            }
+            Optional<MercadoLibreAccessToken> token = mercadoLibreAccessTokenRepository.findById(accessToken.getUserId());
+            token.ifPresent(
+                    mercadoLibreAccessToken ->
+                            mercadoLibreAccessToken.setAccessToken(accessToken.getAccessToken())
+            );
         }
-        mercadoLibreAccessTokenRepo.save(accessToken);
+        mercadoLibreAccessTokenRepository.save(accessToken);
         return user;
     }
-
-   /* private MercadoLibreUser saveUserInfo(MercadoLibreAccessToken accessToken) {
-        WebClient webClient = getWebClientWithAuthorizationHeader(accessToken.getAccessToken());
-        MercadoLibreUser userInfo = getUserInfoFromApi(webClient);
-        log.info("Saving mercado libre user" + userInfo.toString());
-        return mercadoLibreUserRepo.save(userInfo);
-
-    }*/
 
     private MercadoLibreUser getUserInfoFromApi(WebClient webClient) {
         String userUrl = "/users/me";

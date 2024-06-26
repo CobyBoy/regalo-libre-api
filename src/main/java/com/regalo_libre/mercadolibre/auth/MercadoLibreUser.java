@@ -1,9 +1,8 @@
-package com.meli.mercadolibre.auth.model;
+package com.regalo_libre.mercadolibre.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.meli.mercadolibre.model.BookmarkedProduct;
-import com.meli.mercadolibre.auth.MercadoLibreUserThumbnail;
-import com.meli.wishlist.model.WishList;
+import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
+import com.regalo_libre.wishlist.model.WishList;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -38,7 +37,7 @@ public class MercadoLibreUser {
             name = "user_bookmark",
             schema = "meli",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "unique_id"))
 
     private List<BookmarkedProduct> bookmarkedProducts = new ArrayList<>();
 

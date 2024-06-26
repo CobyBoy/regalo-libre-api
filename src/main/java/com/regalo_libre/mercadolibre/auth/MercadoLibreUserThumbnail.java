@@ -1,4 +1,4 @@
-package com.meli.mercadolibre.auth;
+package com.regalo_libre.mercadolibre.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

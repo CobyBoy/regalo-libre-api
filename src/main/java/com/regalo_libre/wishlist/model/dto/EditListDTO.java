@@ -1,4 +1,4 @@
-package com.meli.wishlist.model.dto;
+package com.regalo_libre.wishlist.model.dto;
 
 public record EditListDTO(
         String description,

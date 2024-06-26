@@ -1,4 +1,4 @@
-package com.meli.utils;
+package com.regalo_libre.utils;
 
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.keycloak.admin.client.Keycloak;

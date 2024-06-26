@@ -1,4 +1,4 @@
-package com.meli.mercadolibre.model;
+package com.regalo_libre.mercadolibre.bookmark;
 
 public record BookmarkItem(
         int code,

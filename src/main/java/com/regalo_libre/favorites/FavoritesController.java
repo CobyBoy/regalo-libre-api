@@ -1,6 +1,6 @@
-package com.meli.favorites;
+package com.regalo_libre.favorites;
 
-import com.meli.keycloak.IKeycloakService;
+import com.regalo_libre.auth.IKeycloakService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

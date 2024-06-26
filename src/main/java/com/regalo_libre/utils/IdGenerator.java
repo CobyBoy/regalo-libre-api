@@ -1,4 +1,4 @@
-package com.meli.utils;
+package com.regalo_libre.utils;
 
 import java.security.SecureRandom;
 import java.util.Random;

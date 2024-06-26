@@ -1,4 +1,4 @@
-package com.meli.mercadolibre.model;
+package com.regalo_libre.mercadolibre.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
