@@ -1,0 +1,57 @@
+databaseChangeLog:
+  - changeSet:
+      id: create_schemas
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/sql/create_schemas.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_access_token
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/sql/meli/create_access_token.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_user
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/sql/meli/create_user.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_bookmark
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/sql/meli/create_bookmark.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_user_bookmark
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/sql/meli/create_user_bookmark.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_wishlists
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/sql/wishlist/create_wishlist.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_wishlist_bookmark
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/sql/wishlist/create_wishlist_bookmark.sql
+            splitStatements: false
+            endDelimiter: ";"
