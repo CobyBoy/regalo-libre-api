@@ -1,4 +1,4 @@
-package com.meli.wishlist.exception;
+package com.regalo_libre.wishlist.exception;
 
 import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;

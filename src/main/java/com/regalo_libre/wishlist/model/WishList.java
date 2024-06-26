@@ -1,9 +1,9 @@
-package com.meli.wishlist.model;
+package com.regalo_libre.wishlist.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.meli.mercadolibre.model.BookmarkedProduct;
-import com.meli.mercadolibre.auth.model.MercadoLibreUser;
-import com.meli.utils.IdGenerator;
+import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
+import com.regalo_libre.mercadolibre.auth.MercadoLibreUser;
+import com.regalo_libre.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.*;
 

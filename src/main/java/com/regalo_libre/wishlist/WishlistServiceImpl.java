@@ -1,17 +1,17 @@
-package com.meli.wishlist;
+package com.regalo_libre.wishlist;
 
-import com.meli.mercadolibre.model.BookmarkedProduct;
-import com.meli.mercadolibre.MercadoLibreProductRepository;
-import com.meli.mercadolibre.auth.MercadoLibreUserRepo;
-import com.meli.wishlist.exception.ProductAlreadyInWishlistException;
-import com.meli.wishlist.exception.PublicWishListNotFoundException;
-import com.meli.wishlist.exception.UserNotFoundException;
-import com.meli.wishlist.exception.WishlistNotFoundException;
-import com.meli.wishlist.model.WishList;
-import com.meli.wishlist.model.dto.EditListDTO;
-import com.meli.wishlist.model.dto.WishListCreateRequestDto;
-import com.meli.wishlist.model.dto.WishListDto;
-import com.meli.wishlist.infrastructure.WishlistRepository;
+import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
+import com.regalo_libre.mercadolibre.MercadoLibreBookmarkRepository;
+import com.regalo_libre.mercadolibre.auth.MercadoLibreUserRepository;
+import com.regalo_libre.wishlist.exception.ProductAlreadyInWishlistException;
+import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
+import com.regalo_libre.wishlist.exception.UserNotFoundException;
+import com.regalo_libre.wishlist.exception.WishlistNotFoundException;
+import com.regalo_libre.wishlist.model.WishList;
+import com.regalo_libre.wishlist.model.dto.EditListDTO;
+import com.regalo_libre.wishlist.model.dto.WishListCreateRequestDto;
+import com.regalo_libre.wishlist.model.dto.WishListDto;
+import com.regalo_libre.wishlist.infrastructure.WishlistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,8 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WishlistServiceImpl implements IWishlistService {
     private final WishlistRepository wishlistRepository;
-    private final MercadoLibreProductRepository mercadoLibreProductRepo;
-    private final MercadoLibreUserRepo mercadoLibreUserRepo;
+    private final MercadoLibreBookmarkRepository mercadoLibreProductRepo;
+    private final MercadoLibreUserRepository mercadoLibreUserRepository;
 
     public WishListDto createWishlist(WishListCreateRequestDto wishListRequest, Long userId) {
         WishList wishList = wishlistRepository.save(
@@ -35,7 +35,7 @@ public class WishlistServiceImpl implements IWishlistService {
                         //.visibility(wishListRequest.visibility())
                         .isPrivate(wishListRequest.isPrivate())
                         .gifts(new ArrayList<>())
-                        .user(mercadoLibreUserRepo.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado")))
+                        .user(mercadoLibreUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado")))
                         .build());
 
         return WishListDto.toDto(wishList);

@@ -1,4 +1,4 @@
-package com.meli.wishlist.exception;
+package com.regalo_libre.wishlist.exception;
 
 public class WishlistNotFoundException extends RuntimeException {
     public WishlistNotFoundException(String message) {

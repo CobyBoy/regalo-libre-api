@@ -1,8 +1,8 @@
-package com.meli.wishlist.model.dto;
+package com.regalo_libre.wishlist.model.dto;
 
-import com.meli.mercadolibre.auth.model.MercadoLibreUser;
-import com.meli.mercadolibre.model.BookmarkedProduct;
-import com.meli.wishlist.model.WishList;
+import com.regalo_libre.mercadolibre.auth.MercadoLibreUser;
+import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
+import com.regalo_libre.wishlist.model.WishList;
 import lombok.Builder;
 
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package com.meli;
+package com.regalo_libre;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

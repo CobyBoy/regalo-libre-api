@@ -1,4 +1,4 @@
-package com.meli.wishlist;
+package com.regalo_libre.wishlist;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

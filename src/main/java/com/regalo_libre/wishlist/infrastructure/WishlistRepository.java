@@ -1,6 +1,6 @@
-package com.meli.wishlist.infrastructure;
+package com.regalo_libre.wishlist.infrastructure;
 
-import com.meli.wishlist.model.WishList;
+import com.regalo_libre.wishlist.model.WishList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
