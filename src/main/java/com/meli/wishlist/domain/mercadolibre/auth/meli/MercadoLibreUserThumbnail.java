@@ -1,9 +1,8 @@
-package com.meli.wishlist.domain.mercadolibre.auth;
+package com.meli.wishlist.domain.mercadolibre.auth.meli;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -11,13 +10,10 @@ import lombok.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
+@Embeddable
 public class MercadoLibreUserThumbnail {
-    @Id
     @JsonProperty("picture_id")
     private String pictureId;
     @JsonProperty("picture_url")
     private String pictureUrl;
-    @OneToOne(mappedBy = "thumbnail")
-    MercadoLibreUser mercadoLibreUser;
 }
