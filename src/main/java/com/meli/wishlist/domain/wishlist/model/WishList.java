@@ -1,11 +1,16 @@
 package com.meli.wishlist.domain.wishlist.model;
 
-import com.meli.wishlist.domain.mercadolibre.MercadoLibreProduct;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.meli.wishlist.domain.mercadolibre.model.BookmarkedProduct;
+import com.meli.wishlist.domain.mercadolibre.auth.meli.model.MercadoLibreUser;
+import com.meli.wishlist.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,25 +18,59 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "wishlist", schema = "wishlist")
 public class WishList {
     @Id
     @Column(updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    private String description;
-
+    @Column(unique = true, nullable = false, updatable = false, name = "private_id")
+    private UUID privateId;
+    @Column(unique = true, nullable = false, updatable = false, name = "public_id")
+    private String publicId;
     @Column(nullable = false)
     private String name;
-
-    @Column(nullable = false)
+    private String description;
+    /*@Column(nullable = false)
     @Enumerated(EnumType.STRING)
-    private WishListVisibility visibility;
+    private WishListVisibility visibility;*/
+    @Column
+    private Boolean isPrivate;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
-            name = "wishlist_product",
+            name = "wishlist_bookmark",
+            schema = "wishlist",
             joinColumns = @JoinColumn(name = "wishlist_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<MercadoLibreProduct> products = new ArrayList<>();
+            inverseJoinColumns = @JoinColumn(name = "bookmark_id", referencedColumnName = "id"))
+    private List<BookmarkedProduct> gifts = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
+    @JsonIgnore
+    private MercadoLibreUser user;
+    private LocalDateTime createdAt;
+    @Transient
+    private int totalGifts;
+
+    public void setUser(MercadoLibreUser user) {
+        this.user = user;
+    }
+
+    @PrePersist
+    public void generateIds() {
+        if (this.privateId == null) {
+            this.privateId = UUID.randomUUID();
+        }
+        if (this.publicId == null || this.publicId.isEmpty()) {
+            this.publicId = IdGenerator.generatePublicId();
+        }
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PostLoad
+    @PostPersist
+    @PostUpdate
+    public void calculateTotalProducts() {
+        this.totalGifts = this.gifts != null ? this.gifts.size() : 0;
+    }
 }
