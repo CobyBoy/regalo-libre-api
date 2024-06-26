@@ -1,4 +1,4 @@
-package com.regalo_libre.utils;
+package com.regalo_libre.auth;
 
 import org.jboss.resteasy.client.jaxrs.internal.ResteasyClientBuilderImpl;
 import org.keycloak.admin.client.Keycloak;

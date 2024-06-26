@@ -1,5 +1,7 @@
 package com.regalo_libre.mercadolibre.auth;
 
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -14,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class MercadoLibreAuthClientServiceImpl {
+public class IMercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClientService {
     private final MercadoLibreAccessTokenRepository mercadoLibreAccessTokenRepository;
     private final MercadoLibreUserRepository mercadoLibreUserRepository;
 

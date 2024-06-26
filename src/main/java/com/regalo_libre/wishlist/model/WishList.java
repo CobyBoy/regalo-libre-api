@@ -2,7 +2,7 @@ package com.regalo_libre.wishlist.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
-import com.regalo_libre.mercadolibre.auth.MercadoLibreUser;
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import com.regalo_libre.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.*;

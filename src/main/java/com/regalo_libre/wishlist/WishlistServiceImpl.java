@@ -1,17 +1,16 @@
 package com.regalo_libre.wishlist;
 
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
-import com.regalo_libre.mercadolibre.MercadoLibreBookmarkRepository;
+import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
 import com.regalo_libre.mercadolibre.auth.MercadoLibreUserRepository;
-import com.regalo_libre.wishlist.exception.ProductAlreadyInWishlistException;
+import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
+import com.regalo_libre.wishlist.exception.GiftAlreadyInWishlistException;
 import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
-import com.regalo_libre.wishlist.exception.UserNotFoundException;
 import com.regalo_libre.wishlist.exception.WishlistNotFoundException;
 import com.regalo_libre.wishlist.model.WishList;
-import com.regalo_libre.wishlist.model.dto.EditListDTO;
-import com.regalo_libre.wishlist.model.dto.WishListCreateRequestDto;
-import com.regalo_libre.wishlist.model.dto.WishListDto;
-import com.regalo_libre.wishlist.infrastructure.WishlistRepository;
+import com.regalo_libre.wishlist.dto.EditListDTO;
+import com.regalo_libre.wishlist.dto.WishListCreateRequestDto;
+import com.regalo_libre.wishlist.dto.WishListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class WishlistServiceImpl implements IWishlistService {
     private final WishlistRepository wishlistRepository;
-    private final MercadoLibreBookmarkRepository mercadoLibreProductRepo;
+    private final BookmarkRepository mercadoLibreProductRepo;
     private final MercadoLibreUserRepository mercadoLibreUserRepository;
 
     public WishListDto createWishlist(WishListCreateRequestDto wishListRequest, Long userId) {
@@ -77,7 +76,7 @@ public class WishlistServiceImpl implements IWishlistService {
 
         for (BookmarkedProduct newProduct : newProducts) {
             if (existingProductIds.contains(newProduct.getId())) {
-                throw new ProductAlreadyInWishlistException("El producto " + newProduct.getTitle() + " ya está en la lista " + wishList.getName());
+                throw new GiftAlreadyInWishlistException("El producto " + newProduct.getTitle() + " ya está en la lista " + wishList.getName());
             }
         }
 

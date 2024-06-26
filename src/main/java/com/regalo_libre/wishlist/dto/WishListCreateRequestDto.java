@@ -1,4 +1,4 @@
-package com.regalo_libre.wishlist.model.dto;
+package com.regalo_libre.wishlist.dto;
 
 import lombok.Builder;
 

@@ -1,4 +1,4 @@
-package com.regalo_libre.wishlist.exception;
+package com.regalo_libre.common.dtos;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;

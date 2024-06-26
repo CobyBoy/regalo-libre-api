@@ -1,4 +1,4 @@
-package com.regalo_libre.wishlist.exception;
+package com.regalo_libre.mercadolibre.auth.exception;
 
 public class UserNotFoundException extends RuntimeException {
     public UserNotFoundException(String message) {

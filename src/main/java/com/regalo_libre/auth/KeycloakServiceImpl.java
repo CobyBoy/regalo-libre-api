@@ -1,7 +1,6 @@
 package com.regalo_libre.auth;
 
-import com.regalo_libre.mercadolibre.auth.MercadoLibreUser;
-import com.regalo_libre.utils.KeycloakProvider;
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;

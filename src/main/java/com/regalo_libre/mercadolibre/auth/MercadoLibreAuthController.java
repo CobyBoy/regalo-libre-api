@@ -1,5 +1,6 @@
 package com.regalo_libre.mercadolibre.auth;
 
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("api/token")
 public class MercadoLibreAuthController {
-    private final MercadoLibreAuthClientServiceImpl mercadoLibreAuthClientServiceImpl;
+    private final IMercadoLibreAuthClientServiceImpl mercadoLibreAuthClientServiceImpl;
 
     @CrossOrigin(origins = "https://localhost:4200")
     @GetMapping

@@ -1,8 +1,8 @@
 package com.regalo_libre.wishlist;
 
-import com.regalo_libre.wishlist.model.dto.EditListDTO;
-import com.regalo_libre.wishlist.model.dto.WishListCreateRequestDto;
-import com.regalo_libre.wishlist.model.dto.WishListDto;
+import com.regalo_libre.wishlist.dto.EditListDTO;
+import com.regalo_libre.wishlist.dto.WishListCreateRequestDto;
+import com.regalo_libre.wishlist.dto.WishListDto;
 
 import java.util.List;
 

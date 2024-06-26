@@ -1,6 +1,7 @@
 package com.regalo_libre.mercadolibre.auth;
 
 
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

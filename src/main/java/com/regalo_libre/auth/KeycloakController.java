@@ -1,18 +1,10 @@
 package com.regalo_libre.auth;
 
-import com.regalo_libre.mercadolibre.auth.MercadoLibreUser;
-import com.regalo_libre.utils.KeycloakProvider;
-import jakarta.ws.rs.core.Response;
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.OAuth2Constants;
-import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UsersResource;
-import org.keycloak.representations.idm.CredentialRepresentation;
-import org.keycloak.representations.idm.RoleRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

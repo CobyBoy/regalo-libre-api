@@ -1,6 +1,6 @@
-package com.regalo_libre.wishlist.model.dto;
+package com.regalo_libre.wishlist.dto;
 
-import com.regalo_libre.mercadolibre.auth.MercadoLibreUser;
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.wishlist.model.WishList;
 import lombok.Builder;

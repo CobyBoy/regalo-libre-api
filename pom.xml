@@ -83,10 +83,10 @@
 			<artifactId>resteasy-jaxrs</artifactId>
 			<version>3.15.6.Final</version>
 		</dependency>
-		<dependency>
-			<groupId>org.liquibase</groupId>
-			<artifactId>liquibase-core</artifactId>
-		</dependency>
+		<!--		<dependency>-->
+		<!--			<groupId>org.liquibase</groupId>-->
+		<!--			<artifactId>liquibase-core</artifactId>-->
+		<!--		</dependency>-->
 	</dependencies>
 
 
