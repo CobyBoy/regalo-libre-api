@@ -1,9 +1,9 @@
-package com.meli.wishlist.domain.mercadolibre.auth;
+package com.meli.wishlist.domain.mercadolibre.auth.meli.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
@@ -12,10 +12,12 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "access_token", schema = "meli")
 public class MercadoLibreAccessToken {
     @Id
+    @Column(name = "user_id")
     @JsonProperty("user_id")
-    private Integer userId;
+    private Long userId;
     @JsonProperty("access_token")
     private String accessToken;
     @JsonProperty("expires_in")
@@ -23,5 +25,4 @@ public class MercadoLibreAccessToken {
     private String scope;
     @JsonProperty("token_type")
     private String tokenType;
-
 }
