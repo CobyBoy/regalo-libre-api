@@ -1,6 +1,6 @@
-package com.meli.keycloak;
+package com.regalo_libre.auth;
 
-import com.meli.mercadolibre.auth.model.MercadoLibreUser;
+import com.regalo_libre.mercadolibre.auth.MercadoLibreUser;
 import org.keycloak.representations.idm.UserRepresentation;
 
 import java.util.List;
