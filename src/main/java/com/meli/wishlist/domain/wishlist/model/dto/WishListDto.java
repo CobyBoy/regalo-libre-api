@@ -1,30 +1,42 @@
 package com.meli.wishlist.domain.wishlist.model.dto;
 
-import com.meli.wishlist.domain.mercadolibre.MercadoLibreProduct;
+import com.meli.wishlist.domain.mercadolibre.auth.meli.model.MercadoLibreUser;
+import com.meli.wishlist.domain.mercadolibre.model.BookmarkedProduct;
 import com.meli.wishlist.domain.wishlist.model.WishList;
-import com.meli.wishlist.domain.wishlist.model.WishListVisibility;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Builder;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @Builder
 public record WishListDto(
         Long id,
         String description,
         String name,
-        @Enumerated(EnumType.STRING)
-        WishListVisibility visibility,
-        List<MercadoLibreProduct> products) {
+        LocalDateTime createdAt,
+        String publicId,
+        UUID privateId,
+        /*@Enumerated(EnumType.STRING)
+        WishListVisibility visibility,*/
+        Boolean isPrivate,
+        int totalGifts,
+        MercadoLibreUser user,
+        List<BookmarkedProduct> gifts) {
 
         public static WishListDto toDto(WishList wishList) {
                 return WishListDto.builder()
                         .id(wishList.getId())
-                        .products(wishList.getProducts())
+                        .createdAt(wishList.getCreatedAt())
+                        .gifts(wishList.getGifts())
                         .description(wishList.getDescription())
                         .name(wishList.getName())
-                        .visibility(wishList.getVisibility())
+                        .publicId(wishList.getPublicId())
+                        .privateId(wishList.getPrivateId())
+                        .totalGifts(wishList.getTotalGifts())
+                        //.visibility(wishList.getVisibility())
+                        .isPrivate(wishList.getIsPrivate())
+                        .user(wishList.getUser())
                         .build();
         }
 }
