@@ -1,6 +1,6 @@
 package com.meli.wishlist.keycloak;
 
-import com.meli.wishlist.domain.mercadolibre.auth.meli.model.MercadoLibreUser;
+import com.meli.wishlist.mercadolibre.auth.meli.model.MercadoLibreUser;
 import com.meli.wishlist.utils.KeycloakProvider;
 import jakarta.ws.rs.core.Response;
 import lombok.extern.slf4j.Slf4j;
