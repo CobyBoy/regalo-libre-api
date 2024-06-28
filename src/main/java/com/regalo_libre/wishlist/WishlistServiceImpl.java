@@ -61,7 +61,6 @@ public class WishlistServiceImpl implements IWishlistService {
         WishList wishlistToEdit = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException("La lista no existe"));
         wishlistToEdit.setName(request.name());
         wishlistToEdit.setDescription(request.description());
-        //wishlistToEdit.setVisibility(request.visibility());
         wishlistToEdit.setIsPrivate(request.isPrivate());
         return WishListDto.toDto(wishlistRepository.save(wishlistToEdit));
     }

@@ -31,9 +31,6 @@ public class WishList {
     @Column(nullable = false)
     private String name;
     private String description;
-    /*@Column(nullable = false)
-    @Enumerated(EnumType.STRING)
-    private WishListVisibility visibility;*/
     @Column
     private Boolean isPrivate;
 

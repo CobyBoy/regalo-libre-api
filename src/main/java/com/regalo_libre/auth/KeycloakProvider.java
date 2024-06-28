@@ -15,6 +15,9 @@ public class KeycloakProvider {
     private static final String PASSWORD_CONSOLE = "35396973";
     private static final String CLIENT_SECRET = "iEywx0WMbiJ8I7hMQquRMUa3iVL3vFmA";
 
+    private KeycloakProvider() {
+    }
+
     public static RealmResource getRealmResource() {
         Keycloak keycloak = KeycloakBuilder.builder()
                 .serverUrl(SERVER_URL)

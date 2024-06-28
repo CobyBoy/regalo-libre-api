@@ -10,6 +10,9 @@ public class IdGenerator {
 
     private static final Random RANDOM = new SecureRandom();
 
+    private IdGenerator() {
+    }
+
     public static String generatePublicId() {
         StringBuilder sb = new StringBuilder(ID_LENGTH + 1);  // +1 for the dash
         for (int i = 0; i < ID_LENGTH; i++) {

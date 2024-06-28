@@ -28,17 +28,13 @@ public class WishlistController {
         return ResponseEntity.ok(wishListService.findWishlistById(id));
     }
 
-    /*@PostMapping()
-    public ResponseEntity<WishListDto> createWishlist(@RequestBody WishListDto wishListRequest, @RequestParam Integer userId) {
-        return ResponseEntity.ok(wishListService.createWishlist(wishListRequest, userId));
-    }*/
     @PostMapping()
     public ResponseEntity<WishListDto> createWishlist(@RequestBody WishListCreateRequestDto wishListRequest, @RequestParam Long userId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(wishListService.createWishlist(wishListRequest, userId));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity updateWishlist(@PathVariable Long id, @RequestBody EditListDTO request) {
+    public ResponseEntity<WishListDto> updateWishlist(@PathVariable Long id, @RequestBody EditListDTO request) {
         return ResponseEntity.ok(wishListService.updateWishlistById(id, request));
     }
 
@@ -49,7 +45,7 @@ public class WishlistController {
     }
 
     @PutMapping("/{id}/gifts")
-    public ResponseEntity addProductsToWishList(@PathVariable Long id, @RequestBody List<String> productsIds) {
+    public ResponseEntity<Void> addProductsToWishList(@PathVariable Long id, @RequestBody List<String> productsIds) {
         wishListService.addProductsToWishlist(id, productsIds);
         return ResponseEntity.ok().build();
     }
@@ -61,7 +57,7 @@ public class WishlistController {
     }
 
     @GetMapping("/public/{id}")
-    public ResponseEntity getPublicWishlistsByUserId(@PathVariable String id) {
+    public ResponseEntity<WishListDto> getPublicWishlistsByUserId(@PathVariable String id) {
 
         return ResponseEntity.ok(wishListService.getPublicWishlistsByUserId(id));
     }
