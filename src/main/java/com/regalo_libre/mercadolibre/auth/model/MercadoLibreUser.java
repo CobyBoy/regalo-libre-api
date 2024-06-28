@@ -37,9 +37,13 @@ public class MercadoLibreUser {
             name = "user_bookmark",
             schema = "meli",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "unique_id"))
+            inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "id"))
 
     private List<BookmarkedProduct> bookmarkedProducts = new ArrayList<>();
+
+    @OneToOne(mappedBy = "mercadoLibreUser", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private MercadoLibreAccessToken accessToken;
 
     public void addWishList(WishList wishList) {
         wishLists.add(wishList);

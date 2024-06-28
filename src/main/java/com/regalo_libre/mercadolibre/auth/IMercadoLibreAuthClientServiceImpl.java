@@ -17,6 +17,7 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class IMercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClientService {
+    public static final String ERROR_FETCHING = "Error fetching";
     private final MercadoLibreAccessTokenRepository mercadoLibreAccessTokenRepository;
     private final MercadoLibreUserRepository mercadoLibreUserRepository;
 
@@ -52,7 +53,8 @@ public class IMercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClie
         if (optionalUser.isEmpty()) {
             WebClient webClient = getWebClientWithAuthorizationHeader(accessToken.getAccessToken());
             user = getUserInfoFromApi(webClient);
-            mercadoLibreUserRepository.save(user);
+            user.setAccessToken(accessToken);
+            accessToken.setMercadoLibreUser(user);
         } else {
             user = optionalUser.get();
             Optional<MercadoLibreAccessToken> token = mercadoLibreAccessTokenRepository.findById(accessToken.getUserId());
@@ -61,7 +63,7 @@ public class IMercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClie
                             mercadoLibreAccessToken.setAccessToken(accessToken.getAccessToken())
             );
         }
-        mercadoLibreAccessTokenRepository.save(accessToken);
+        mercadoLibreUserRepository.save(user);
         return user;
     }
 
@@ -74,8 +76,8 @@ public class IMercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClie
                     .bodyToMono(MercadoLibreUser.class)
                     .block();
         } catch (Exception ex) {
-            log.error("Error fetching");
-            throw new RestClientException("Error fetching");
+            log.error(ERROR_FETCHING);
+            throw new RestClientException(ERROR_FETCHING);
         }
 
     }
@@ -89,8 +91,8 @@ public class IMercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClie
                     .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
                     .build();
         } catch (Exception ex) {
-            log.error("Error fetching");
-            throw new RestClientException("Error fetching");
+            log.error(ERROR_FETCHING);
+            throw new RestClientException(ERROR_FETCHING);
         }
     }
 

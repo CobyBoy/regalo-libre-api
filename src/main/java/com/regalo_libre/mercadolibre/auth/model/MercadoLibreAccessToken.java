@@ -1,6 +1,7 @@
 package com.regalo_libre.mercadolibre.auth.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
@@ -24,4 +25,9 @@ public class MercadoLibreAccessToken {
     private String scope;
     @JsonProperty("token_type")
     private String tokenType;
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
+    private MercadoLibreUser mercadoLibreUser;
 }
