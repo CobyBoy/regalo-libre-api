@@ -45,14 +45,6 @@ public class BookmarkedProduct {
     private String title;
     private String bookmarkedDate;
 
-    /*public void setPictures(List<MercadoLibreBookmarkPicture> pictures) {
-        this.pictures = pictures;
-        for (MercadoLibreBookmarkPicture picture : pictures) {
-            picture.setProduct(this);
-        }
-    }*/
-
-
     public void setUsers(List<MercadoLibreUser> users) {
         this.users = users;
         for (MercadoLibreUser user : users) {
