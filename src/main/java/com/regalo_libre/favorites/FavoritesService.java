@@ -68,25 +68,13 @@ public class FavoritesService {
             bookmarkRepository.saveAll(productsToSaveOrUpdate);
         }
         if (!productsToRemove.isEmpty()) {
-            //mercadoLibreProductRepo.deleteAll(productsToRemove);
-            // existingBookmarkedProducts.forEach(mercadoLibreProduct -> mercadoLibreProduct.setUsers(List.of(user)));
             user.getBookmarkedProducts().removeAll(productsToRemove);
             existingBookmarkedProducts.removeAll(productsToRemove);
             bookmarkRepository.deleteAll(productsToRemove);
-            //mercadoLibreProductRepo.saveAll(existingBookmarkedProducts);
         }
 
 
         return bookmarkRepository.findMercadoLibreProductsByUserId(userId);
-    }
-
-    private void saveUserBookmarks(MercadoLibreAccessToken authorizationHeader, Long userId) {
-        WebClient webClient = authClientService.getWebClientWithAuthorizationHeader(authorizationHeader.getAccessToken());
-        Flux<Bookmark> bookmarksFlux = fetchBookmarksFromApi(webClient);
-        List<BookmarkedProduct> products = fetchBookmarkedProductsByItemId(bookmarksFlux, webClient);
-        MercadoLibreUser user = userRepository.findById(userId).orElseThrow();
-        products.forEach(mercadoLibreProduct -> mercadoLibreProduct.setUsers(List.of(user)));
-        bookmarkRepository.saveAll(products);
     }
 
     private List<BookmarkedProduct> getAllBookmarkedProducts(MercadoLibreAccessToken authorizationHeader) {
