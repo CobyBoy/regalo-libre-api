@@ -28,51 +28,79 @@ public class FavoritesService {
     private final MercadoLibreUserRepository userRepository;
 
     public List<BookmarkedProduct> getAllFavorites(Long userId) {
-        var token = accessTokenRepository.findById(userId).orElseThrow(() -> new TokenNotFoundException("Sesion no encontrada"));
+        MercadoLibreAccessToken token = accessTokenRepository.findById(userId).orElseThrow(() -> new TokenNotFoundException("Sesion no encontrada"));
         MercadoLibreUser user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-
-        var apiProducts = getAllBookmarkedProducts(token);
-        var existingBookmarkedProducts = bookmarkRepository.findMercadoLibreProductsByUserId(userId);
-        if (apiProducts.isEmpty() && existingBookmarkedProducts.isEmpty()) {
+        // Get bookmarks from meli for this user
+        List<BookmarkedProduct> userApiBookmarks = getAllBookmarkedProducts(token);
+        // Get all from bookmark table, not only from the user
+        List<BookmarkedProduct> allExistingBookmarks = bookmarkRepository.findAll();
+        if (userApiBookmarks.isEmpty() && allExistingBookmarks.isEmpty()) {
+            // If no api products and no bookmarks
             return new ArrayList<>();
         }
-        if (existingBookmarkedProducts.isEmpty()) {
-            apiProducts.forEach(mercadoLibreProduct -> mercadoLibreProduct.setUsers(List.of(user)));
-            bookmarkRepository.saveAll(apiProducts);
+
+        // if no bookmarks, save the ones from the api and also set it to the current user
+        if (allExistingBookmarks.isEmpty()) {
+            userApiBookmarks.forEach(mercadoLibreProduct -> mercadoLibreProduct.setUsers(List.of(user)));
+            bookmarkRepository.saveAll(userApiBookmarks);
         }
-        Map<String, BookmarkedProduct> existingProductMap = existingBookmarkedProducts.stream()
+
+        //list of current bookmarks ids MLA
+        Map<String, BookmarkedProduct> existingProductMap = allExistingBookmarks.stream()
                 .collect(Collectors.toMap(BookmarkedProduct::getId, product -> product));
-        Map<String, BookmarkedProduct> apiProductMap = apiProducts.stream()
+        //list of api bookmarks ids MLA
+        Map<String, BookmarkedProduct> apiProductMap = userApiBookmarks.stream()
                 .collect(Collectors.toMap(BookmarkedProduct::getId, product -> product));
 
+        // From the api bookmark, get the bookmarks that are not in the db to add them because they have been added in MeLi
         List<BookmarkedProduct> productsToSaveOrUpdate = new ArrayList<>();
-        for (BookmarkedProduct apiProduct : apiProducts) {
+        for (BookmarkedProduct apiProduct : userApiBookmarks) {
             BookmarkedProduct existingProduct = existingProductMap.get(apiProduct.getId());
             if (existingProduct == null) {
-                // New product
+                // New product.
                 productsToSaveOrUpdate.add(apiProduct);
             }
         }
-
-        List<BookmarkedProduct> productsToRemove = new ArrayList<>();
-        for (BookmarkedProduct bookmarkedProduct : existingBookmarkedProducts) {
+        // Get the current bookmarks that are not in the api and remove them to be in sync
+        List<BookmarkedProduct> bookmarksToRemoveForThisUser = new ArrayList<>();
+        for (BookmarkedProduct bookmarkedProduct : allExistingBookmarks) {
             BookmarkedProduct existingProduct = apiProductMap.get(bookmarkedProduct.getId());
             if (existingProduct == null) {
                 // Product to remove
-                productsToRemove.add(existingProductMap.get(bookmarkedProduct.getId()));
+                bookmarksToRemoveForThisUser.add(existingProductMap.get(bookmarkedProduct.getId()));
             }
         }
 
-        if (!productsToSaveOrUpdate.isEmpty() && !existingBookmarkedProducts.isEmpty()) {
+        // Get the bookmarks in common and check if this user does not have them to add to it later
+        List<BookmarkedProduct> productsInCommon = new ArrayList<>();
+        for (BookmarkedProduct bookmarkedProduct : allExistingBookmarks) {
+            BookmarkedProduct inCommonBookmark = apiProductMap.get(bookmarkedProduct.getId());
+
+            if (inCommonBookmark != null) {
+                var a = bookmarkedProduct.getUsers().stream().filter(buser -> buser.getId().equals(user.getId())).toList();
+                if (a.isEmpty()) {
+                    productsInCommon.add(bookmarkedProduct);
+                }
+            }
+        }
+
+        if (!productsToSaveOrUpdate.isEmpty() && !allExistingBookmarks.isEmpty()) {
             productsToSaveOrUpdate.forEach(mercadoLibreProduct -> mercadoLibreProduct.setUsers(List.of(user)));
             bookmarkRepository.saveAll(productsToSaveOrUpdate);
         }
-        if (!productsToRemove.isEmpty()) {
-            user.getBookmarkedProducts().removeAll(productsToRemove);
-            existingBookmarkedProducts.removeAll(productsToRemove);
-            bookmarkRepository.deleteAll(productsToRemove);
+        if (!bookmarksToRemoveForThisUser.isEmpty()) {
+            user.getBookmarkedProducts().removeAll(bookmarksToRemoveForThisUser);
+            userRepository.save(user);
         }
 
+        if (!productsInCommon.isEmpty()) {
+            for (BookmarkedProduct bookmarkedProduct : productsInCommon) {
+                user.getBookmarkedProducts().add(bookmarkedProduct);
+            }
+            userRepository.save(user);
+        }
+        var bookmarkWithoutUser = bookmarkRepository.findBookmarkWithoutUser();
+        bookmarkRepository.deleteAll(bookmarkWithoutUser);
 
         return bookmarkRepository.findMercadoLibreProductsByUserId(userId);
     }
