@@ -1,4 +1,4 @@
-package com.regalo_libre.mercadolibre.auth;
+package com.regalo_libre.mercadolibre.auth.repository;
 
 
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
