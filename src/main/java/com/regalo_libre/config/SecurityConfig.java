@@ -18,7 +18,7 @@ public class SecurityConfig {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(http -> {
-                    http.requestMatchers(HttpMethod.POST, "/api/user").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/api/user/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/token/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/lists/public/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/profile/public/**").permitAll();
