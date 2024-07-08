@@ -39,7 +39,6 @@ public class MercadoLibreUser {
             schema = "meli",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "id"))
-
     private List<BookmarkedProduct> bookmarkedProducts = new ArrayList<>();
 
     @OneToOne(mappedBy = "mercadoLibreUser", cascade = CascadeType.ALL)

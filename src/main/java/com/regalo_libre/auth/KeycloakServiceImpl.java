@@ -2,6 +2,7 @@ package com.regalo_libre.auth;
 
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.OAuth2Constants;
 import org.keycloak.admin.client.resource.RealmResource;
@@ -13,11 +14,13 @@ import java.util.List;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
 public class KeycloakServiceImpl implements IKeycloakService {
+    private final KeycloakProvider keycloakProvider;
     @Override
     public UserRepresentation createUser(MercadoLibreUser user) {
         int status;
-        UsersResource usersResource = KeycloakProvider.getUserResource();
+        UsersResource usersResource = keycloakProvider.getUserResource();
         UserRepresentation userRepresentation = new UserRepresentation();
         userRepresentation.setFirstName(user.getFirstName());
         userRepresentation.setLastName(user.getLastName());
@@ -39,7 +42,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
             credentialRepresentation.setValue(user.getId().toString());
             usersResource.get(userId).resetPassword(credentialRepresentation);
 
-            RealmResource realmResource = KeycloakProvider.getRealmResource();
+            RealmResource realmResource = keycloakProvider.getRealmResource();
             List<RoleRepresentation> representations = List.of(realmResource.roles().get("user-realm").toRepresentation());
             realmResource
                     .users()
@@ -58,11 +61,11 @@ public class KeycloakServiceImpl implements IKeycloakService {
 
     @Override
     public List<UserRepresentation> searchUserByUsername(String username) {
-        return KeycloakProvider.getRealmResource().users().searchByUsername(username, true);
+        return keycloakProvider.getRealmResource().users().searchByUsername(username, true);
     }
 
     @Override
     public List<UserRepresentation> findAllUsers() {
-        return KeycloakProvider.getRealmResource().users().list();
+        return keycloakProvider.getRealmResource().users().list();
     }
 }
