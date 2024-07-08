@@ -1,6 +1,7 @@
 package com.regalo_libre.mercadolibre.auth.service;
 
 import com.regalo_libre.mercadolibre.auth.IMercadoLibreAuthClientService;
+import com.regalo_libre.mercadolibre.auth.MercadoLibreConfig;
 import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreAccessTokenRepository;
 import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreUserRepository;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
@@ -26,6 +27,7 @@ public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClien
     private final MercadoLibreAccessTokenRepository mercadoLibreAccessTokenRepository;
     private final MercadoLibreUserRepository mercadoLibreUserRepository;
     private final ProfileRepository profileRepository;
+    private final MercadoLibreConfig mercadoLibreConfig;
 
     public MercadoLibreUser getMercadoLibreUserData(String authorizationCode) {
         WebClient webClient = WebClient.create();
@@ -34,20 +36,16 @@ public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClien
     }
 
     private MercadoLibreAccessToken getAccessToken(WebClient webClient, String authorizationCode) {
-        String apiUrl = "https://api.mercadolibre.com/oauth/token";
-        String clientId = "3828299958180754";
-        String clientSecret = "VFKvzbXxfMmISZGkOu6s9kgVWPO17PEV";
-        String redirectUri = "https://localhost:4200/code";
         return webClient.post()
-                .uri(apiUrl)
+                .uri(mercadoLibreConfig.getApiUrl())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromFormData(
                                 "grant_type", "authorization_code")
-                        .with("client_id", clientId)
-                        .with("client_secret", clientSecret)
+                        .with("client_id", mercadoLibreConfig.getClientId())
+                        .with("client_secret", mercadoLibreConfig.getClientSecret())
                         .with("code", authorizationCode)
-                        .with("redirect_uri", redirectUri))
+                        .with("redirect_uri", mercadoLibreConfig.getRedirectUri()))
                 .retrieve()
                 .bodyToMono(MercadoLibreAccessToken.class)
                 .block();
