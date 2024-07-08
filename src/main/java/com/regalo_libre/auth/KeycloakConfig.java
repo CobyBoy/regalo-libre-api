@@ -21,4 +21,8 @@ public class KeycloakConfig {
     private String userConsole;
     @Value("${keycloak.password_console}")
     private String passwordConsole;
+    @Value("${keycloak.client_id}")
+    private String clientId;
+    @Value("${keycloak.grant_type}")
+    private String grantType;
 }
