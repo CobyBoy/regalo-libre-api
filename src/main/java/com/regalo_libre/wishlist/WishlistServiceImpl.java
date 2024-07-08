@@ -2,7 +2,7 @@ package com.regalo_libre.wishlist;
 
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
-import com.regalo_libre.mercadolibre.auth.MercadoLibreUserRepository;
+import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreUserRepository;
 import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
 import com.regalo_libre.wishlist.exception.GiftAlreadyInWishlistException;
 import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
