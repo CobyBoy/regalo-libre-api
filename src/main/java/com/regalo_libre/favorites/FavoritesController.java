@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "https://localhost:4200")
 @RequiredArgsConstructor
 public class FavoritesController {
-    private final FavoritesService favoritesService;
+    private final IFavoritesService favoritesService;
     private final IKeycloakService keycloakService;
 
     @GetMapping
