@@ -3,6 +3,8 @@ package com.regalo_libre.favorites;
 import com.regalo_libre.mercadolibre.auth.*;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
+import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreAccessTokenRepository;
+import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreUserRepository;
 import com.regalo_libre.mercadolibre.bookmark.Bookmark;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkItem;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
@@ -21,7 +23,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class FavoritesService {
+public class FavoritesServiceImpl implements IFavoritesService {
     private final BookmarkRepository bookmarkRepository;
     private final MercadoLibreAccessTokenRepository accessTokenRepository;
     private final IMercadoLibreAuthClientService authClientService;
