@@ -21,6 +21,7 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/api/user").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/token/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/lists/public/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/profile/public/**").permitAll();
                     http.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer(oauth2ResourceServerCustomizer ->
