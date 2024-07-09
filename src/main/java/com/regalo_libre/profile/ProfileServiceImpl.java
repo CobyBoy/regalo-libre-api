@@ -1,16 +1,29 @@
 package com.regalo_libre.profile;
 
-import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
 public class ProfileServiceImpl {
-    private final MercadoLibreUserRepository mercadoLibreUserRepository;
     private final ProfileRepository profileRepository;
 
     Profile find(Long userId) {
-        return profileRepository.findById(userId).orElseThrow();
+        return profileRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
+    }
+
+
+    PublicProfileDTO findPublicProfile(String username) {
+        var profile = profileRepository.findByAppNickname(username).orElseThrow(() -> new ProfileNotPublicException("Este perfil es privado"));
+        return PublicProfileDTO.toDto(profile);
+    }
+
+    EditProfileDTO editProfile(EditProfileDTO profile) {
+        var profileFound = profileRepository.findById(profile.id()).orElseThrow();
+        profileFound.setBiography(profile.biography());
+        profileFound.setAppNickname(profile.appNickname());
+        profileFound.setIsPrivate(profile.isPrivate());
+        return EditProfileDTO.builder().build().toDto(profileRepository.save(profileFound));
     }
 }
