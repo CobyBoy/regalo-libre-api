@@ -1,6 +1,7 @@
 package com.regalo_libre.wishlist.dto;
 
-import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibrePublicUserDTO;
+import com.regalo_libre.utils.DtoConverter;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.wishlist.model.WishList;
 import lombok.Builder;
@@ -15,16 +16,17 @@ public record WishListDto(
         String description,
         String name,
         LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         String publicId,
         UUID privateId,
         /*@Enumerated(EnumType.STRING)
         WishListVisibility visibility,*/
         Boolean isPrivate,
         int totalGifts,
-        MercadoLibreUser user,
-        List<BookmarkedProduct> gifts) {
+        MercadoLibrePublicUserDTO user,
+        List<BookmarkedProduct> gifts) implements DtoConverter<WishList, WishListDto> {
 
-        public static WishListDto toDto(WishList wishList) {
+        public WishListDto toDto(WishList wishList) {
                 return WishListDto.builder()
                         .id(wishList.getId())
                         .createdAt(wishList.getCreatedAt())
@@ -36,7 +38,8 @@ public record WishListDto(
                         .totalGifts(wishList.getTotalGifts())
                         //.visibility(wishList.getVisibility())
                         .isPrivate(wishList.getIsPrivate())
-                        .user(wishList.getUser())
+                        .user(MercadoLibrePublicUserDTO.toDto(wishList.getUser()))
+                        .updatedAt(wishList.getUpdatedAt())
                         .build();
         }
 }
