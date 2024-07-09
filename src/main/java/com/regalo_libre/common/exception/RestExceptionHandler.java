@@ -2,6 +2,7 @@ package com.regalo_libre.common.exception;
 
 import com.regalo_libre.common.dtos.ApiErrorDto;
 import com.regalo_libre.mercadolibre.auth.exception.TokenNotFoundException;
+import com.regalo_libre.profile.ProfileNotPublicException;
 import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
 import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,11 @@ import java.nio.file.AccessDeniedException;
 @Slf4j
 @ControllerAdvice
 public class RestExceptionHandler {
+    private static final String TOKEN_NOT_FOUND = "Token not found";
 
     @ExceptionHandler(TokenNotFoundException.class)
     public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(TokenNotFoundException ex) {
-        log.error("Token not found");
+        log.error(TOKEN_NOT_FOUND);
         HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
@@ -33,7 +35,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(ServletException.class)
     public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(ServletException ex) {
-        log.error("Token not found");
+        log.error(TOKEN_NOT_FOUND);
         HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
@@ -45,7 +47,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(AccessDeniedException ex) {
-        log.error("Token not found");
+        log.error(TOKEN_NOT_FOUND);
         HttpStatus httpStatus = HttpStatus.FORBIDDEN;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
@@ -57,7 +59,7 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(IllegalStateException ex) {
-        log.error("Token not found");
+        log.error(TOKEN_NOT_FOUND);
         HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
@@ -69,7 +71,19 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(PublicWishListNotFoundException.class)
     public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(PublicWishListNotFoundException ex) {
-        log.error("Token not found");
+        log.error(TOKEN_NOT_FOUND);
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(ProfileNotPublicException.class)
+    public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(ProfileNotPublicException ex) {
+        log.error(TOKEN_NOT_FOUND);
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
