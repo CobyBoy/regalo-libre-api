@@ -1,6 +1,7 @@
 package com.regalo_libre.auth;
 
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUserDTO;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,15 +18,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class KeycloakServiceImpl implements IKeycloakService {
     private final KeycloakProvider keycloakProvider;
+
     @Override
-    public UserRepresentation createUser(MercadoLibreUser user) {
+    public UserRepresentation createUser(MercadoLibreUserDTO user) {
         int status;
         UsersResource usersResource = keycloakProvider.getUserResource();
         UserRepresentation userRepresentation = new UserRepresentation();
-        userRepresentation.setFirstName(user.getFirstName());
-        userRepresentation.setLastName(user.getLastName());
-        userRepresentation.setEmail(user.getEmail());
-        userRepresentation.setUsername(user.getNickname().replace(" ", "_"));
+        userRepresentation.setFirstName(user.firstName());
+        userRepresentation.setLastName(user.lastName());
+        userRepresentation.setEmail(user.email());
+        userRepresentation.setUsername(user.nickname().replace(" ", "_"));
         userRepresentation.setEmailVerified(true);
         userRepresentation.setEnabled(true);
 
@@ -39,7 +41,7 @@ public class KeycloakServiceImpl implements IKeycloakService {
             CredentialRepresentation credentialRepresentation = new CredentialRepresentation();
             credentialRepresentation.setTemporary(false);
             credentialRepresentation.setType(OAuth2Constants.PASSWORD);
-            credentialRepresentation.setValue(user.getId().toString());
+            credentialRepresentation.setValue(user.id().toString());
             usersResource.get(userId).resetPassword(credentialRepresentation);
 
             RealmResource realmResource = keycloakProvider.getRealmResource();
