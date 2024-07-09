@@ -17,5 +17,5 @@ public interface IWishlistService {
 
     WishListDto updateWishlistById(Long id, EditListDTO request);
 
-    WishListDto getPublicWishlistsByUserId(String id);
+    WishListDto getPublicWishlistByUserId(String id);
 }
