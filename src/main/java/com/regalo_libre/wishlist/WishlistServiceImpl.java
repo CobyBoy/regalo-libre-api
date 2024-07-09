@@ -14,6 +14,7 @@ import com.regalo_libre.wishlist.dto.WishListDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -37,19 +38,19 @@ public class WishlistServiceImpl implements IWishlistService {
                         .user(mercadoLibreUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado")))
                         .build());
 
-        return WishListDto.toDto(wishList);
+        return WishListDto.builder().build().toDto(wishList);
     }
 
     public List<WishListDto> getWishListsByUserId(Long userId) {
         List<WishList> wishLists = wishlistRepository.findAllByUserId(userId);
         return wishLists.stream()
-                .map(WishListDto::toDto)
+                .map(wishList -> WishListDto.builder().build().toDto(wishList))
                 .toList();
     }
 
     public WishListDto findWishlistById(Long id) {
         WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException("La lista no existe"));
-        return WishListDto.toDto(wishList);
+        return WishListDto.builder().build().toDto(wishList);
     }
 
     public void deleteWishlistById(Long id) {
@@ -62,7 +63,8 @@ public class WishlistServiceImpl implements IWishlistService {
         wishlistToEdit.setName(request.name());
         wishlistToEdit.setDescription(request.description());
         wishlistToEdit.setIsPrivate(request.isPrivate());
-        return WishListDto.toDto(wishlistRepository.save(wishlistToEdit));
+        wishlistToEdit.setUpdatedAt(LocalDateTime.now());
+        return WishListDto.builder().build().toDto(wishlistRepository.save(wishlistToEdit));
     }
 
     public void addProductsToWishlist(Long id, List<String> productsIds) {
@@ -78,6 +80,7 @@ public class WishlistServiceImpl implements IWishlistService {
                 throw new GiftAlreadyInWishlistException("El producto " + newProduct.getTitle() + " ya está en la lista " + wishList.getName());
             }
         }
+        wishList.setUpdatedAt(LocalDateTime.now());
 
         existingProducts.addAll(newProducts);
         wishlistRepository.save(wishList);
@@ -88,14 +91,23 @@ public class WishlistServiceImpl implements IWishlistService {
         List<BookmarkedProduct> productsToDelete = mercadoLibreProductRepo.findAllByIdIn(productsIds);
         var wishListProducts = wishList.getGifts();
         wishListProducts.removeAll(productsToDelete);
+        wishList.setUpdatedAt(LocalDateTime.now());
         wishlistRepository.save(wishList);
     }
 
-    public WishListDto getPublicWishlistsByUserId(String id) {
+    public WishListDto getPublicWishlistByUserId(String id) {
         var publicWishList = wishlistRepository.findByPublicIdAndIsPrivateFalse(id);
         if (publicWishList == null) {
             throw new PublicWishListNotFoundException("La lista no existe o no es pública");
         }
-        return WishListDto.toDto(publicWishList);
+        return WishListDto.builder().build().toDto(publicWishList);
+    }
+
+    public List<WishListDto> getAllPublicWishlistsByUserId(Long userId) {
+        return wishlistRepository.findAllByUserIdAndIsPrivateFalse(userId).stream().map(wishList -> WishListDto.builder().build().toDto(wishList)).toList();
+    }
+
+    public List<WishListDto> getAllPublicWishlistsByNickname(String nickname) {
+        return wishlistRepository.findAllByUserNicknameAndIsPrivateFalse(nickname).stream().map(wishList -> WishListDto.builder().build().toDto(wishList)).toList();
     }
 }
