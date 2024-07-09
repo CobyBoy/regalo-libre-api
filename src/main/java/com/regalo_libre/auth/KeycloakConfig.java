@@ -25,4 +25,8 @@ public class KeycloakConfig {
     private String clientId;
     @Value("${keycloak.grant_type}")
     private String grantType;
+    @Value("${keycloak.token_url}")
+    private String tokenUrl;
+    @Value("${keycloak.logout_url}")
+    private String logoutUrl;
 }
