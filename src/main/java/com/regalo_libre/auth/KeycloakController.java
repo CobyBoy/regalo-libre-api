@@ -1,10 +1,9 @@
 package com.regalo_libre.auth;
 
-import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUserDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -23,10 +22,9 @@ public class KeycloakController {
     private final IKeycloakService keycloakService;
     private final KeycloakConfig keycloakConfig;
 
-    @CrossOrigin(origins = "https://localhost:4200")
     @PostMapping
-    public ResponseEntity<MercadoLibreUser> createKeycloakUser(@RequestBody MercadoLibreUser mercadoLibreUser) {
-        List<UserRepresentation> found = keycloakService.searchUserByUsername(mercadoLibreUser.getNickname().replace(" ", "_"));
+    public ResponseEntity<MercadoLibreUserDTO> createKeycloakUser(@RequestBody MercadoLibreUserDTO mercadoLibreUser) {
+        List<UserRepresentation> found = keycloakService.searchUserByUsername(mercadoLibreUser.nickname().replace(" ", "_"));
         if (found.isEmpty()) {
             log.info("Creating user" + mercadoLibreUser);
             keycloakService.createUser(mercadoLibreUser);
@@ -34,19 +32,29 @@ public class KeycloakController {
         return ResponseEntity.ok(mercadoLibreUser);
     }
 
-    @CrossOrigin(origins = "https://localhost:4200")
     @PostMapping("login")
-    public ResponseEntity login(@RequestBody UserDTO userDto) {
-        String url = "http://localhost:9090/realms/wishlist-realm-dev/protocol/openid-connect/token";
+    public ResponseEntity login(@RequestBody LoginUserDTO userDto) {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Content-Type", "application/x-www-form-urlencoded");
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
-        body.add("client_id", keycloakConfig.getClientId());
         body.add("grant_type", keycloakConfig.getGrantType());
         body.add("username", userDto.nickname().replace(" ", "_"));
         body.add("password", String.valueOf(userDto.id()));
-        body.add("client_secret", keycloakConfig.getClientSecret());
+        return getResponseEntity(keycloakConfig.getTokenUrl(), headers, body);
+    }
 
+    @PostMapping("logout")
+    public ResponseEntity logout(@RequestBody String refreshToken) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Content-Type", "application/x-www-form-urlencoded");
+        MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
+        body.add("refresh_token", refreshToken);
+        return getResponseEntity(keycloakConfig.getLogoutUrl(), headers, body);
+    }
+
+    private ResponseEntity getResponseEntity(String url, HttpHeaders headers, MultiValueMap<String, String> body) {
+        body.add("client_id", keycloakConfig.getClientId());
+        body.add("client_secret", keycloakConfig.getClientSecret());
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(body, headers);
 
         RestTemplate restTemplate = new RestTemplate();

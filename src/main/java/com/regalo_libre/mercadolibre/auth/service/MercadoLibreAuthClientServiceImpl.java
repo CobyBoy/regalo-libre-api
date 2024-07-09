@@ -2,6 +2,7 @@ package com.regalo_libre.mercadolibre.auth.service;
 
 import com.regalo_libre.mercadolibre.auth.IMercadoLibreAuthClientService;
 import com.regalo_libre.mercadolibre.auth.MercadoLibreConfig;
+import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUserDTO;
 import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreAccessTokenRepository;
 import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreUserRepository;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
@@ -29,7 +30,7 @@ public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClien
     private final ProfileRepository profileRepository;
     private final MercadoLibreConfig mercadoLibreConfig;
 
-    public MercadoLibreUser getMercadoLibreUserData(String authorizationCode) {
+    public MercadoLibreUserDTO getMercadoLibreUserData(String authorizationCode) {
         WebClient webClient = WebClient.create();
         MercadoLibreAccessToken accessToken = getAccessToken(webClient, authorizationCode);
         return saveAccessToken(accessToken);
@@ -51,7 +52,7 @@ public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClien
                 .block();
     }
 
-    private MercadoLibreUser saveAccessToken(MercadoLibreAccessToken accessToken) {
+    private MercadoLibreUserDTO saveAccessToken(MercadoLibreAccessToken accessToken) {
         Optional<MercadoLibreUser> optionalUser = mercadoLibreUserRepository.findById(accessToken.getUserId());
         MercadoLibreUser user;
         if (optionalUser.isEmpty()) {
@@ -79,8 +80,7 @@ public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClien
                             mercadoLibreAccessToken.setAccessToken(accessToken.getAccessToken())
             );
         }
-        mercadoLibreUserRepository.save(user);
-        return user;
+        return MercadoLibreUserDTO.builder().build().toDto(mercadoLibreUserRepository.save(user));
     }
 
     private MercadoLibreUser getUserInfoFromApi(WebClient webClient) {

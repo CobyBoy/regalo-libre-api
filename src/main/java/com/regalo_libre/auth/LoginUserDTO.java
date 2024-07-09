@@ -1,6 +1,6 @@
 package com.regalo_libre.auth;
 
-public record UserDTO(
+public record LoginUserDTO(
         String nickname,
         Long id
 ) {

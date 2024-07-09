@@ -13,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/lists")
-@CrossOrigin(origins = "https://localhost:4200")
 @RequiredArgsConstructor
 public class WishlistController {
     private final WishlistServiceImpl wishListService;
@@ -57,8 +56,18 @@ public class WishlistController {
     }
 
     @GetMapping("/public/{id}")
-    public ResponseEntity<WishListDto> getPublicWishlistsByUserId(@PathVariable String id) {
-
-        return ResponseEntity.ok(wishListService.getPublicWishlistsByUserId(id));
+    public ResponseEntity<WishListDto> getPublicWishlistByUserId(@PathVariable String id) {
+        return ResponseEntity.ok(wishListService.getPublicWishlistByUserId(id));
     }
+
+    @GetMapping("/public")
+    public ResponseEntity getAllPublicWishlistsByUserId(@RequestParam Long userId) {
+        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByUserId(userId));
+    }
+
+    @GetMapping("/user/{nickname}")
+    public ResponseEntity getAllPublicWishlistsByNickname(@PathVariable String nickname) {
+        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByNickname(nickname));
+    }
+
 }
