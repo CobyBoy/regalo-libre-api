@@ -29,7 +29,7 @@ public class FavoritesServiceImpl implements IFavoritesService {
     private final IMercadoLibreAuthClientService authClientService;
     private final MercadoLibreUserRepository userRepository;
 
-    public List<BookmarkedProduct> getAllFavorites(Long userId) {
+    public List<FavoritesDTO> getAllFavorites(Long userId) {
         MercadoLibreAccessToken token = accessTokenRepository.findById(userId).orElseThrow(() -> new TokenNotFoundException("Sesion no encontrada"));
         MercadoLibreUser user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
         // Get bookmarks from meli for this user
@@ -104,7 +104,10 @@ public class FavoritesServiceImpl implements IFavoritesService {
         var bookmarkWithoutUser = bookmarkRepository.findBookmarkWithoutUser();
         bookmarkRepository.deleteAll(bookmarkWithoutUser);
 
-        return bookmarkRepository.findMercadoLibreProductsByUserId(userId);
+        return bookmarkRepository.findMercadoLibreProductsByUserId(userId)
+                .stream()
+                .map(product -> FavoritesDTO.builder().build().toDto(product))
+                .collect(Collectors.toList());
     }
 
     private List<BookmarkedProduct> getAllBookmarkedProducts(MercadoLibreAccessToken authorizationHeader) {
