@@ -46,6 +46,7 @@ public class WishList {
     @JsonIgnore
     private MercadoLibreUser user;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     @Transient
     private int totalGifts;
 
@@ -62,6 +63,7 @@ public class WishList {
             this.publicId = IdGenerator.generatePublicId();
         }
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = this.createdAt;
     }
 
     @PostLoad
