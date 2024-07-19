@@ -1,14 +1,18 @@
 package com.regalo_libre.config;
 
+import com.regalo_libre.auth.jwt.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -17,25 +21,37 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
+@Slf4j
+
 public class SecurityConfig {
+    private final Environment environment;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+
+
+        log.info("Running on" + environment);
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(http -> {
-                    http.requestMatchers(HttpMethod.POST, "/api/user/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/login/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/token/**").permitAll();
+                    // http.requestMatchers(HttpMethod.GET, "/oauth2/**").permitAll();
+                    /*http.requestMatchers(HttpMethod.POST, "/api/user/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/token/**").permitAll();
+
+                    http.requestMatchers(HttpMethod.GET, "/error/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/lists/user/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/lists/public/**").permitAll();
-                    http.requestMatchers(new RegexRequestMatcher("/api/profile/[^/]+", "GET")).permitAll();
+                    http.requestMatchers(new RegexRequestMatcher("/api/profile/[^/]+", "GET")).permitAll();*/
                     http.anyRequest().authenticated();
                 })
                 .cors((cors) -> cors.configurationSource(corsConfigurationSource()))
-                .oauth2ResourceServer(oauth2ResourceServerCustomizer ->
-                        oauth2ResourceServerCustomizer.jwt(jwtCustomizer -> {
-                        }))
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex -> ex.accessDeniedPage("/api/v1/login"))
                 .build();
     }
 
