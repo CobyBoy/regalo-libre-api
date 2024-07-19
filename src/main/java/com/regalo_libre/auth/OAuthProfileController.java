@@ -17,9 +17,10 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class OAuthProfileController {
     private final OauthPropertiesConfig oauthPropertiesConfig;
+    private final OAuthUserServiceImpl oAuthUserService;
 
     @GetMapping("/api/v1/oauth-profile")
-    public ResponseEntity<OAuthUserInfo> getProfile(@RequestHeader("Authorization") String authorizationHeader) {
+    public ResponseEntity<OAuthUserInfoDTO> getProfile(@RequestHeader("Authorization") String authorizationHeader) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", authorizationHeader);
@@ -37,8 +38,13 @@ public class OAuthProfileController {
             throw e;
         }
 
+
         log.info("Getting user profile {}", response);
 
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(
+                OAuthUserInfoDTO.builder()
+                        .build()
+                        .toDto(oAuthUserService.createOauthUser(response))
+        );
     }
 }
