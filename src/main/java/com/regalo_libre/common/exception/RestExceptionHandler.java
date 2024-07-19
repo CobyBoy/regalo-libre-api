@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.nio.file.AccessDeniedException;
 
@@ -48,6 +49,18 @@ public class RestExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(AccessDeniedException ex) {
         log.error(TOKEN_NOT_FOUND);
+        HttpStatus httpStatus = HttpStatus.FORBIDDEN;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(HttpClientErrorException.class)
+    public ResponseEntity<ApiErrorDto> handleForbiddenException(HttpClientErrorException ex) {
+        log.error(ex.getMessage());
         HttpStatus httpStatus = HttpStatus.FORBIDDEN;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()

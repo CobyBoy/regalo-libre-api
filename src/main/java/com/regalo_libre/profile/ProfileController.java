@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/profile")
+@RequestMapping("api/v1/profile")
 @RequiredArgsConstructor
 public class ProfileController {
     private final ProfileServiceImpl profileService;
