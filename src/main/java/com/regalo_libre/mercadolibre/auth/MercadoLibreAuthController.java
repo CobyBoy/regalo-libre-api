@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/token")
+@RequestMapping("api/tokenold")
 public class MercadoLibreAuthController {
     private final MercadoLibreAuthClientServiceImpl mercadoLibreAuthClientServiceImpl;
 
