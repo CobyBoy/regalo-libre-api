@@ -1,8 +1,8 @@
 package com.regalo_libre.wishlist;
 
+import com.regalo_libre.auth.repository.OAuthUserRepository;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
-import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreUserRepository;
 import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
 import com.regalo_libre.wishlist.exception.GiftAlreadyInWishlistException;
 import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
@@ -25,24 +25,25 @@ import java.util.stream.Collectors;
 public class WishlistServiceImpl implements IWishlistService {
     private final WishlistRepository wishlistRepository;
     private final BookmarkRepository mercadoLibreProductRepo;
-    private final MercadoLibreUserRepository mercadoLibreUserRepository;
+    private final OAuthUserRepository oAuthUserRepository;
 
     public WishListDto createWishlist(WishListCreateRequestDto wishListRequest, Long userId) {
+        var oAuthUser = oAuthUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
         WishList wishList = wishlistRepository.save(
                 WishList.builder()
                         .name(wishListRequest.name())
                         .description(wishListRequest.description())
-                        //.visibility(wishListRequest.visibility())
                         .isPrivate(wishListRequest.isPrivate())
                         .gifts(new ArrayList<>())
-                        .user(mercadoLibreUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado")))
+                        .user(oAuthUser)
                         .build());
 
         return WishListDto.builder().build().toDto(wishList);
     }
 
     public List<WishListDto> getWishListsByUserId(Long userId) {
-        List<WishList> wishLists = wishlistRepository.findAllByUserId(userId);
+        var oAuthUser = oAuthUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+        List<WishList> wishLists = wishlistRepository.findAllByUser(oAuthUser);
         return wishLists.stream()
                 .map(wishList -> WishListDto.builder().build().toDto(wishList))
                 .toList();
@@ -104,7 +105,8 @@ public class WishlistServiceImpl implements IWishlistService {
     }
 
     public List<WishListDto> getAllPublicWishlistsByUserId(Long userId) {
-        return wishlistRepository.findAllByUserIdAndIsPrivateFalse(userId).stream().map(wishList -> WishListDto.builder().build().toDto(wishList)).toList();
+        var oAuthUser = oAuthUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+        return wishlistRepository.findAllByUserAndIsPrivateFalse(oAuthUser).stream().map(wishList -> WishListDto.builder().build().toDto(wishList)).toList();
     }
 
     public List<WishListDto> getAllPublicWishlistsByNickname(String nickname) {

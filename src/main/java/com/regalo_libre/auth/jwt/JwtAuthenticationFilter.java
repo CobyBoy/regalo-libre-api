@@ -35,7 +35,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             } catch (JwkException e) {
                 throw new RuntimeException(e);
             }
-            String userId = jwt.getSubject();
+            var subject = jwt.getSubject().split("\\|");
+            Long userId = Long.parseLong(subject[subject.length - 1]);
 
             UsernamePasswordAuthenticationToken authentication =
                     new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());

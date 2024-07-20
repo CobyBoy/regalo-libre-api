@@ -3,7 +3,6 @@ package com.regalo_libre.mercadolibre.auth.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.profile.Profile;
-import com.regalo_libre.wishlist.model.WishList;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,8 +29,6 @@ public class MercadoLibreUser {
     private String email;
     @Embedded
     private MercadoLibreUserThumbnail thumbnail;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<WishList> wishLists = new ArrayList<>();
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
@@ -48,11 +45,6 @@ public class MercadoLibreUser {
     @OneToOne(mappedBy = "mercadoLibreUser", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private Profile profile;
-
-    public void addWishList(WishList wishList) {
-        wishLists.add(wishList);
-        wishList.setUser(this);
-    }
 
     public void addBookmarkedProduct(BookmarkedProduct product) {
         this.bookmarkedProducts.add(product);

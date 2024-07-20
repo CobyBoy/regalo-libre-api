@@ -14,7 +14,7 @@ public record OAuthUserInfoDTO(
     @Override
     public OAuthUserInfoDTO toDto(OAuthUser entity) {
         return OAuthUserInfoDTO.builder()
-                .id(entity.getId())
+                .id(entity.getOAuthUserId())
                 .name(entity.getName())
                 .nickname(entity.getNickname())
                 .picture(entity.getPicture())
