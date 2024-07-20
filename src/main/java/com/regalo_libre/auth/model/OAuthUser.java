@@ -16,8 +16,8 @@ import lombok.NoArgsConstructor;
 public class OAuthUser {
     @Id
     @JsonProperty("sub")
-    @Column(name = "authuser_id")
-    private Long oAuthUserId;
+    @Column(name = "oauth_user_id")
+    private Long id;
     private String name;
     private String nickname;
     private String picture;
@@ -29,7 +29,7 @@ public class OAuthUser {
             try {
                 String[] parts = fullString.split("\\|");
                 if (parts.length > 0) {
-                    this.oAuthUserId = Long.parseLong(parts[parts.length - 1]);
+                    this.id = Long.parseLong(parts[parts.length - 1]);
                 } else {
                     throw new IllegalArgumentException("String does not contain expected format");
                 }
