@@ -41,9 +41,8 @@ public class WishlistServiceImpl implements IWishlistService {
         return WishListDto.builder().build().toDto(wishList);
     }
 
-    public List<WishListDto> getWishListsByUserId(Long userId) {
-        var oAuthUser = oAuthUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-        List<WishList> wishLists = wishlistRepository.findAllByUser(oAuthUser);
+    public List<WishListDto> getAllWishListsByUserId(Long userId) {
+        List<WishList> wishLists = wishlistRepository.findAllByUserId(userId);
         return wishLists.stream()
                 .map(wishList -> WishListDto.builder().build().toDto(wishList))
                 .toList();
@@ -105,8 +104,7 @@ public class WishlistServiceImpl implements IWishlistService {
     }
 
     public List<WishListDto> getAllPublicWishlistsByUserId(Long userId) {
-        var oAuthUser = oAuthUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-        return wishlistRepository.findAllByUserAndIsPrivateFalse(oAuthUser).stream().map(wishList -> WishListDto.builder().build().toDto(wishList)).toList();
+        return wishlistRepository.findAllByUserIdAndIsPrivateFalse(userId).stream().map(wishList -> WishListDto.builder().build().toDto(wishList)).toList();
     }
 
     public List<WishListDto> getAllPublicWishlistsByNickname(String nickname) {

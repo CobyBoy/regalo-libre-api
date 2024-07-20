@@ -9,7 +9,7 @@ import java.util.List;
 public interface IWishlistService {
     WishListDto createWishlist(WishListCreateRequestDto wishListRequest, Long userId);
 
-    List<WishListDto> getWishListsByUserId(Long userId);
+    List<WishListDto> getAllWishListsByUserId(Long userId);
 
     WishListDto findWishlistById(Long id);
 

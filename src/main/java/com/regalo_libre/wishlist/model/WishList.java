@@ -43,7 +43,7 @@ public class WishList {
     private List<BookmarkedProduct> gifts = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "oauth_user_id", nullable = false, referencedColumnName = "authuser_id")
+    @JoinColumn(name = "oauth_user_id", nullable = false, referencedColumnName = "oauth_user_id")
     private OAuthUser user;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
