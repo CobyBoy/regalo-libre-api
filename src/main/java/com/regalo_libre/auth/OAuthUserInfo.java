@@ -1,7 +1,9 @@
 package com.regalo_libre.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.ToString;
 
+@ToString
 public class OAuthUserInfo {
     @JsonProperty("name")
     String name;
