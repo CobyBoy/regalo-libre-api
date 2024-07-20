@@ -30,8 +30,8 @@ public class MercadoLibreUser {
     private String email;
     @Embedded
     private MercadoLibreUserThumbnail thumbnail;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<WishList> wishLists = new ArrayList<>();
+    /*@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<WishList> wishLists = new ArrayList<>();*/
 
     @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
@@ -49,10 +49,10 @@ public class MercadoLibreUser {
     @PrimaryKeyJoinColumn
     private Profile profile;
 
-    public void addWishList(WishList wishList) {
+    /*public void addWishList(WishList wishList) {
         wishLists.add(wishList);
         wishList.setUser(this);
-    }
+    }*/
 
     public void addBookmarkedProduct(BookmarkedProduct product) {
         this.bookmarkedProducts.add(product);
