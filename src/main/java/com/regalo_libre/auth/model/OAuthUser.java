@@ -1,9 +1,7 @@
 package com.regalo_libre.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +16,8 @@ import lombok.NoArgsConstructor;
 public class OAuthUser {
     @Id
     @JsonProperty("sub")
-    private Long id;
+    @Column(name = "authuser_id")
+    private Long oAuthUserId;
     private String name;
     private String nickname;
     private String picture;
@@ -30,7 +29,7 @@ public class OAuthUser {
             try {
                 String[] parts = fullString.split("\\|");
                 if (parts.length > 0) {
-                    this.id = Long.parseLong(parts[parts.length - 1]);
+                    this.oAuthUserId = Long.parseLong(parts[parts.length - 1]);
                 } else {
                     throw new IllegalArgumentException("String does not contain expected format");
                 }
