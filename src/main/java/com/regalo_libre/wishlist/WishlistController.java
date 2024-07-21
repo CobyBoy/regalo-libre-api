@@ -16,7 +16,7 @@ import java.util.List;
 @RequestMapping("/api/v1/lists")
 @RequiredArgsConstructor
 public class WishlistController {
-    private final WishlistServiceImpl wishListService;
+    private final WishlistService wishListService;
 
     @GetMapping()
     public ResponseEntity<List<WishListDto>> getWishLists(@AuthenticationPrincipal Long userId) {
@@ -25,7 +25,7 @@ public class WishlistController {
 
     @GetMapping("/details/{id}")
     public ResponseEntity<WishListDto> getWishlistById(@PathVariable Long id) {
-        return ResponseEntity.ok(wishListService.findWishlistById(id));
+        return ResponseEntity.ok(wishListService.getWishlistById(id));
     }
 
     @PostMapping()
@@ -56,19 +56,19 @@ public class WishlistController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/public")
+    public ResponseEntity<List<WishListDto>> getAllPublicWishlistsByUserId(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByUserId(userId));
+    }
+
     @GetMapping("/public/{id}")
     public ResponseEntity<WishListDto> getPublicWishlistByUserId(@PathVariable String id) {
         return ResponseEntity.ok(wishListService.getPublicWishlistByUserId(id));
     }
 
-    @GetMapping("/public")
-    public ResponseEntity getAllPublicWishlistsByUserId(@RequestParam Long userId) {
-        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByUserId(userId));
-    }
-
     @GetMapping("/user/{nickname}")
-    public ResponseEntity getAllPublicWishlistsByNickname(@PathVariable String nickname) {
-        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByNickname(nickname));
+    public ResponseEntity<List<WishListDto>> getAllPublicWishlistsByNickname(@PathVariable String nickname) {
+        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByUserNickname(nickname));
     }
 
 }
