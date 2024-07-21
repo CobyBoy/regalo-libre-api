@@ -1,9 +1,8 @@
 package com.regalo_libre.wishlist;
 
-import com.regalo_libre.auth.repository.OAuthUserRepository;
+import com.regalo_libre.auth.OAuthUserService;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
-import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
 import com.regalo_libre.wishlist.exception.GiftAlreadyInWishlistException;
 import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
 import com.regalo_libre.wishlist.exception.WishlistNotFoundException;
@@ -22,13 +21,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class WishlistServiceImpl implements IWishlistService {
+public class WishlistServiceImpl implements WishlistService {
     private final WishlistRepository wishlistRepository;
     private final BookmarkRepository mercadoLibreProductRepo;
-    private final OAuthUserRepository oAuthUserRepository;
+    private final OAuthUserService oAuthUserService;
 
     public WishListDto createWishlist(WishListCreateRequestDto wishListRequest, Long userId) {
-        var oAuthUser = oAuthUserRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+        var oAuthUser = oAuthUserService.getOAuthUserById(userId);
         WishList wishList = wishlistRepository.save(
                 WishList.builder()
                         .name(wishListRequest.name())
@@ -48,7 +47,7 @@ public class WishlistServiceImpl implements IWishlistService {
                 .toList();
     }
 
-    public WishListDto findWishlistById(Long id) {
+    public WishListDto getWishlistById(Long id) {
         WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException("La lista no existe"));
         return WishListDto.builder().build().toDto(wishList);
     }
@@ -107,7 +106,7 @@ public class WishlistServiceImpl implements IWishlistService {
         return wishlistRepository.findAllByUserIdAndIsPrivateFalse(userId).stream().map(wishList -> WishListDto.builder().build().toDto(wishList)).toList();
     }
 
-    public List<WishListDto> getAllPublicWishlistsByNickname(String nickname) {
-        return wishlistRepository.findAllByUserNicknameAndIsPrivateFalse(nickname).stream().map(wishList -> WishListDto.builder().build().toDto(wishList)).toList();
+    public List<WishListDto> getAllPublicWishlistsByUserNickname(String nickname) {
+        return wishlistRepository.findPublicWishlistForPublicProfile(nickname).stream().map(wishList -> WishListDto.builder().build().toDto(wishList)).toList();
     }
 }
