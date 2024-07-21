@@ -42,11 +42,11 @@ public class SecurityConfig {
                     // http.requestMatchers(HttpMethod.GET, "/oauth2/**").permitAll();
                     /*http.requestMatchers(HttpMethod.POST, "/api/user/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/token/**").permitAll();
-
                     http.requestMatchers(HttpMethod.GET, "/error/**").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/lists/user/**").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/lists/public/**").permitAll();
                     http.requestMatchers(new RegexRequestMatcher("/api/profile/[^/]+", "GET")).permitAll();*/
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/lists/public/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/lists/user/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/profile/public/**").permitAll();
                     http.anyRequest().authenticated();
                 })
                 .cors((cors) -> cors.configurationSource(corsConfigurationSource()))
