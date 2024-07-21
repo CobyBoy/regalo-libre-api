@@ -2,19 +2,23 @@ package com.regalo_libre.auth;
 
 import com.regalo_libre.auth.model.OAuthUser;
 import com.regalo_libre.auth.repository.OAuthUserRepository;
+import com.regalo_libre.profile.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class OAuthUserServiceImpl {
+public class OAuthUserServiceImpl implements OAuthUserService {
     private final OAuthUserRepository repository;
     private final OauthPropertiesConfig oauthPropertiesConfig;
 
@@ -24,9 +28,9 @@ public class OAuthUserServiceImpl {
         headers.set("Authorization", authorizationHeader);
         HttpEntity<?> entity = new HttpEntity<>(headers);
 
-        OAuthUserInfo response;
+        OAuthUserInfo userInfo;
         try {
-            response = restTemplate.exchange(
+            userInfo = restTemplate.exchange(
                     oauthPropertiesConfig.getUserInfoUrl(),
                     HttpMethod.GET,
                     entity,
@@ -35,18 +39,44 @@ public class OAuthUserServiceImpl {
         } catch (HttpClientErrorException e) {
             throw e;
         }
-        log.info("Getting user profile {}", response);
-        return response;
+        log.info("Getting user profile {}", userInfo);
+        return userInfo;
     }
 
-    public OAuthUser createOauthUser(OAuthUserInfo response) {
-        return repository.save(OAuthUser.builder()
-                .fullStringId(response.sub)
-                .name(response.name)
-                .nickname(response.nickname)
-                .picture(response.picture)
-                .updatedAt(response.updatedAt)
-                .build());
+    public OAuthUser createOauthUser(OAuthUserInfo userInfo) {
+        OAuthUser user = buildUser(userInfo);
+        Optional<OAuthUser> userFound = repository.findById(user.getId());
+        if (userFound.isEmpty()) {
+            user.setProfile(buildProfile(userInfo));
+            return repository.save(user);
+        }
+        return userFound.get();
+    }
+
+    private OAuthUser buildUser(OAuthUserInfo userInfo) {
+        return OAuthUser.builder()
+                .fullStringId(userInfo.sub)
+                .sub(userInfo.sub)
+                .name(userInfo.name)
+                .nickname(userInfo.nickname)
+                .pictureUrl(userInfo.pictureUrl)
+                .updatedAt(userInfo.updatedAt)
+                .build();
+    }
+
+    private Profile buildProfile(OAuthUserInfo userInfo) {
+        return Profile.builder()
+                .biography("biography")
+                .isPrivate(true)
+                .meliNickname(userInfo.nickname)
+                .appNickname(userInfo.nickname)
+                .pictureUrl(userInfo.pictureUrl)
+                .name(userInfo.name)
+                .build();
+    }
+
+    public OAuthUser getOAuthUserById(Long userId) {
+        return repository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
     }
 
 }

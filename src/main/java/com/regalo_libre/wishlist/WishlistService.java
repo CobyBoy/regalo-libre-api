@@ -6,16 +6,24 @@ import com.regalo_libre.wishlist.dto.WishListDto;
 
 import java.util.List;
 
-public interface IWishlistService {
+public interface WishlistService {
     WishListDto createWishlist(WishListCreateRequestDto wishListRequest, Long userId);
 
     List<WishListDto> getAllWishListsByUserId(Long userId);
 
-    WishListDto findWishlistById(Long id);
-
-    void deleteWishlistById(Long id);
+    WishListDto getWishlistById(Long id);
 
     WishListDto updateWishlistById(Long id, EditListDTO request);
 
+    void deleteWishlistById(Long id);
+
+    void addProductsToWishlist(Long id, List<String> productsIds);
+
+    void removeProductsFromWishList(Long id, List<String> productsIds);
+
     WishListDto getPublicWishlistByUserId(String id);
+
+    List<WishListDto> getAllPublicWishlistsByUserId(Long userId);
+
+    List<WishListDto> getAllPublicWishlistsByUserNickname(String nickname);
 }

@@ -10,7 +10,7 @@ public class OAuthUserInfo {
     @JsonProperty("nickname")
     String nickname;
     @JsonProperty("picture")
-    String picture;
+    String pictureUrl;
     @JsonProperty("sub")
     String sub;
     @JsonProperty("updated_at")

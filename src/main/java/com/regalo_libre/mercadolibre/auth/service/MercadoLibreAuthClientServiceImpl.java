@@ -60,18 +60,6 @@ public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClien
             user = getUserInfoFromApi(webClient);
             user.setAccessToken(accessToken);
             accessToken.setMercadoLibreUser(user);
-            var profile = Profile.builder().mercadoLibreUser(user)
-                    .meliNickname(user.getNickname())
-                    .appNickname(user.getNickname())
-                    .isPrivate(true)
-                    .biography("Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum")
-                    .firstName(user.getFirstName())
-                    .lastName(user.getLastName())
-                    .pictureUrl(user.getThumbnail().getPictureUrl())
-                    .build();
-            user.setProfile(profile);
-            profile.setMercadoLibreUser(user);
-            profileRepository.save(profile);
         } else {
             user = optionalUser.get();
             Optional<MercadoLibreAccessToken> token = mercadoLibreAccessTokenRepository.findById(accessToken.getUserId());

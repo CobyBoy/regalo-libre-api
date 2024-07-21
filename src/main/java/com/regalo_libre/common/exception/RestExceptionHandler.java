@@ -8,6 +8,7 @@ import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
@@ -97,6 +98,18 @@ public class RestExceptionHandler {
     @ExceptionHandler(ProfileNotPublicException.class)
     public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(ProfileNotPublicException ex) {
         log.error(TOKEN_NOT_FOUND);
+        HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(UsernameNotFoundException.class)
+    public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(UsernameNotFoundException ex) {
+        log.error("User name not found");
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()

@@ -1,13 +1,12 @@
 package com.regalo_libre.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.regalo_libre.profile.Profile;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
+@Setter
 @Builder
 @Entity
 @NoArgsConstructor
@@ -18,11 +17,16 @@ public class OAuthUser {
     @JsonProperty("sub")
     @Column(name = "oauth_user_id")
     private Long id;
+    @JsonProperty("sub")
+    private String sub;
     private String name;
     private String nickname;
-    private String picture;
+    private String pictureUrl;
     @JsonProperty("updated_at")
     private String updatedAt;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id")
+    private Profile profile;
 
     public static class OAuthUserBuilder {
         public OAuthUserBuilder fullStringId(String fullString) {
