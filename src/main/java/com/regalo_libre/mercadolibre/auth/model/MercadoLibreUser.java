@@ -2,7 +2,6 @@ package com.regalo_libre.mercadolibre.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
-import com.regalo_libre.profile.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -41,10 +40,6 @@ public class MercadoLibreUser {
     @OneToOne(mappedBy = "mercadoLibreUser", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
     private MercadoLibreAccessToken accessToken;
-
-    @OneToOne(mappedBy = "mercadoLibreUser", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private Profile profile;
 
     public void addBookmarkedProduct(BookmarkedProduct product) {
         this.bookmarkedProducts.add(product);
