@@ -17,7 +17,7 @@ public record OAuthUserInfoDTO(
                 .id(entity.getId())
                 .name(entity.getName())
                 .nickname(entity.getNickname())
-                .picture(entity.getPicture())
+                .picture(entity.getPictureUrl())
                 .build();
     }
 }

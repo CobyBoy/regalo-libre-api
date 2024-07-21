@@ -13,7 +13,7 @@ public record EditProfileDTO(
     @Override
     public EditProfileDTO toDto(Profile entity) {
         return EditProfileDTO.builder()
-                .id(entity.getUserId())
+                .id(entity.getProfileId())
                 .biography(entity.getBiography())
                 .appNickname(entity.getAppNickname())
                 .isPrivate(entity.getIsPrivate())
