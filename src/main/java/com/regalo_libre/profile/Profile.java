@@ -1,7 +1,5 @@
 package com.regalo_libre.profile;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -15,16 +13,10 @@ import lombok.*;
 @Table(name = "profile", schema = "wishlist")
 public class Profile {
     @Id
-    @Column(name = "user_id")
-    private Long userId;
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
-    private MercadoLibreUser mercadoLibreUser;
-    private String firstName;
-    private String lastName;
-    @Column(name = "meli_nickname")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long profileId;
+    private String name;
+    @Column(name = "meli_nickname", updatable = false)
     private String meliNickname;
     @Column(unique = true, nullable = false, name = "app_nickname")
     private String appNickname;
