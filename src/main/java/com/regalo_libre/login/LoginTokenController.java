@@ -1,4 +1,4 @@
-package com.regalo_libre.auth;
+package com.regalo_libre.login;
 
 import com.regalo_libre.auth.jwt.OAuthAccessToken;
 import lombok.RequiredArgsConstructor;
