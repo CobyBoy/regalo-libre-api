@@ -1,10 +1,12 @@
 package com.regalo_libre.auth;
 
+import com.regalo_libre.auth.config.OauthPropertiesConfig;
 import com.regalo_libre.auth.model.OAuthUser;
 import com.regalo_libre.auth.repository.OAuthUserRepository;
 import com.regalo_libre.profile.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,6 +23,7 @@ import java.util.Optional;
 public class OAuthUserServiceImpl implements OAuthUserService {
     private final OAuthUserRepository repository;
     private final OauthPropertiesConfig oauthPropertiesConfig;
+    private final ApplicationEventPublisher eventPublisher;
 
     public OAuthUserInfo getOauthUserInfo(String authorizationHeader) {
         RestTemplate restTemplate = new RestTemplate();
@@ -48,6 +51,7 @@ public class OAuthUserServiceImpl implements OAuthUserService {
         Optional<OAuthUser> userFound = repository.findById(user.getId());
         if (userFound.isEmpty()) {
             user.setProfile(buildProfile(userInfo));
+            eventPublisher.publishEvent(new OAuthUserCreatedEvent(this, user));
             return repository.save(user);
         }
         return userFound.get();

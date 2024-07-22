@@ -1,6 +1,6 @@
 package com.regalo_libre.wishlist.dto;
 
-import com.regalo_libre.auth.OAuthPublicUserDTO;
+import com.regalo_libre.auth.response.OAuthPublicUserDTO;
 import com.regalo_libre.utils.DtoConverter;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.wishlist.model.WishList;
