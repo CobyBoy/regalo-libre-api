@@ -1,4 +1,4 @@
-package com.regalo_libre.auth;
+package com.regalo_libre.auth.config;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,4 +19,7 @@ public class OauthPropertiesConfig {
     private String redirectLoginUri;
     private String loginTokenUrl;
     private String userInfoUrl;
+    private String apiManagementAudience;
+    private String apiManagementTokenUrl;
+    private String apiManagementUsersUrl;
 }

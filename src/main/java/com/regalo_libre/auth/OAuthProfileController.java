@@ -1,5 +1,6 @@
 package com.regalo_libre.auth;
 
+import com.regalo_libre.auth.response.OAuthUserInfoDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
