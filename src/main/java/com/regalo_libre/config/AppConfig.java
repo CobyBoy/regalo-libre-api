@@ -1,4 +1,4 @@
-package com.regalo_libre.auth;
+package com.regalo_libre.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
