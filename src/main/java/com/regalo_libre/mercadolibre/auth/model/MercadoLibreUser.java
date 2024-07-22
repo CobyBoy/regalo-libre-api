@@ -37,9 +37,9 @@ public class MercadoLibreUser {
             inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "id"))
     private List<BookmarkedProduct> bookmarkedProducts = new ArrayList<>();
 
-    @OneToOne(mappedBy = "mercadoLibreUser", cascade = CascadeType.ALL)
+   /* @OneToOne(mappedBy = "mercadoLibreUser", cascade = CascadeType.ALL)
     @PrimaryKeyJoinColumn
-    private MercadoLibreAccessToken accessToken;
+    private MercadoLibreAccessToken accessToken;*/
 
     public void addBookmarkedProduct(BookmarkedProduct product) {
         this.bookmarkedProducts.add(product);

@@ -13,7 +13,8 @@ public class MercadoLibreAuthController {
     private final MercadoLibreAuthClientServiceImpl mercadoLibreAuthClientServiceImpl;
 
     @GetMapping
-    public ResponseEntity<MercadoLibreUserDTO> getMercadoLibreUserData(@RequestParam(name = "authorizationCode") String authorizationCode) {
-        return ResponseEntity.ok(mercadoLibreAuthClientServiceImpl.getMercadoLibreUserData(authorizationCode));
+    public ResponseEntity getMercadoLibreUserData(@RequestParam(name = "authorizationCode") String authorizationCode) {
+        /*return ResponseEntity.ok(mercadoLibreAuthClientServiceImpl.getMercadoLibreUserData(authorizationCode));*/
+        return ResponseEntity.ok("");
     }
 }

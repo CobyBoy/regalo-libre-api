@@ -2,12 +2,10 @@ package com.regalo_libre.mercadolibre.auth.service;
 
 import com.regalo_libre.mercadolibre.auth.IMercadoLibreAuthClientService;
 import com.regalo_libre.mercadolibre.auth.MercadoLibreConfig;
-import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUserDTO;
 import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreAccessTokenRepository;
 import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreUserRepository;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
-import com.regalo_libre.profile.Profile;
 import com.regalo_libre.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,8 +16,6 @@ import org.springframework.web.client.RestClientException;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Optional;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -29,12 +25,6 @@ public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClien
     private final MercadoLibreUserRepository mercadoLibreUserRepository;
     private final ProfileRepository profileRepository;
     private final MercadoLibreConfig mercadoLibreConfig;
-
-    public MercadoLibreUserDTO getMercadoLibreUserData(String authorizationCode) {
-        WebClient webClient = WebClient.create();
-        MercadoLibreAccessToken accessToken = getAccessToken(webClient, authorizationCode);
-        return saveAccessToken(accessToken);
-    }
 
     private MercadoLibreAccessToken getAccessToken(WebClient webClient, String authorizationCode) {
         return webClient.post()
@@ -52,7 +42,7 @@ public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClien
                 .block();
     }
 
-    private MercadoLibreUserDTO saveAccessToken(MercadoLibreAccessToken accessToken) {
+/*    private MercadoLibreUserDTO saveAccessToken(MercadoLibreAccessToken accessToken) {
         Optional<MercadoLibreUser> optionalUser = mercadoLibreUserRepository.findById(accessToken.getUserId());
         MercadoLibreUser user;
         if (optionalUser.isEmpty()) {
@@ -69,7 +59,7 @@ public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClien
             );
         }
         return MercadoLibreUserDTO.builder().build().toDto(mercadoLibreUserRepository.save(user));
-    }
+    }*/
 
     private MercadoLibreUser getUserInfoFromApi(WebClient webClient) {
         String userUrl = "/users/me";
