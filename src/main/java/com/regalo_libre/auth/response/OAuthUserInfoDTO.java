@@ -1,4 +1,4 @@
-package com.regalo_libre.auth;
+package com.regalo_libre.auth.response;
 
 import com.regalo_libre.auth.model.OAuthUser;
 import com.regalo_libre.utils.DtoConverter;
