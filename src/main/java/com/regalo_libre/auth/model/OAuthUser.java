@@ -1,9 +1,13 @@
 package com.regalo_libre.auth.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.profile.Profile;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -28,6 +32,14 @@ public class OAuthUser {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_bookmark",
+            schema = "meli",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "oauth_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "id"))
+    private List<BookmarkedProduct> bookmarkedProducts = new ArrayList<>();
+
     public static class OAuthUserBuilder {
         public OAuthUserBuilder fullStringId(String fullString) {
             try {
@@ -42,5 +54,9 @@ public class OAuthUser {
             }
             return this;
         }
+    }
+
+    public void addBookmarkedProduct(BookmarkedProduct product) {
+        this.bookmarkedProducts.add(product);
     }
 }

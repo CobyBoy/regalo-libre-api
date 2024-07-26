@@ -8,4 +8,8 @@ public interface OAuthUserService {
     OAuthUser getOAuthUserById(Long userId);
 
     OAuthUser createOauthUser(OAuthUserInfo response);
+
+    OAuthUser findUserById(Long userId);
+
+    void saveOAuthUser(OAuthUser user);
 }

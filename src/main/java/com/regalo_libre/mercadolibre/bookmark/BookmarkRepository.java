@@ -12,7 +12,10 @@ import java.util.List;
 public interface BookmarkRepository extends JpaRepository<BookmarkedProduct, Long> {
     List<BookmarkedProduct> findAllByIdIn(Collection<String> id);
 
-    @Query("SELECT p FROM MercadoLibreUser u JOIN u.bookmarkedProducts p WHERE u.id = :userId ORDER BY p.bookmarkedDate DESC")
+   /* @Query("SELECT p FROM OAuthUser u JOIN u.bookmarkedProducts p WHERE u.id = :userId ORDER BY p.bookmarkedDate DESC")
+    List<BookmarkedProduct> findMercadoLibreProductsByUserId(@Param("userId") Long userId);*/
+
+    @Query("SELECT p FROM OAuthUser u JOIN u.bookmarkedProducts p WHERE u.id = :userId ORDER BY p.bookmarkedDate DESC")
     List<BookmarkedProduct> findMercadoLibreProductsByUserId(@Param("userId") Long userId);
 
     @Query("SELECT B FROM BookmarkedProduct B WHERE B.users is EMPTY")

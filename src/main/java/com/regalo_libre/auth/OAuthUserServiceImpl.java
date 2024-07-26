@@ -3,6 +3,7 @@ package com.regalo_libre.auth;
 import com.regalo_libre.auth.config.OauthPropertiesConfig;
 import com.regalo_libre.auth.model.OAuthUser;
 import com.regalo_libre.auth.repository.OAuthUserRepository;
+import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
 import com.regalo_libre.profile.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,4 +84,11 @@ public class OAuthUserServiceImpl implements OAuthUserService {
         return repository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
     }
 
+    public OAuthUser findUserById(Long userId) {
+        return repository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+    }
+
+    public void saveOAuthUser(OAuthUser user) {
+        repository.save(user);
+    }
 }

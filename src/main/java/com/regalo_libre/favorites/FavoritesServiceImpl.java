@@ -1,16 +1,12 @@
 package com.regalo_libre.favorites;
 
+import com.regalo_libre.auth.OAuthUserService;
 import com.regalo_libre.mercadolibre.auth.*;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
-import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
-import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreAccessTokenRepository;
-import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreUserRepository;
 import com.regalo_libre.mercadolibre.bookmark.Bookmark;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkItem;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
-import com.regalo_libre.mercadolibre.auth.exception.TokenNotFoundException;
-import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -25,13 +21,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FavoritesServiceImpl implements IFavoritesService {
     private final BookmarkRepository bookmarkRepository;
-    private final MercadoLibreAccessTokenRepository accessTokenRepository;
     private final IMercadoLibreAuthClientService authClientService;
-    private final MercadoLibreUserRepository userRepository;
+    private final MercadoLibreAccessTokenService mercadoLibreAccessTokenService;
+    private final OAuthUserService oAuthUserService;
 
     public List<FavoritesDTO> getAllFavorites(Long userId) {
-        MercadoLibreAccessToken token = accessTokenRepository.findById(userId).orElseThrow(() -> new TokenNotFoundException("Sesion no encontrada"));
-        MercadoLibreUser user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
+        MercadoLibreAccessToken token = mercadoLibreAccessTokenService.getMercadiLibreAccessToken(userId);
+        var user = oAuthUserService.findUserById(userId);
         // Get bookmarks from meli for this user
         List<BookmarkedProduct> userApiBookmarks = getAllBookmarkedProducts(token);
         // Get all from bookmark table, not only from the user
@@ -92,14 +88,14 @@ public class FavoritesServiceImpl implements IFavoritesService {
         }
         if (!bookmarksToRemoveForThisUser.isEmpty()) {
             user.getBookmarkedProducts().removeAll(bookmarksToRemoveForThisUser);
-            userRepository.save(user);
+            oAuthUserService.saveOAuthUser(user);
         }
 
         if (!productsInCommon.isEmpty()) {
             for (BookmarkedProduct bookmarkedProduct : productsInCommon) {
                 user.getBookmarkedProducts().add(bookmarkedProduct);
             }
-            userRepository.save(user);
+            oAuthUserService.saveOAuthUser(user);
         }
         var bookmarkWithoutUser = bookmarkRepository.findBookmarkWithoutUser();
         bookmarkRepository.deleteAll(bookmarkWithoutUser);

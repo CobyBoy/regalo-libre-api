@@ -27,7 +27,7 @@ public record WishListDto(
 
         public WishListDto toDto(WishList wishList) {
                 return WishListDto.builder()
-                        .id(wishList.getId())
+                        .id(wishList.getWishlistId())
                         .createdAt(wishList.getCreatedAt())
                         .gifts(wishList.getGifts())
                         .description(wishList.getDescription())
