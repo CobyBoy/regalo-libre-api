@@ -26,22 +26,18 @@ public class MercadoLibreUser {
     @JsonProperty("last_name")
     private String lastName;
     private String email;
-    @Embedded
-    private MercadoLibreUserThumbnail thumbnail;
+    /*@Embedded
+    private MercadoLibreUserThumbnail thumbnail;*/
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    /*@ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_bookmark",
             schema = "meli",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "id"))
-    private List<BookmarkedProduct> bookmarkedProducts = new ArrayList<>();
+    private List<BookmarkedProduct> bookmarkedProducts = new ArrayList<>();*/
 
-   /* @OneToOne(mappedBy = "mercadoLibreUser", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
-    private MercadoLibreAccessToken accessToken;*/
-
-    public void addBookmarkedProduct(BookmarkedProduct product) {
+    /*public void addBookmarkedProduct(BookmarkedProduct product) {
         this.bookmarkedProducts.add(product);
-    }
+    }*/
 }

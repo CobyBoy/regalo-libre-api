@@ -2,6 +2,7 @@ package com.regalo_libre.favorites;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -13,7 +14,7 @@ public class FavoritesController {
     private final IFavoritesService favoritesService;
 
     @GetMapping
-    public ResponseEntity<List<FavoritesDTO>> getFavorites(@RequestParam Long userId) {
+    public ResponseEntity<List<FavoritesDTO>> getFavorites(@AuthenticationPrincipal Long userId) {
         return ResponseEntity.ok(favoritesService.getAllFavorites(userId));
     }
 }

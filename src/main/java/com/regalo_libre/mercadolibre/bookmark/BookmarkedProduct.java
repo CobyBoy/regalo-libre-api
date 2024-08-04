@@ -2,7 +2,7 @@ package com.regalo_libre.mercadolibre.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
+import com.regalo_libre.auth.model.OAuthUser;
 import com.regalo_libre.wishlist.model.WishList;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,7 +35,7 @@ public class BookmarkedProduct {
 
     @ManyToMany(mappedBy = "bookmarkedProducts")
     @JsonIgnore
-    private List<MercadoLibreUser> users;
+    private List<OAuthUser> users;
 
     private Long price;
     private String status;
@@ -45,9 +45,9 @@ public class BookmarkedProduct {
     private String title;
     private String bookmarkedDate;
 
-    public void setUsers(List<MercadoLibreUser> users) {
+    public void setUsers(List<OAuthUser> users) {
         this.users = users;
-        for (MercadoLibreUser user : users) {
+        for (OAuthUser user : users) {
             user.addBookmarkedProduct(this);
         }
     }

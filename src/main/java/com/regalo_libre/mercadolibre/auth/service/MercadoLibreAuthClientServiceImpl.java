@@ -3,7 +3,6 @@ package com.regalo_libre.mercadolibre.auth.service;
 import com.regalo_libre.mercadolibre.auth.IMercadoLibreAuthClientService;
 import com.regalo_libre.mercadolibre.auth.MercadoLibreConfig;
 import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreAccessTokenRepository;
-import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreUserRepository;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import com.regalo_libre.profile.ProfileRepository;
@@ -21,9 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClientService {
     public static final String ERROR_FETCHING = "Error fetching";
-    private final MercadoLibreAccessTokenRepository mercadoLibreAccessTokenRepository;
-    private final MercadoLibreUserRepository mercadoLibreUserRepository;
-    private final ProfileRepository profileRepository;
+
     private final MercadoLibreConfig mercadoLibreConfig;
 
     private MercadoLibreAccessToken getAccessToken(WebClient webClient, String authorizationCode) {

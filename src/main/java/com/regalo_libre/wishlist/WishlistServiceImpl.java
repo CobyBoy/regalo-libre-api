@@ -54,7 +54,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     public void deleteWishlistById(Long id) {
         WishList wishlistToDelete = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException("La lista no existe"));
-        wishlistRepository.deleteById(wishlistToDelete.getId());
+        wishlistRepository.deleteById(wishlistToDelete.getWishlistId());
     }
 
     public WishListDto updateWishlistById(Long id, EditListDTO request) {

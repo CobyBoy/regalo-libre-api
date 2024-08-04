@@ -4,6 +4,7 @@ import com.regalo_libre.auth.model.OAuthUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -13,6 +14,7 @@ public class OAuthManagementApiListener implements ApplicationListener<OAuthUser
     private final OAuthManagementApiService managementApiService;
 
     @Override
+    @Async
     public void onApplicationEvent(OAuthUserCreatedEvent event) {
         log.info("Handling event {}", event.getoAuthUser());
         OAuthUser user = event.getoAuthUser();

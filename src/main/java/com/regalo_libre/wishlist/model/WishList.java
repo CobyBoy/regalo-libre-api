@@ -22,7 +22,7 @@ public class WishList {
     @Id
     @Column(updatable = false, name = "wishlist_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long wishlistId;
     @Column(unique = true, nullable = false, updatable = false, name = "private_id")
     private UUID privateId;
     @Column(unique = true, nullable = false, updatable = false, name = "public_id")
