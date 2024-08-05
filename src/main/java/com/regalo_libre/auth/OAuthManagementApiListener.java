@@ -19,7 +19,7 @@ public class OAuthManagementApiListener implements ApplicationListener<OAuthUser
         log.info("Handling event {}", event.getoAuthUser());
         OAuthUser user = event.getoAuthUser();
         OAuthManagementApiToken token = managementApiService.getManagementApiToken(user.getId());
-        managementApiService.getMercadoLibreUserTokenInfoFromApiManagement(token.getAccessToken(), user.getSub(), user.getId());
+        //managementApiService.getMercadoLibreUserTokenInfoFromApiManagement(token.getAccessToken(), user.getSub(), user.getId());
     }
 
 }

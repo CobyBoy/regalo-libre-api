@@ -22,4 +22,5 @@ public class OauthPropertiesConfig {
     private String apiManagementAudience;
     private String apiManagementTokenUrl;
     private String apiManagementUsersUrl;
+    private String logoutUrl;
 }
