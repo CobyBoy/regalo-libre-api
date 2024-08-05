@@ -24,7 +24,6 @@ import java.util.Optional;
 public class OAuthUserServiceImpl implements OAuthUserService {
     private final OAuthUserRepository repository;
     private final OauthPropertiesConfig oauthPropertiesConfig;
-    private final ApplicationEventPublisher eventPublisher;
 
     public OAuthUserInfo getOauthUserInfo(String authorizationHeader) {
         RestTemplate restTemplate = new RestTemplate();
@@ -41,6 +40,7 @@ public class OAuthUserServiceImpl implements OAuthUserService {
                     OAuthUserInfo.class
             ).getBody();
         } catch (HttpClientErrorException e) {
+            log.error(e.getMessage());
             throw e;
         }
         log.info("Getting user profile {}", userInfo);
@@ -49,10 +49,10 @@ public class OAuthUserServiceImpl implements OAuthUserService {
 
     public OAuthUser createOauthUser(OAuthUserInfo userInfo) {
         OAuthUser user = buildUser(userInfo);
+        log.info("Creating user profile for user {}", user);
         Optional<OAuthUser> userFound = repository.findById(user.getId());
         if (userFound.isEmpty()) {
             user.setProfile(buildProfile(userInfo));
-            eventPublisher.publishEvent(new OAuthUserCreatedEvent(this, user));
             return repository.save(user);
         }
         return userFound.get();

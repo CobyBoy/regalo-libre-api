@@ -37,10 +37,11 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(http -> {
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/meli/code").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/login/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/token/**").permitAll();
                     // http.requestMatchers(HttpMethod.GET, "/oauth2/**").permitAll();
-                    /*http.requestMatchers(HttpMethod.POST, "/api/user/**").permitAll();
+                    /*http.requestMatchers(HttpMethod.POST, "/api/v1/logout").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/token/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/error/**").permitAll();
                     http.requestMatchers(new RegexRequestMatcher("/api/profile/[^/]+", "GET")).permitAll();*/

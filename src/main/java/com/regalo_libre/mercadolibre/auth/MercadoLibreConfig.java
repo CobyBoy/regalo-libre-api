@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 public class MercadoLibreConfig {
     @Value("${meli.client_secret}")
     private String clientSecret;
-    @Value("${meli.api_url}")
-    private String apiUrl;
+    @Value("${meli.token_url}")
+    private String tokenUrl;
     @Value("${meli.client_id}")
     private String clientId;
     @Value("${meli.redirect_uri}")
