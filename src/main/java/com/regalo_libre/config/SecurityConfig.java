@@ -35,7 +35,7 @@ public class SecurityConfig {
         log.info("Running on" + environment);
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
                     http.requestMatchers(HttpMethod.GET, "/api/v1/meli/code").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/login/**").permitAll();

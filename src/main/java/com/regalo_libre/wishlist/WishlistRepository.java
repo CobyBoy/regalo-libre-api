@@ -1,5 +1,6 @@
 package com.regalo_libre.wishlist;
 
+import com.regalo_libre.wishlist.dto.WishListDto;
 import com.regalo_libre.wishlist.model.WishList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -9,7 +10,8 @@ import java.util.List;
 
 @Repository
 public interface WishlistRepository extends JpaRepository<WishList, Long> {
-    List<WishList> findAllByUserId(Long oAuthUserId);
+    @Query("SELECT new com.regalo_libre.wishlist.dto.WishListDto(w.wishlistId, w.description, w.name, w.createdAt, w.updatedAt, w.publicId, w.privateId, w.isPrivate, SIZE(w.gifts), w.user.nickname) from WishList w WHERE w.user.id = :oAuthUserId")
+    List<WishListDto> findAllByUserId(Long oAuthUserId);
 
     WishList findByPublicIdAndIsPrivateFalse(String id);
 

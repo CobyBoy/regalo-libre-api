@@ -1,9 +1,7 @@
 package com.regalo_libre.wishlist;
 
 
-import com.regalo_libre.wishlist.dto.EditListDTO;
-import com.regalo_libre.wishlist.dto.WishListCreateRequestDto;
-import com.regalo_libre.wishlist.dto.WishListDto;
+import com.regalo_libre.wishlist.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +22,7 @@ public class WishlistController {
     }
 
     @GetMapping("/details/{id}")
-    public ResponseEntity<WishListDto> getWishlistById(@PathVariable Long id) {
+    public ResponseEntity<WishListDetailDto> getWishlistById(@PathVariable Long id) {
         return ResponseEntity.ok(wishListService.getWishlistById(id));
     }
 
@@ -62,11 +60,11 @@ public class WishlistController {
     }
 
     @GetMapping("/public/{id}")
-    public ResponseEntity<WishListDto> getPublicWishlistByUserId(@PathVariable String id) {
+    public ResponseEntity<WishListDetailDto> getPublicWishlistByUserId(@PathVariable String id) {
         return ResponseEntity.ok(wishListService.getPublicWishlistByUserId(id));
     }
 
-    @GetMapping("/user/{nickname}")
+    @GetMapping("/public/user/{nickname}")
     public ResponseEntity<List<WishListDto>> getAllPublicWishlistsByNickname(@PathVariable String nickname) {
         return ResponseEntity.ok(wishListService.getAllPublicWishlistsByUserNickname(nickname));
     }

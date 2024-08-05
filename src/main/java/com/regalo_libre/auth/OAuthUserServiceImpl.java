@@ -7,7 +7,6 @@ import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
 import com.regalo_libre.profile.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;

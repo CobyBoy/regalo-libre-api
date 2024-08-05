@@ -32,7 +32,7 @@ public class OAuthUser {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_bookmark",
             schema = "meli",
