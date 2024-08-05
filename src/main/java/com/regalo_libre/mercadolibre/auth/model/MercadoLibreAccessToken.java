@@ -15,6 +15,7 @@ import lombok.*;
 @Table(name = "access_token", schema = "meli")
 public class MercadoLibreAccessToken {
     @Id
+    @JsonProperty("user_id")
     private Long userId;
     @JsonProperty("access_token")
     private String accessToken;
@@ -23,4 +24,6 @@ public class MercadoLibreAccessToken {
     @JsonProperty("expires_in")
     private String expiresIn;
     private String scope;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
 }
