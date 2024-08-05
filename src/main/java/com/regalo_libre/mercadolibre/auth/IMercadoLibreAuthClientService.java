@@ -5,4 +5,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 public interface IMercadoLibreAuthClientService {
 
     WebClient getWebClientWithAuthorizationHeader(String authorizationHeader);
+
+    String exchangeCodeForToken(String authorizationCode);
 }

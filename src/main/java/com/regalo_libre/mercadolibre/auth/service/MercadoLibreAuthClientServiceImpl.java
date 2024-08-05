@@ -1,31 +1,58 @@
 package com.regalo_libre.mercadolibre.auth.service;
 
 import com.regalo_libre.mercadolibre.auth.IMercadoLibreAuthClientService;
+import com.regalo_libre.mercadolibre.auth.MercadoLibreAccessTokenService;
 import com.regalo_libre.mercadolibre.auth.MercadoLibreConfig;
-import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreAccessTokenRepository;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
-import com.regalo_libre.profile.ProfileRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+
+import java.util.Objects;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class MercadoLibreAuthClientServiceImpl implements IMercadoLibreAuthClientService {
     public static final String ERROR_FETCHING = "Error fetching";
+    private final MercadoLibreAccessTokenService mercadoLibreAccessTokenService;
 
     private final MercadoLibreConfig mercadoLibreConfig;
 
+    public String exchangeCodeForToken(String authorizationCode) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        map.add("grant_type", "authorization_code");
+        map.add("client_id", mercadoLibreConfig.getClientId());
+        map.add("client_secret", mercadoLibreConfig.getClientSecret());
+        map.add("code", authorizationCode);
+        map.add("redirect_uri", mercadoLibreConfig.getRedirectUri());
+
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+
+        ResponseEntity<MercadoLibreAccessToken> response = restTemplate.postForEntity(mercadoLibreConfig.getTokenUrl(), request, MercadoLibreAccessToken.class);
+        mercadoLibreAccessTokenService.saveAccessToken(response.getBody());
+        return Objects.requireNonNull(response.getBody()).toString();
+    }
+
     private MercadoLibreAccessToken getAccessToken(WebClient webClient, String authorizationCode) {
         return webClient.post()
-                .uri(mercadoLibreConfig.getApiUrl())
+                .uri(mercadoLibreConfig.getTokenUrl())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromFormData(
