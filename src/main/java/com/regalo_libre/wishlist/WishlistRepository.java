@@ -18,6 +18,6 @@ public interface WishlistRepository extends JpaRepository<WishList, Long> {
     List<WishList> findAllByUserIdAndIsPrivateFalse(Long oAuthUserId);
 
 
-    @Query("SELECT w FROM WishList w JOIN w.user u WHERE w.user.nickname = :nickname AND w.isPrivate = false AND u.profile.isPrivate = false")
+    @Query("SELECT w FROM WishList w JOIN w.user u WHERE u.profile.appNickname = :nickname AND w.isPrivate = false AND u.profile.isPrivate = false")
     List<WishList> findPublicWishlistForPublicProfile(String nickname);
 }

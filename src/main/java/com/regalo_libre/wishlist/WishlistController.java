@@ -17,13 +17,13 @@ public class WishlistController {
     private final WishlistService wishListService;
 
     @GetMapping()
-    public ResponseEntity<List<WishListDto>> getWishLists(@AuthenticationPrincipal Long userId) {
-        return ResponseEntity.ok(wishListService.getAllWishListsByUserId(userId));
+    public ResponseEntity<List<WishListDto>> getAllWishlists(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(wishListService.getAllWishlists(userId));
     }
 
-    @GetMapping("/details/{id}")
-    public ResponseEntity<WishListDetailDto> getWishlistById(@PathVariable Long id) {
-        return ResponseEntity.ok(wishListService.getWishlistById(id));
+    @GetMapping("/{id}/details")
+    public ResponseEntity<WishListDetailDto> findWishlistById(@PathVariable Long id) {
+        return ResponseEntity.ok(wishListService.findWishlistById(id));
     }
 
     @PostMapping()
@@ -55,18 +55,18 @@ public class WishlistController {
     }
 
     @GetMapping("/public")
-    public ResponseEntity<List<WishListDto>> getAllPublicWishlistsByUserId(@AuthenticationPrincipal Long userId) {
-        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByUserId(userId));
+    public ResponseEntity<List<WishListDto>> findAllPublicWishlistsByUserId(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(wishListService.findAllPublicWishlistsByUserId(userId));
     }
 
     @GetMapping("/public/{id}")
-    public ResponseEntity<WishListDetailDto> getPublicWishlistByUserId(@PathVariable String id) {
-        return ResponseEntity.ok(wishListService.getPublicWishlistByUserId(id));
+    public ResponseEntity<WishListDetailDto> findPublicWishlist(@PathVariable String id) {
+        return ResponseEntity.ok(wishListService.findPublicWishlistById(id));
     }
 
     @GetMapping("/public/user/{nickname}")
-    public ResponseEntity<List<WishListDto>> getAllPublicWishlistsByNickname(@PathVariable String nickname) {
-        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByUserNickname(nickname));
+    public ResponseEntity<List<WishListDto>> findAllPublicWishlistsByNickname(@PathVariable String nickname) {
+        return ResponseEntity.ok(wishListService.findAllPublicWishlistsByUserNickname(nickname));
     }
 
 }

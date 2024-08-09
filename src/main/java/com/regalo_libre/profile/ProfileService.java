@@ -1,9 +1,9 @@
 package com.regalo_libre.profile;
 
 public interface ProfileService {
-    Profile getProfileByUserId(Long userId);
+    Profile getProfile(Long userId);
 
-    PublicProfileDTO getPublicProfileByUserNickname(String username);
+    PublicProfileDTO findPublicProfileByUserNickname(String username);
 
     EditProfileDTO editProfile(EditProfileDTO profile);
 }

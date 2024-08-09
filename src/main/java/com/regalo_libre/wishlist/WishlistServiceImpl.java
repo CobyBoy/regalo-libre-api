@@ -45,11 +45,11 @@ public class WishlistServiceImpl implements WishlistService {
         return new WishListDto(wishList);
     }
 
-    public List<WishListDto> getAllWishListsByUserId(Long userId) {
+    public List<WishListDto> getAllWishlists(Long userId) {
         return wishlistRepository.findAllByUserId(userId);
     }
 
-    public WishListDetailDto getWishlistById(Long id) {
+    public WishListDetailDto findWishlistById(Long id) {
         WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException("La lista no existe"));
         return WishListDetailDto.builder().build().toDto(wishList);
     }
@@ -95,7 +95,7 @@ public class WishlistServiceImpl implements WishlistService {
         wishlistRepository.save(wishList);
     }
 
-    public WishListDetailDto getPublicWishlistByUserId(String id) {
+    public WishListDetailDto findPublicWishlistById(String id) {
         var publicWishList = wishlistRepository.findByPublicIdAndIsPrivateFalse(id);
         if (publicWishList == null) {
             throw new PublicWishListNotFoundException("La lista no existe o no es pública");
@@ -103,11 +103,11 @@ public class WishlistServiceImpl implements WishlistService {
         return WishListDetailDto.builder().build().toDto(publicWishList);
     }
 
-    public List<WishListDto> getAllPublicWishlistsByUserId(Long userId) {
+    public List<WishListDto> findAllPublicWishlistsByUserId(Long userId) {
         return wishlistRepository.findAllByUserIdAndIsPrivateFalse(userId).stream().map(WishListDto::new).toList();
     }
 
-    public List<WishListDto> getAllPublicWishlistsByUserNickname(String nickname) {
+    public List<WishListDto> findAllPublicWishlistsByUserNickname(String nickname) {
         return wishlistRepository.findPublicWishlistForPublicProfile(nickname).stream().map(WishListDto::new).toList();
     }
 }

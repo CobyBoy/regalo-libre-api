@@ -14,7 +14,7 @@ public class FavoritesController {
     private final IFavoritesService favoritesService;
 
     @GetMapping
-    public ResponseEntity<List<FavoritesDTO>> getFavorites(@AuthenticationPrincipal Long userId) {
+    public ResponseEntity<List<FavoritesDTO>> getAllFavorites(@AuthenticationPrincipal Long userId) {
         return ResponseEntity.ok(favoritesService.getAllFavorites(userId));
     }
 }
