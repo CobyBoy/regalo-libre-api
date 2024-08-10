@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -22,8 +24,10 @@ public class MercadoLibreAccessToken {
     @JsonProperty("token_type")
     private String tokenType;
     @JsonProperty("expires_in")
-    private String expiresIn;
+    private Integer expiresIn;
     private String scope;
     @JsonProperty("refresh_token")
     private String refreshToken;
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
 }
