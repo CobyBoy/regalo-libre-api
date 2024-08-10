@@ -21,12 +21,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class FavoritesServiceImpl implements IFavoritesService {
     private final BookmarkRepository bookmarkRepository;
-    private final IMercadoLibreAuthClientService authClientService;
-    private final MercadoLibreAccessTokenService mercadoLibreAccessTokenService;
+    private final IMercadoLibreAccessTokenService mercadoLibreAccessTokenService;
     private final OAuthUserService oAuthUserService;
 
     public List<FavoritesDTO> getAllFavorites(Long userId) {
-        MercadoLibreAccessToken token = mercadoLibreAccessTokenService.getMercadiLibreAccessToken(userId);
+        MercadoLibreAccessToken token = mercadoLibreAccessTokenService.getMercadoLibreAccessToken(userId);
         var user = oAuthUserService.findUserById(userId);
         // Get bookmarks from meli for this user
         List<BookmarkedProduct> userApiBookmarks = getAllBookmarkedProducts(token);
@@ -102,12 +101,11 @@ public class FavoritesServiceImpl implements IFavoritesService {
 
         return bookmarkRepository.findMercadoLibreProductsByUserId(userId)
                 .stream()
-                .map(product -> FavoritesDTO.builder().build().toDto(product))
-                .collect(Collectors.toList());
+                .map(product -> FavoritesDTO.builder().build().toDto(product)).toList();
     }
 
-    private List<BookmarkedProduct> getAllBookmarkedProducts(MercadoLibreAccessToken authorizationHeader) {
-        WebClient webClient = authClientService.getWebClientWithAuthorizationHeader(authorizationHeader.getAccessToken());
+    private List<BookmarkedProduct> getAllBookmarkedProducts(MercadoLibreAccessToken token) {
+        WebClient webClient = mercadoLibreAccessTokenService.getWebClientWithABearerToken(token.getAccessToken());
         Flux<Bookmark> bookmarksFlux = fetchBookmarksFromApi(webClient);
         return fetchBookmarkedProductsByItemId(bookmarksFlux, webClient);
     }

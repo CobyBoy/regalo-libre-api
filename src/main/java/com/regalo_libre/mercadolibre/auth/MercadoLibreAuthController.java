@@ -8,11 +8,11 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/meli")
 public class MercadoLibreAuthController {
-    private final IMercadoLibreAuthClientService mercadoLibreAuthClientService;
+    private final IMercadoLibreAccessTokenService mercadoLibreAccessTokenService;
 
     @GetMapping("code")
     public RedirectView getMercadoLibreUserData(@RequestParam(name = "code") String code) {
-        mercadoLibreAuthClientService.exchangeCodeForToken(code);
+        mercadoLibreAccessTokenService.exchangeCodeForToken(code);
         return new RedirectView("https://localhost:4200/user/lists");
     }
 }
