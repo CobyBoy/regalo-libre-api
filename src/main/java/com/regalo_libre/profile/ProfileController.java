@@ -13,7 +13,7 @@ public class ProfileController {
 
     @GetMapping
     public ResponseEntity<Profile> getProfile(@AuthenticationPrincipal Long userId) {
-        return ResponseEntity.ok(profileService.getProfileByUserId(userId));
+        return ResponseEntity.ok(profileService.getProfile(userId));
     }
 
     @PostMapping
@@ -22,7 +22,7 @@ public class ProfileController {
     }
 
     @GetMapping("public/{username}")
-    public ResponseEntity<PublicProfileDTO> getPublicProfile(@PathVariable String username) {
-        return ResponseEntity.ok(profileService.getPublicProfileByUserNickname(username));
+    public ResponseEntity<PublicProfileDTO> findPublicProfileByUserNickname(@PathVariable String username) {
+        return ResponseEntity.ok(profileService.findPublicProfileByUserNickname(username));
     }
 }

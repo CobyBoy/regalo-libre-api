@@ -5,13 +5,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/v1/oauth-profile")
 public class OAuthProfileController {
     private final OAuthUserServiceImpl oAuthUserService;
 
-    @GetMapping("/api/v1/oauth-profile")
+    @GetMapping
     public ResponseEntity<OAuthUserInfoDTO> getProfile(@RequestHeader("Authorization") String authorizationHeader) {
         OAuthUserInfo response = oAuthUserService.getOauthUserInfo(authorizationHeader);
 

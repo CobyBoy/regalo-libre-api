@@ -3,6 +3,7 @@ package com.regalo_libre.common.exception;
 import com.regalo_libre.common.dtos.ApiErrorDto;
 import com.regalo_libre.mercadolibre.auth.exception.TokenNotFoundException;
 import com.regalo_libre.profile.ProfileNotPublicException;
+import com.regalo_libre.wishlist.exception.GiftAlreadyInWishlistException;
 import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
 import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
@@ -111,6 +112,18 @@ public class RestExceptionHandler {
     public ResponseEntity<ApiErrorDto> handleTokenNotFoundException(UsernameNotFoundException ex) {
         log.error("User name not found");
         HttpStatus httpStatus = HttpStatus.NOT_FOUND;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(GiftAlreadyInWishlistException.class)
+    public ResponseEntity<ApiErrorDto> handleGiftAlreadyInWishlistException(GiftAlreadyInWishlistException ex) {
+        log.error("User name not found");
+        HttpStatus httpStatus = HttpStatus.EXPECTATION_FAILED;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
                         .httpStatus(httpStatus)

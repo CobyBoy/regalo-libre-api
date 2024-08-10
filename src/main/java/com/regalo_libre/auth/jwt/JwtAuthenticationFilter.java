@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -37,12 +38,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
             var subject = jwt.getSubject().split("\\|");
             Long userId = Long.parseLong(subject[subject.length - 1]);
+            if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("Setting authentication context {}", SecurityContextHolder.getContext());
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                context.setAuthentication(authentication);
+                SecurityContextHolder.setContext(context);
+                log.info("Setting authentication context {}", SecurityContextHolder.getContext());
+            }
         }
 
         filterChain.doFilter(request, response);

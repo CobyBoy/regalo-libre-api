@@ -11,12 +11,12 @@ public class ProfileServiceImpl implements ProfileService {
     private final ProfileRepository profileRepository;
     private final OAuthUserService oAuthUserService;
 
-    public Profile getProfileByUserId(Long userId) {
+    public Profile getProfile(Long userId) {
         OAuthUser user = oAuthUserService.getOAuthUserById(userId);
         return profileRepository.findById(user.getProfile().getProfileId()).orElseThrow(() -> new ProfileNotPublicException("Usuario no encontrado"));
     }
 
-    public PublicProfileDTO getPublicProfileByUserNickname(String username) {
+    public PublicProfileDTO findPublicProfileByUserNickname(String username) {
         Profile profile = profileRepository.findByAppNickname(username).orElseThrow(() -> new ProfileNotPublicException("Este perfil es privado"));
         return PublicProfileDTO.toDto(profile);
     }
