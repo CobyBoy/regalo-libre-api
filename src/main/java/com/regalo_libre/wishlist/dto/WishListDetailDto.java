@@ -35,7 +35,7 @@ public record WishListDetailDto(
                 .privateId(wishList.getPrivateId())
                 .totalGifts(wishList.getTotalGifts())
                 .isPrivate(wishList.getIsPrivate())
-                .user(wishList.getUser().getNickname())
+                .user(wishList.getUser().getProfile().getAppNickname())
                 .updatedAt(wishList.getUpdatedAt())
                 .build();
     }
