@@ -29,7 +29,7 @@ public class LoginTokenServiceImpl {
         map.add("client_id", oauthPropertiesConfig.getClientId());
         map.add("client_secret", oauthPropertiesConfig.getClientSecret());
         map.add("code", code);
-        map.add("redirect_uri", "https://localhost:4200");
+        map.add("redirect_uri", "https://192.168.0.37:4200");
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
         OAuthAccessToken response;

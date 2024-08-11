@@ -13,6 +13,6 @@ public class MercadoLibreAuthController {
     @GetMapping("code")
     public RedirectView getMercadoLibreUserData(@RequestParam(name = "code") String code) {
         mercadoLibreAccessTokenService.exchangeCodeForToken(code);
-        return new RedirectView("https://localhost:4200/user/lists");
+        return new RedirectView("https://192.168.0.37:4200/user/lists");
     }
 }

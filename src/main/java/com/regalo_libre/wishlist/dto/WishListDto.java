@@ -25,6 +25,6 @@ public record WishListDto(
                 wishList.getPrivateId(),
                 wishList.getIsPrivate(),
                 wishList.getTotalGifts(),
-                wishList.getUser().getNickname());
+                wishList.getUser().getProfile().getAppNickname());
     }
 }
