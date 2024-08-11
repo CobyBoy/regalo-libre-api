@@ -3,6 +3,9 @@ package com.regalo_libre.wishlist;
 
 import com.regalo_libre.wishlist.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,8 +20,16 @@ public class WishlistController {
     private final WishlistService wishListService;
 
     @GetMapping()
-    public ResponseEntity<List<WishListDto>> getAllWishlists(@AuthenticationPrincipal Long userId) {
-        return ResponseEntity.ok(wishListService.getAllWishlists(userId));
+    public ResponseEntity<Page<WishListDto>> getAllWishlists(@AuthenticationPrincipal Long userId,
+                                                             @RequestParam int page,
+                                                             @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(wishListService.getAllWishlists(userId, pageable));
+    }
+
+    @GetMapping("/modal")
+    public ResponseEntity getAllWishlistsForAddGiftsModal(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(wishListService.getAllWishlistsForModal(userId));
     }
 
     @GetMapping("/{id}/details")

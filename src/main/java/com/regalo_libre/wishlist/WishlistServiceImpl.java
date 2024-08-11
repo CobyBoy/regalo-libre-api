@@ -10,6 +10,8 @@ import com.regalo_libre.wishlist.exception.WishlistNotFoundException;
 import com.regalo_libre.wishlist.model.WishList;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -45,8 +47,13 @@ public class WishlistServiceImpl implements WishlistService {
         return new WishListDto(wishList);
     }
 
-    public List<WishListDto> getAllWishlists(Long userId) {
-        return wishlistRepository.findAllByUserId(userId).stream().map(WishListDto::new).toList();
+    public Page<WishListDto> getAllWishlists(Long userId, Pageable pageable) {
+        return wishlistRepository.findAllByUserId(userId, pageable).map(WishListDto::new);
+    }
+
+    @Override
+    public List<WishlistDetailForModalDto> getAllWishlistsForModal(Long userId) {
+        return wishlistRepository.findAllByUserId(userId).stream().map(WishlistDetailForModalDto::new).toList();
     }
 
     public WishListDetailDto findWishlistById(Long id) {
