@@ -40,6 +40,7 @@ public class LoginTokenServiceImpl {
                     OAuthAccessToken.class
             ).getBody();
         } catch (HttpClientErrorException e) {
+            log.error(e.getMessage());
             throw e;
         }
         log.info("Returning oauth token {}", response);

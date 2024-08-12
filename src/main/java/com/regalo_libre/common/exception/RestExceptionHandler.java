@@ -1,5 +1,6 @@
 package com.regalo_libre.common.exception;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.regalo_libre.common.dtos.ApiErrorDto;
 import com.regalo_libre.mercadolibre.auth.exception.TokenNotFoundException;
 import com.regalo_libre.profile.ProfileNotPublicException;
@@ -7,6 +8,8 @@ import com.regalo_libre.wishlist.exception.GiftAlreadyInWishlistException;
 import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
 import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,6 +24,7 @@ import java.nio.file.AccessDeniedException;
  */
 @Slf4j
 @ControllerAdvice
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class RestExceptionHandler {
     private static final String TOKEN_NOT_FOUND = "Token not found";
 
@@ -122,8 +126,20 @@ public class RestExceptionHandler {
 
     @ExceptionHandler(GiftAlreadyInWishlistException.class)
     public ResponseEntity<ApiErrorDto> handleGiftAlreadyInWishlistException(GiftAlreadyInWishlistException ex) {
-        log.error("User name not found");
+        log.error("Gift already in wishlist");
         HttpStatus httpStatus = HttpStatus.EXPECTATION_FAILED;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(TokenExpiredException.class)
+    public ResponseEntity<ApiErrorDto> handleTokenExpiredException(TokenExpiredException ex) {
+        log.error("Token expired");
+        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
                         .httpStatus(httpStatus)

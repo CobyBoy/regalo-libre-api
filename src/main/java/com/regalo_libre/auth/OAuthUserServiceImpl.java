@@ -70,7 +70,7 @@ public class OAuthUserServiceImpl implements OAuthUserService {
 
     private Profile buildProfile(OAuthUserInfo userInfo) {
         return Profile.builder()
-                .biography("biography")
+                .biography("")
                 .isPrivate(true)
                 .meliNickname(userInfo.nickname)
                 .appNickname(userInfo.nickname)

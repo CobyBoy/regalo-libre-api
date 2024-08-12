@@ -1,13 +1,17 @@
 package com.regalo_libre.auth.jwt;
 
 import com.auth0.jwk.JwkException;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.regalo_libre.common.dtos.ApiErrorDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -30,23 +34,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String accessToken = extractAccessToken(request);
 
         if (accessToken != null) {
-            DecodedJWT jwt = null;
             try {
-                jwt = jwtService.verifyAndDecodeToken(accessToken);
-            } catch (JwkException e) {
-                throw new RuntimeException(e);
-            }
-            var subject = jwt.getSubject().split("\\|");
-            Long userId = Long.parseLong(subject[subject.length - 1]);
-            if (SecurityContextHolder.getContext().getAuthentication() == null) {
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                DecodedJWT jwt = jwtService.verifyAndDecodeToken(accessToken);
+                var subject = jwt.getSubject().split("\\|");
+                Long userId = Long.parseLong(subject[subject.length - 1]);
+                if (SecurityContextHolder.getContext().getAuthentication() == null) {
+                    SecurityContext context = SecurityContextHolder.createEmptyContext();
 
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                context.setAuthentication(authentication);
-                SecurityContextHolder.setContext(context);
-                log.info("Setting authentication context {}", SecurityContextHolder.getContext());
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    context.setAuthentication(authentication);
+                    SecurityContextHolder.setContext(context);
+                    log.info("Setting authentication context {}", SecurityContextHolder.getContext());
+                }
+            } catch (TokenExpiredException e) {
+                log.error("Token expired: {}", e.getMessage());
+                request.setAttribute("expired", e.getMessage());
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json");
+                var r = new ObjectMapper().writeValueAsString(ApiErrorDto.builder()
+                        .httpStatus(HttpStatus.FORBIDDEN)
+                        .statusCode(HttpStatus.FORBIDDEN.value())
+                        .message(e.getMessage())
+                        .build());
+                log.info("message {}", r);
+                response.getWriter().write(r);
+                return;
+            } catch (JwkException e) {
+                log.error("Token validation failed: {}", e.getMessage());
+                return;
             }
+
         }
 
         filterChain.doFilter(request, response);
