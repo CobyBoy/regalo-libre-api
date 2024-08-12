@@ -53,7 +53,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public List<WishlistDetailForModalDto> getAllWishlistsForModal(Long userId) {
-        return wishlistRepository.findAllByUserId(userId).stream().map(WishlistDetailForModalDto::new).toList();
+        return wishlistRepository.findAllByUserIdOrderByCreatedAtDesc(userId).stream().map(WishlistDetailForModalDto::new).toList();
     }
 
     public WishListDetailDto findWishlistById(Long id) {
@@ -111,7 +111,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     public List<WishListDto> findAllPublicWishlistsByUserId(Long userId) {
-        return wishlistRepository.findAllByUserIdAndIsPrivateFalse(userId).stream().map(WishListDto::new).toList();
+        return wishlistRepository.findAllByUserIdAndIsPrivateFalseOrderByCreatedAtDesc(userId).stream().map(WishListDto::new).toList();
     }
 
     public List<WishListDto> findAllPublicWishlistsByUserNickname(String nickname) {

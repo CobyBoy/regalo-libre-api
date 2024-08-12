@@ -11,15 +11,15 @@ import java.util.List;
 
 @Repository
 public interface WishlistRepository extends JpaRepository<WishList, Long> {
-    @Query("SELECT DISTINCT w FROM WishList w LEFT JOIN FETCH w.gifts LEFT JOIN FETCH w.user u LEFT JOIN FETCH u.profile WHERE w.user.id = :oAuthUserId")
+    @Query("SELECT DISTINCT w FROM WishList w LEFT JOIN FETCH w.gifts LEFT JOIN FETCH w.user u LEFT JOIN FETCH u.profile WHERE w.user.id = :oAuthUserId ORDER BY w.createdAt DESC")
     Page<WishList> findAllByUserId(Long oAuthUserId, Pageable pageable);
 
-    List<WishList> findAllByUserId(Long oAuthUserId);
+    List<WishList> findAllByUserIdOrderByCreatedAtDesc(Long oAuthUserId);
 
     WishList findByPublicIdAndIsPrivateFalse(String id);
 
-    List<WishList> findAllByUserIdAndIsPrivateFalse(Long oAuthUserId);
+    List<WishList> findAllByUserIdAndIsPrivateFalseOrderByCreatedAtDesc(Long oAuthUserId);
 
-    @Query("SELECT w FROM WishList w JOIN w.user u WHERE u.profile.appNickname = :nickname AND w.isPrivate = false AND u.profile.isPrivate = false")
+    @Query("SELECT w FROM WishList w JOIN w.user u WHERE u.profile.appNickname = :nickname AND w.isPrivate = false AND u.profile.isPrivate = false ORDER BY w.createdAt DESC")
     List<WishList> findPublicWishlistForPublicProfile(String nickname);
 }
