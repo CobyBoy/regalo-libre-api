@@ -56,7 +56,7 @@ public class WishlistController {
     @PutMapping("/{id}/gifts")
     public ResponseEntity<Void> addProductsToWishList(@PathVariable Long id, @RequestBody List<String> productsIds) {
         wishListService.addProductsToWishlist(id, productsIds);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}/gifts")

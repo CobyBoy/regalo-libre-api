@@ -127,7 +127,7 @@ public class RestExceptionHandler {
     @ExceptionHandler(GiftAlreadyInWishlistException.class)
     public ResponseEntity<ApiErrorDto> handleGiftAlreadyInWishlistException(GiftAlreadyInWishlistException ex) {
         log.error("Gift already in wishlist");
-        HttpStatus httpStatus = HttpStatus.EXPECTATION_FAILED;
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
                         .httpStatus(httpStatus)
