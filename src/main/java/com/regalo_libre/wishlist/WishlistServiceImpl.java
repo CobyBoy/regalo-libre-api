@@ -15,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -81,16 +82,18 @@ public class WishlistServiceImpl implements WishlistService {
         Set<String> existingProductIds = existingProducts.stream()
                 .map(BookmarkedProduct::getId)
                 .collect(Collectors.toSet());
+        List<String> errors = new ArrayList<>();
 
         for (BookmarkedProduct newProduct : newProducts) {
             if (existingProductIds.contains(newProduct.getId())) {
-                throw new GiftAlreadyInWishlistException("El producto " + newProduct.getTitle() + " ya está en la lista " + wishList.getName());
-            }
+                errors.add(newProduct.getTitle() + " ya está en la lista " + wishList.getName());
+            } else existingProducts.add(newProduct);
         }
         wishList.setUpdatedAt(LocalDateTime.now());
-
-        existingProducts.addAll(newProducts);
         wishlistRepository.save(wishList);
+        if (!errors.isEmpty()) {
+            throw new GiftAlreadyInWishlistException(errors.toString());
+        }
     }
 
     public void removeProductsFromWishList(Long id, List<String> productsIds) {
