@@ -5,6 +5,7 @@ import com.regalo_libre.auth.model.OAuthUser;
 import com.regalo_libre.auth.repository.OAuthUserRepository;
 import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
 import com.regalo_libre.profile.Profile;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -46,6 +47,7 @@ public class OAuthUserServiceImpl implements OAuthUserService {
         return userInfo;
     }
 
+    @Transactional
     public OAuthUser createOauthUser(OAuthUserInfo userInfo) {
         OAuthUser user = buildUser(userInfo);
         log.info("Creating user profile for user {}", user);
@@ -87,6 +89,7 @@ public class OAuthUserServiceImpl implements OAuthUserService {
         return repository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
     }
 
+    @Transactional
     public void saveOAuthUser(OAuthUser user) {
         repository.save(user);
     }
