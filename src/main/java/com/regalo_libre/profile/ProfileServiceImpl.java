@@ -2,6 +2,7 @@ package com.regalo_libre.profile;
 
 import com.regalo_libre.auth.OAuthUserService;
 import com.regalo_libre.auth.model.OAuthUser;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,7 @@ public class ProfileServiceImpl implements ProfileService {
         return PublicProfileDTO.toDto(profile);
     }
 
+    @Transactional
     public EditProfileDTO editProfile(EditProfileDTO profile) {
         Profile profileFound = profileRepository.findById(profile.id()).orElseThrow();
         profileFound.setBiography(profile.biography());

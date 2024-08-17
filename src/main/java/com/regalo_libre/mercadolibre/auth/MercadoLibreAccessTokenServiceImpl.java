@@ -3,6 +3,7 @@ package com.regalo_libre.mercadolibre.auth;
 import com.regalo_libre.mercadolibre.auth.exception.TokenNotFoundException;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
 import com.regalo_libre.mercadolibre.auth.repository.MercadoLibreAccessTokenRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
@@ -60,6 +61,7 @@ public class MercadoLibreAccessTokenServiceImpl implements IMercadoLibreAccessTo
         }
     }
 
+    @Transactional
     private void saveAccessToken(MercadoLibreAccessToken accessToken) {
         accessToken.setExpiresAt(LocalDateTime.now().plusSeconds(accessToken.getExpiresIn()));
         mercadoLibreAccessTokenRepository.save(accessToken);

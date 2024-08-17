@@ -6,8 +6,10 @@ import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
 import com.regalo_libre.wishlist.dto.*;
 import com.regalo_libre.wishlist.exception.GiftAlreadyInWishlistException;
 import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
+import com.regalo_libre.wishlist.exception.UnableToDeleteWishlistException;
 import com.regalo_libre.wishlist.exception.WishlistNotFoundException;
 import com.regalo_libre.wishlist.model.WishList;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,10 +27,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Slf4j
 public class WishlistServiceImpl implements WishlistService {
+    public static final String LA_LISTA_NO_EXISTE = "La lista no existe";
     private final WishlistRepository wishlistRepository;
     private final BookmarkRepository mercadoLibreProductRepo;
     private final OAuthUserService oAuthUserService;
 
+    @Transactional
     public WishListDto createWishlist(WishListCreateRequestDto wishListRequest, Long userId) {
         long startTime = System.nanoTime();
         var oAuthUser = oAuthUserService.getOAuthUserById(userId);
@@ -58,16 +62,22 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     public WishListDetailDto findWishlistById(Long id) {
-        WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException("La lista no existe"));
+        WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException(LA_LISTA_NO_EXISTE));
         return WishListDetailDto.builder().build().toDto(wishList);
     }
 
+    @Transactional
     public void deleteWishlistById(Long id) {
-        wishlistRepository.deleteById(id);
+        try {
+            wishlistRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new UnableToDeleteWishlistException("Ocurrió un error. La lista no se pudo borrar");
+        }
     }
 
+    @Transactional
     public WishListDto updateWishlistById(Long id, EditListDTO request) {
-        WishList wishlistToEdit = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException("La lista no existe"));
+        WishList wishlistToEdit = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException(LA_LISTA_NO_EXISTE));
         wishlistToEdit.setName(request.name());
         wishlistToEdit.setDescription(request.description());
         wishlistToEdit.setIsPrivate(request.isPrivate());
@@ -75,8 +85,9 @@ public class WishlistServiceImpl implements WishlistService {
         return new WishListDto(wishlistRepository.save(wishlistToEdit));
     }
 
+    @Transactional
     public void addProductsToWishlist(Long id, List<String> productsIds) {
-        WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException("La lista no existe"));
+        WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException(LA_LISTA_NO_EXISTE));
         List<BookmarkedProduct> newProducts = mercadoLibreProductRepo.findAllByIdIn(productsIds);
         List<BookmarkedProduct> existingProducts = wishList.getGifts();
         Set<String> existingProductIds = existingProducts.stream()
@@ -96,6 +107,7 @@ public class WishlistServiceImpl implements WishlistService {
         }
     }
 
+    @Transactional
     public void removeProductsFromWishList(Long id, List<String> productsIds) {
         WishList wishList = wishlistRepository.findById(id).orElseThrow();
         List<BookmarkedProduct> productsToDelete = mercadoLibreProductRepo.findAllByIdIn(productsIds);
