@@ -1,4 +1,4 @@
-package com.regalo_libre.favorites;
+package com.regalo_libre.bookmarks;
 
 import com.regalo_libre.auth.OAuthUserService;
 import com.regalo_libre.auth.model.OAuthUser;
@@ -12,6 +12,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -24,20 +26,16 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FavoritesServiceImpl implements IFavoritesService {
+public class BookmarksServiceImpl implements IBookmarksService {
     private final BookmarkRepository bookmarkRepository;
     private final IMercadoLibreAccessTokenService mercadoLibreAccessTokenService;
     private final OAuthUserService oAuthUserService;
 
-    @Cacheable(value = "userBookmarks", key = "'user_' + #userId", unless = "#result == null")
-    public List<FavoritesDTO> getAllFavorites(Long userId) {
+    @Cacheable(value = "userBookmarks", unless = "#result == null")
+    public Page<BookmarkDTO> getAllBookmarks(Long userId, Pageable pageable) {
         MercadoLibreAccessToken token = mercadoLibreAccessTokenService.getMercadoLibreAccessToken(userId);
         OAuthUser user = oAuthUserService.findUserById(userId);
-        // Get bookmarks from meli for this user
-        List<BookmarkedProduct> userApiBookmarks = getAllBookmarks(token);
-        // Get all from bookmark table, not only from the user
-        List<BookmarkedProduct> allExistingBookmarks = bookmarkRepository.findAll();
-        return checkForApiBookmarksAndSavedInDbBookmarks(userApiBookmarks, allExistingBookmarks, user);
+        return checkForApiBookmarksAndSavedInDbBookmarks(user, token, pageable);
     }
 
     private List<BookmarkedProduct> getAllBookmarks(MercadoLibreAccessToken token) {
@@ -70,20 +68,25 @@ public class FavoritesServiceImpl implements IFavoritesService {
                 .block();
     }
 
-    private List<FavoritesDTO> checkForApiBookmarksAndSavedInDbBookmarks(List<BookmarkedProduct> userApiBookmarks,
-                                                                         List<BookmarkedProduct> allExistingBookmarks,
-                                                                         OAuthUser user) {
+    private Page<BookmarkDTO> checkForApiBookmarksAndSavedInDbBookmarks(OAuthUser user,
+                                                                        MercadoLibreAccessToken token,
+                                                                        Pageable pageable) {
+        List<BookmarkedProduct> userApiBookmarks = getAllBookmarks(token);
+        // Get all from bookmark table, not only from the user
+        List<BookmarkedProduct> allExistingBookmarks = bookmarkRepository.findAll();
         if (userApiBookmarks.isEmpty() && allExistingBookmarks.isEmpty()) {
             // If no api products and no bookmarks
-            return new ArrayList<>();
+            return Page.empty();
         }
-        return synchronizeBookmarks(user, userApiBookmarks, allExistingBookmarks);
+        return synchronizeBookmarks(user, userApiBookmarks, allExistingBookmarks, pageable);
     }
 
     @Transactional
-    private List<FavoritesDTO> synchronizeBookmarks(OAuthUser user,
-                                                    List<BookmarkedProduct> userApiBookmarks,
-                                                    List<BookmarkedProduct> allExistingBookmarks) {
+    private Page<BookmarkDTO> synchronizeBookmarks(OAuthUser user,
+                                                   List<BookmarkedProduct> userApiBookmarks,
+                                                   List<BookmarkedProduct> allExistingBookmarks,
+                                                   Pageable pageable
+    ) {
         saveMeLiBookmarksIfDbIsEmpty(user, userApiBookmarks, allExistingBookmarks);
 
         //list of current bookmarks ids MLA
@@ -106,9 +109,10 @@ public class FavoritesServiceImpl implements IFavoritesService {
             oAuthUserService.saveOAuthUser(user);
         }
         removeBookmarksThatDontBelongToAnyUser();
-        return getFavoritesDto(user.getId());
+        return getFavoritesDto(user.getId(), pageable);
     }
 
+    @Transactional
     private void saveMeLiBookmarksIfDbIsEmpty(OAuthUser user,
                                               List<BookmarkedProduct> userApiBookmarks,
                                               List<BookmarkedProduct> allExistingBookmarks) {
@@ -165,13 +169,11 @@ public class FavoritesServiceImpl implements IFavoritesService {
         return productsInCommon;
     }
 
-    private List<FavoritesDTO> getFavoritesDto(Long userId) {
-        return bookmarkRepository.findMercadoLibreProductsByUserId(userId)
-                .stream()
-                .map(product -> FavoritesDTO.builder().build().toDto(product))
-                .toList();
+    private Page<BookmarkDTO> getFavoritesDto(Long userId, Pageable pageable) {
+        return bookmarkRepository.findMercadoLibreProductsByUserId(userId, pageable);
     }
 
+    @Transactional
     private void saveNewBookmarksAddedInMeli(OAuthUser user,
                                              List<BookmarkedProduct> allExistingBookmarks,
                                              List<BookmarkedProduct> userApiBookmarks, Map<String,
@@ -184,6 +186,7 @@ public class FavoritesServiceImpl implements IFavoritesService {
         }
     }
 
+    @Transactional
     private void removeBookmarksThatHaveBeenRemovedFromMeli(OAuthUser user, List<BookmarkedProduct> allExistingBookmarks, Map<String, BookmarkedProduct> existingProductMap, Map<String, BookmarkedProduct> apiProductMap) {
         // Get the current bookmarks that are not in the api and remove them to be in sync
         List<BookmarkedProduct> bookmarksToRemoveForThisUser = getListOfBookmarksToRemoveThatAreNotOnMeli(allExistingBookmarks, existingProductMap, apiProductMap);
@@ -193,6 +196,7 @@ public class FavoritesServiceImpl implements IFavoritesService {
         }
     }
 
+    @Transactional
     private void removeBookmarksThatDontBelongToAnyUser() {
         var bookmarkWithoutUser = bookmarkRepository.findBookmarkWithoutUser();
         if (!bookmarkWithoutUser.isEmpty()) {
