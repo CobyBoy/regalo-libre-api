@@ -1,0 +1,20 @@
+USE [regalo-libre-db]
+
+CREATE TABLE auth0.auth0user
+(
+    auth0_user_id BIGINT       NOT NULL,
+    profile_id    BIGINT       NOT NULL,
+    name          VARCHAR(100) NOT NULL,
+    nickname      VARCHAR(15)  NOT NULL,
+    picture_url   VARCHAR(255),
+    sub           VARCHAR(50)  NOT NULL,
+    updated_at    VARCHAR(30)  NOT NULL,
+    PRIMARY KEY (auth0_user_id),
+    CONSTRAINT chk_nickname_length CHECK (LEN(nickname) >= 3),
+    CONSTRAINT FK_auth0user_profile FOREIGN KEY (profile_id) REFERENCES wishlist.profile (profile_id)
+);
+
+-- Create the unique nonclustered index
+CREATE UNIQUE NONCLUSTERED INDEX UK_idx_unique_profile_id
+    ON auth0.auth0user (profile_id)
+    WHERE profile_id IS NOT NULL;

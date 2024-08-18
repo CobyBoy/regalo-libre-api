@@ -8,11 +8,11 @@ databaseChangeLog:
             splitStatements: false
             endDelimiter: ";"
   - changeSet:
-      id: create_access_token
+      id: create_profile
       author: coby
       changes:
         - sqlFile:
-            path: liquibase/sql/meli/create_access_token.sql
+            path: liquibase/sql/wishlist/create_profile.sql
             splitStatements: false
             endDelimiter: ";"
   - changeSet:
@@ -20,9 +20,18 @@ databaseChangeLog:
       author: coby
       changes:
         - sqlFile:
-            path: liquibase/sql/meli/create_user.sql
+            path: liquibase/sql/auth0/create_auth0_user.sql
             splitStatements: false
             endDelimiter: ";"
+  - changeSet:
+      id: create_access_token
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/sql/meli/create_access_token.sql
+            splitStatements: false
+            endDelimiter: ";"
+
   - changeSet:
       id: create_bookmark
       author: coby

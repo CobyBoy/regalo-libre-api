@@ -1,10 +1,10 @@
-USE [wishlist-db]
+USE [regalo-libre-db]
 -- User-Bookmarked Products Many-to-Many Relationship
 CREATE TABLE meli.user_bookmark
 (
-    user_id BIGINT       NOT NULL,
-    meli_id varchar(255) NOT NULL,
-    CONSTRAINT FK_userproduct_user FOREIGN KEY (user_id) REFERENCES meli.muser (id),
-    CONSTRAINT FK_userproduct_product FOREIGN KEY (meli_id) REFERENCES meli.bookmark (id),
+    user_id BIGINT        NOT NULL,
+    meli_id NVARCHAR(255) NOT NULL,
+    CONSTRAINT FK_user_bookmark_auth0user FOREIGN KEY (user_id) REFERENCES auth0.auth0user (auth0_user_id),
+    CONSTRAINT FK_userbookmark_bookmark FOREIGN KEY (meli_id) REFERENCES meli.bookmark (meli_id),
     PRIMARY KEY (user_id, meli_id)
 );
