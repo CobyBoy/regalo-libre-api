@@ -15,11 +15,11 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "authuser", schema = "oauth")
-public class OAuthUser {
+@Table(name = "auth0user", schema = "auth0")
+public class Auth0User {
     @Id
     @JsonProperty("sub")
-    @Column(name = "oauth_user_id")
+    @Column(name = "auth0_user_id")
     private Long id;
     @JsonProperty("sub")
     private String sub;
@@ -36,12 +36,12 @@ public class OAuthUser {
     @JoinTable(
             name = "user_bookmark",
             schema = "meli",
-            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "oauth_user_id"),
-            inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "id"))
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "auth0_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "meli_id"))
     private List<BookmarkedProduct> bookmarkedProducts = new ArrayList<>();
 
-    public static class OAuthUserBuilder {
-        public OAuthUserBuilder fullStringId(String fullString) {
+    public static class Auth0UserBuilder {
+        public Auth0UserBuilder fullStringId(String fullString) {
             try {
                 String[] parts = fullString.split("\\|");
                 if (parts.length > 0) {
