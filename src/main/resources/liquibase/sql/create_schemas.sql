@@ -25,3 +25,17 @@ ELSE
     BEGIN
         PRINT 'Schema wishlist already exists.';
     END
+
+-- Create the schema wishlist
+IF NOT EXISTS(SELECT 1
+              FROM sys.schemas
+              WHERE name = 'auth0')
+    BEGIN
+        -- Create the schema if it does not exist
+        EXEC ('CREATE SCHEMA auth0;');
+        PRINT 'Schema auth0 created.';
+    END
+ELSE
+    BEGIN
+        PRINT 'Schema auth0 already exists.';
+    END
