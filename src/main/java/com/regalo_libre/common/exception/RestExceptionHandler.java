@@ -3,10 +3,12 @@ package com.regalo_libre.common.exception;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.regalo_libre.common.dtos.ApiErrorDto;
 import com.regalo_libre.mercadolibre.auth.exception.TokenNotFoundException;
-import com.regalo_libre.profile.ProfileNotPublicException;
+import com.regalo_libre.profile.exception.ProfileNotPublicException;
+import com.regalo_libre.profile.exception.ProfileNicknameAlreadyExists;
 import com.regalo_libre.wishlist.exception.GiftAlreadyInWishlistException;
 import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
 import com.regalo_libre.wishlist.exception.UnableToDeleteWishlistException;
+import com.regalo_libre.wishlist.exception.WishlistWithSameNameAlreadyExistsException;
 import jakarta.servlet.ServletException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -159,5 +161,27 @@ public class RestExceptionHandler {
                         .message(ex.getMessage())
                         .build());
 
+    }
+
+    @ExceptionHandler(WishlistWithSameNameAlreadyExistsException.class)
+    public ResponseEntity<ApiErrorDto> handleWishlistWithSameNameAlreadyExistsException(WishlistWithSameNameAlreadyExistsException ex) {
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(ProfileNicknameAlreadyExists.class)
+    public ResponseEntity<ApiErrorDto> handleProfileNicknameAlreadyExists(ProfileNicknameAlreadyExists ex) {
+        HttpStatus httpStatus = HttpStatus.CONFLICT;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build());
     }
 }
