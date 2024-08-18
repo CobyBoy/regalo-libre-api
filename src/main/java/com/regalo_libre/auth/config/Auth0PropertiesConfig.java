@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "okta.oauth2")
-public class OauthPropertiesConfig {
+public class Auth0PropertiesConfig {
     private String authorizationUrl;
     private String issuer;
     private String clientId;

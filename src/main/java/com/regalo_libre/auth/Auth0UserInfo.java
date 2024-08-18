@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.ToString;
 
 @ToString
-public class OAuthUserInfo {
+public class Auth0UserInfo {
     @JsonProperty("name")
     String name;
     @JsonProperty("nickname")

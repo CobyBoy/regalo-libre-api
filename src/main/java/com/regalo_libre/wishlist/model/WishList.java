@@ -1,6 +1,6 @@
 package com.regalo_libre.wishlist.model;
 
-import com.regalo_libre.auth.model.OAuthUser;
+import com.regalo_libre.auth.model.Auth0User;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.utils.IdGenerator;
 import jakarta.persistence.*;
@@ -39,12 +39,12 @@ public class WishList {
             name = "wishlist_bookmark",
             schema = "wishlist",
             joinColumns = @JoinColumn(name = "wishlist_id"),
-            inverseJoinColumns = @JoinColumn(name = "bookmark_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "bookmark_id", referencedColumnName = "meli_id"))
     private List<BookmarkedProduct> gifts = new ArrayList<>();
 
     @ManyToOne
-    @JoinColumn(name = "oauth_user_id", nullable = false, referencedColumnName = "oauth_user_id")
-    private OAuthUser user;
+    @JoinColumn(name = "auth0_user_id", nullable = false, referencedColumnName = "auth0_user_id")
+    private Auth0User user;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     @Transient

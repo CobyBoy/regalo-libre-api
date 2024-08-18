@@ -1,7 +1,7 @@
 package com.regalo_libre.bookmarks;
 
-import com.regalo_libre.auth.OAuthUserService;
-import com.regalo_libre.auth.model.OAuthUser;
+import com.regalo_libre.auth.Auth0UserService;
+import com.regalo_libre.auth.model.Auth0User;
 import com.regalo_libre.mercadolibre.auth.*;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
 import com.regalo_libre.mercadolibre.bookmark.Bookmark;
@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
 public class BookmarksServiceImpl implements IBookmarksService {
     private final BookmarkRepository bookmarkRepository;
     private final IMercadoLibreAccessTokenService mercadoLibreAccessTokenService;
-    private final OAuthUserService oAuthUserService;
+    private final Auth0UserService auth0UserService;
 
     @Cacheable(value = "userBookmarks", unless = "#result == null")
     public Page<BookmarkDTO> getAllBookmarks(Long userId, Pageable pageable) {
         MercadoLibreAccessToken token = mercadoLibreAccessTokenService.getMercadoLibreAccessToken(userId);
-        OAuthUser user = oAuthUserService.findUserById(userId);
+        Auth0User user = auth0UserService.findAuth0UserById(userId);
         return checkForApiBookmarksAndSavedInDbBookmarks(user, token, pageable);
     }
 
@@ -68,7 +68,7 @@ public class BookmarksServiceImpl implements IBookmarksService {
                 .block();
     }
 
-    private Page<BookmarkDTO> checkForApiBookmarksAndSavedInDbBookmarks(OAuthUser user,
+    private Page<BookmarkDTO> checkForApiBookmarksAndSavedInDbBookmarks(Auth0User user,
                                                                         MercadoLibreAccessToken token,
                                                                         Pageable pageable) {
         List<BookmarkedProduct> userApiBookmarks = getAllBookmarks(token);
@@ -82,7 +82,7 @@ public class BookmarksServiceImpl implements IBookmarksService {
     }
 
     @Transactional
-    private Page<BookmarkDTO> synchronizeBookmarks(OAuthUser user,
+    private Page<BookmarkDTO> synchronizeBookmarks(Auth0User user,
                                                    List<BookmarkedProduct> userApiBookmarks,
                                                    List<BookmarkedProduct> allExistingBookmarks,
                                                    Pageable pageable
@@ -106,14 +106,14 @@ public class BookmarksServiceImpl implements IBookmarksService {
             for (BookmarkedProduct bookmarkedProduct : productsInCommon) {
                 user.getBookmarkedProducts().add(bookmarkedProduct);
             }
-            oAuthUserService.saveOAuthUser(user);
+            auth0UserService.saveAuth0User(user);
         }
         removeBookmarksThatDontBelongToAnyUser();
         return getFavoritesDto(user.getId(), pageable);
     }
 
     @Transactional
-    private void saveMeLiBookmarksIfDbIsEmpty(OAuthUser user,
+    private void saveMeLiBookmarksIfDbIsEmpty(Auth0User user,
                                               List<BookmarkedProduct> userApiBookmarks,
                                               List<BookmarkedProduct> allExistingBookmarks) {
         // if no bookmarks in db, save the ones from the api and also set it to the current user
@@ -154,7 +154,7 @@ public class BookmarksServiceImpl implements IBookmarksService {
 
     private List<BookmarkedProduct> getBookmarksInCommon(List<BookmarkedProduct> allExistingBookmarks,
                                                          Map<String, BookmarkedProduct> apiProductMap,
-                                                         OAuthUser user) {
+                                                         Auth0User user) {
         List<BookmarkedProduct> productsInCommon = new ArrayList<>();
         for (BookmarkedProduct bookmarkedProduct : allExistingBookmarks) {
             BookmarkedProduct inCommonBookmark = apiProductMap.get(bookmarkedProduct.getId());
@@ -174,7 +174,7 @@ public class BookmarksServiceImpl implements IBookmarksService {
     }
 
     @Transactional
-    private void saveNewBookmarksAddedInMeli(OAuthUser user,
+    private void saveNewBookmarksAddedInMeli(Auth0User user,
                                              List<BookmarkedProduct> allExistingBookmarks,
                                              List<BookmarkedProduct> userApiBookmarks, Map<String,
             BookmarkedProduct> existingProductMap) {
@@ -187,12 +187,12 @@ public class BookmarksServiceImpl implements IBookmarksService {
     }
 
     @Transactional
-    private void removeBookmarksThatHaveBeenRemovedFromMeli(OAuthUser user, List<BookmarkedProduct> allExistingBookmarks, Map<String, BookmarkedProduct> existingProductMap, Map<String, BookmarkedProduct> apiProductMap) {
+    private void removeBookmarksThatHaveBeenRemovedFromMeli(Auth0User user, List<BookmarkedProduct> allExistingBookmarks, Map<String, BookmarkedProduct> existingProductMap, Map<String, BookmarkedProduct> apiProductMap) {
         // Get the current bookmarks that are not in the api and remove them to be in sync
         List<BookmarkedProduct> bookmarksToRemoveForThisUser = getListOfBookmarksToRemoveThatAreNotOnMeli(allExistingBookmarks, existingProductMap, apiProductMap);
         if (!bookmarksToRemoveForThisUser.isEmpty()) {
             user.getBookmarkedProducts().removeAll(bookmarksToRemoveForThisUser);
-            oAuthUserService.saveOAuthUser(user);
+            auth0UserService.saveAuth0User(user);
         }
     }
 

@@ -1,17 +1,17 @@
 package com.regalo_libre.auth.response;
 
-import com.regalo_libre.auth.model.OAuthUser;
+import com.regalo_libre.auth.model.Auth0User;
 import com.regalo_libre.utils.DtoConverter;
 import lombok.Builder;
 
 @Builder
-public record OAuthPublicUserDTO(
+public record Auth0PublicUserDTO(
         String nickname
-) implements DtoConverter<OAuthUser, OAuthPublicUserDTO> {
+) implements DtoConverter<Auth0User, Auth0PublicUserDTO> {
 
     @Override
-    public OAuthPublicUserDTO toDto(OAuthUser entity) {
-        return OAuthPublicUserDTO.builder()
+    public Auth0PublicUserDTO toDto(Auth0User entity) {
+        return Auth0PublicUserDTO.builder()
                 .nickname(entity.getNickname())
                 .build();
     }
