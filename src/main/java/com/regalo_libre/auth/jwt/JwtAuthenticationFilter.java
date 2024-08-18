@@ -1,9 +1,17 @@
 package com.regalo_libre.auth.jwt;
 
+import com.auth0.jwk.Jwk;
 import com.auth0.jwk.JwkException;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.UrlJwkProvider;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.regalo_libre.auth.config.Auth0PropertiesConfig;
 import com.regalo_libre.common.dtos.ApiErrorDto;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,13 +28,18 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.interfaces.RSAPublicKey;
+import java.time.Duration;
 import java.util.Collections;
 
 @RequiredArgsConstructor
 @Component
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
+    private final Auth0PropertiesConfig auth0PropertiesConfig;
+    private static final Duration CLOCK_SKEW = Duration.ofMinutes(5);
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -35,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (accessToken != null) {
             try {
-                DecodedJWT jwt = jwtService.verifyAndDecodeToken(accessToken);
+                DecodedJWT jwt = verifyAndDecodeToken(accessToken);
                 var subject = jwt.getSubject().split("\\|");
                 Long userId = Long.parseLong(subject[subject.length - 1]);
                 if (SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -82,6 +95,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // Implement token validation logic here
         // verifying the token with Auth0 or checking its signature
         return true;
+    }
+
+    public DecodedJWT verifyAndDecodeToken(String token) throws JWTVerificationException, MalformedURLException, JwkException {
+        DecodedJWT jwt = JWT.decode(token);
+        JwkProvider provider = new UrlJwkProvider(new URL(auth0PropertiesConfig.getJwksUrl()));
+        Jwk jwk = provider.get(jwt.getKeyId());
+        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
+
+        JWTVerifier verifier = JWT.require(algorithm)
+                .withIssuer(auth0PropertiesConfig.getIssuer())
+                .withAudience(auth0PropertiesConfig.getAudience())
+                .acceptLeeway(CLOCK_SKEW.getSeconds())
+                .build();
+
+        return verifier.verify(token);
     }
 
 }
