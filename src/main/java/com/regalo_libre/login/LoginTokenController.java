@@ -1,6 +1,6 @@
 package com.regalo_libre.login;
 
-import com.regalo_libre.auth.jwt.OAuthAccessToken;
+import com.regalo_libre.auth.jwt.Auth0AccessToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -16,10 +16,10 @@ public class LoginTokenController {
     private final LoginTokenServiceImpl loginTokenService;
 
     @GetMapping("/api/v1/token")
-    public ResponseEntity<Object> getOauthToken(@RequestParam("code") String code) {
-        OAuthAccessToken response = loginTokenService.getOAuthToken(code);
+    public ResponseEntity<Object> getAuth0Token(@RequestParam("code") String code) {
+        Auth0AccessToken response = loginTokenService.getAuth0Token(code);
 
-        log.info("Returning oauth token {}", response);
+        log.info("Returning auth0 token {}", response);
         return ResponseEntity.ok(response);
     }
 

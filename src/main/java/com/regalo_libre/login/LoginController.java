@@ -1,6 +1,6 @@
 package com.regalo_libre.login;
 
-import com.regalo_libre.auth.config.OauthPropertiesConfig;
+import com.regalo_libre.auth.config.Auth0PropertiesConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,15 +11,15 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RestController
 @RequiredArgsConstructor
 public class LoginController {
-    private final OauthPropertiesConfig oauthPropertiesConfig;
+    private final Auth0PropertiesConfig auth0PropertiesConfig;
 
     @GetMapping("/api/v1/login")
     public RedirectView authorize() {
-        String authorizationUrl = oauthPropertiesConfig.getAuthorizationUrl() +
+        String authorizationUrl = auth0PropertiesConfig.getAuthorizationUrl() +
                 "?response_type=code" +
-                "&audience=" + oauthPropertiesConfig.getAudience() +
-                "&client_id=" + oauthPropertiesConfig.getClientId() +
-                "&redirect_uri=" + oauthPropertiesConfig.getRedirectLoginUri() +
+                "&audience=" + auth0PropertiesConfig.getAudience() +
+                "&client_id=" + auth0PropertiesConfig.getClientId() +
+                "&redirect_uri=" + auth0PropertiesConfig.getRedirectLoginUri() +
                 "&scope=openid profile";
 
         return new RedirectView(authorizationUrl);
@@ -29,8 +29,8 @@ public class LoginController {
     public RedirectView logout() {
         RestTemplate restTemplate = new RestTemplate();
         String logoutRedirect = "https://localhost:4200/logout";
-        String url = UriComponentsBuilder.fromHttpUrl(oauthPropertiesConfig.getLogoutUrl())
-                .queryParam("client_id", oauthPropertiesConfig.getClientId())
+        String url = UriComponentsBuilder.fromHttpUrl(auth0PropertiesConfig.getLogoutUrl())
+                .queryParam("client_id", auth0PropertiesConfig.getClientId())
                 .queryParam("returnTo", logoutRedirect)
                 .toUriString();
 
