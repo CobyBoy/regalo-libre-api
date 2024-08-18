@@ -19,7 +19,7 @@ public interface WishlistService {
 
     void deleteWishlistById(Long id);
 
-    void addProductsToWishlist(Long id, List<String> productsIds);
+    WishlistServiceImpl.AddProductsResponse addProductsToWishlist(Long id, List<String> productsIds);
 
     void removeProductsFromWishList(Long id, List<String> productsIds);
 
