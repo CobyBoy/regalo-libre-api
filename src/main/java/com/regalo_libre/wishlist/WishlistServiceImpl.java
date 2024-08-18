@@ -1,16 +1,16 @@
 package com.regalo_libre.wishlist;
 
-import com.regalo_libre.auth.OAuthUserService;
+import com.regalo_libre.auth.Auth0UserService;
+import com.regalo_libre.auth.model.Auth0User;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
 import com.regalo_libre.wishlist.dto.*;
-import com.regalo_libre.wishlist.exception.GiftAlreadyInWishlistException;
-import com.regalo_libre.wishlist.exception.PublicWishListNotFoundException;
-import com.regalo_libre.wishlist.exception.UnableToDeleteWishlistException;
-import com.regalo_libre.wishlist.exception.WishlistNotFoundException;
+import com.regalo_libre.wishlist.exception.*;
 import com.regalo_libre.wishlist.model.WishList;
 import jakarta.transaction.Transactional;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,21 +30,25 @@ public class WishlistServiceImpl implements WishlistService {
     public static final String LA_LISTA_NO_EXISTE = "La lista no existe";
     private final WishlistRepository wishlistRepository;
     private final BookmarkRepository mercadoLibreProductRepo;
-    private final OAuthUserService oAuthUserService;
+    private final Auth0UserService auth0UserService;
 
     @Transactional
     public WishListDto createWishlist(WishListCreateRequestDto wishListRequest, Long userId) {
         long startTime = System.nanoTime();
-        var oAuthUser = oAuthUserService.getOAuthUserById(userId);
+        Auth0User auth0User = auth0UserService.getAuth0UserById(userId);
         long userFetchTime = System.nanoTime();
         log.info("start and user ftech time {}", (userFetchTime - startTime) / 1_000_000.0 + "ms");
+        WishList wishListByName = wishlistRepository.findByNameAndUserId(wishListRequest.name(), userId);
+        if (wishListByName != null) {
+            throw new WishlistWithSameNameAlreadyExistsException("Ya existe una lista con este nombre");
+        }
         WishList wishList = wishlistRepository.save(
                 WishList.builder()
                         .name(wishListRequest.name())
                         .description(wishListRequest.description())
                         .isPrivate(wishListRequest.isPrivate())
                         .gifts(Collections.emptyList())
-                        .user(oAuthUser)
+                        .user(auth0User)
                         .build());
         long saveTime = System.nanoTime();
         long endTime = System.nanoTime();
@@ -85,8 +89,7 @@ public class WishlistServiceImpl implements WishlistService {
         return new WishListDto(wishlistRepository.save(wishlistToEdit));
     }
 
-    @Transactional
-    public void addProductsToWishlist(Long id, List<String> productsIds) {
+    public AddProductsResponse addProductsToWishlist(Long id, List<String> productsIds) {
         WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException(LA_LISTA_NO_EXISTE));
         List<BookmarkedProduct> newProducts = mercadoLibreProductRepo.findAllByIdIn(productsIds);
         List<BookmarkedProduct> existingProducts = wishList.getGifts();
@@ -94,17 +97,24 @@ public class WishlistServiceImpl implements WishlistService {
                 .map(BookmarkedProduct::getId)
                 .collect(Collectors.toSet());
         List<String> errors = new ArrayList<>();
+        List<String> productsToAdd = new ArrayList<>();
 
         for (BookmarkedProduct newProduct : newProducts) {
             if (existingProductIds.contains(newProduct.getId())) {
                 errors.add(newProduct.getTitle() + " ya está en la lista " + wishList.getName());
-            } else existingProducts.add(newProduct);
+            } else {
+                existingProducts.add(newProduct);
+                productsToAdd.add(newProduct.getTitle() + "agregado a lista " + wishList.getName());
+            }
         }
+
         wishList.setUpdatedAt(LocalDateTime.now());
         wishlistRepository.save(wishList);
-        if (!errors.isEmpty()) {
-            throw new GiftAlreadyInWishlistException(errors.toString());
-        }
+
+        AddProductsResponse addProductsResponse = new AddProductsResponse();
+        addProductsResponse.setProductsAdded(productsToAdd);
+        addProductsResponse.setErrors(errors);
+        return addProductsResponse;
     }
 
     @Transactional
@@ -131,5 +141,12 @@ public class WishlistServiceImpl implements WishlistService {
 
     public List<WishListDto> findAllPublicWishlistsByUserNickname(String nickname) {
         return wishlistRepository.findPublicWishlistForPublicProfile(nickname).stream().map(WishListDto::new).toList();
+    }
+
+    @Getter
+    @Setter
+    public static class AddProductsResponse {
+        private List<String> productsAdded;
+        private List<String> errors;
     }
 }
