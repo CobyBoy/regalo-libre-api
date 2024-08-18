@@ -40,11 +40,6 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.GET, "/api/v1/meli/code").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/login/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/token/**").permitAll();
-                    // http.requestMatchers(HttpMethod.GET, "/oauth2/**").permitAll();
-                    /*http.requestMatchers(HttpMethod.POST, "/api/v1/logout").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/token/**").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/error/**").permitAll();
-                    http.requestMatchers(new RegexRequestMatcher("/api/profile/[^/]+", "GET")).permitAll();*/
                     http.requestMatchers(HttpMethod.GET, "/api/v1/lists/public/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/lists/user/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/profile/public/**").permitAll();
