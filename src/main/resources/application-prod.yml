@@ -8,7 +8,7 @@ spring:
     password: ${PROD_DB_PW}
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -17,3 +17,23 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:/liquibase/master.yml
+meli:
+  client_id: ${MELI_CLIENT_ID}
+  client_secret: ${MELI_CLIENT_SECRET}
+  redirect_uri: https://192.168.0.37:8080/api/v1/meli/code
+  token_url: https://api.mercadolibre.com/oauth/token
+okta:
+  oauth2:
+    authorization-url: ${AUTH0_URL}/authorize
+    logout-url: ${AUTH0_URL}/v2/logout
+    issuer: ${AUTH0_URL}/
+    client-id: ${AUTH0_CLIENT_ID}
+    client-secret: ${AUTH0_CLIENT_SECRET}
+    audience: ${AUTH0_URL}/api/v2/
+    jwks-url: ${AUTH0_URL}/.well-known/jwks.json
+    redirect-login-uri: ${AUTH0_REDIRECT_LOGIN_URI_PROD}
+    login-token-url: ${AUTH0_URL}/oauth/token
+    user-info-url: ${AUTH0_URL}/userinfo
+    api-management-audience: ${AUTH0_URL}/api/v2/
+    api-management-token-url: ${AUTH0_URL}/oauth/token
+    api-management-users-url: ${AUTH0_URL}/api/v2/users/

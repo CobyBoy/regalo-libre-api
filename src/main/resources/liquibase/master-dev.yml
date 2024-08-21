@@ -7,3 +7,60 @@ databaseChangeLog:
             path: liquibase/postgresql/create_schemas.sql
             splitStatements: false
             endDelimiter: ";"
+  - changeSet:
+      id: create_profile
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/postgresql/wishlist/create_profile.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_user
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/postgresql/auth0/create_auth0_user.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_access_token
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/postgresql/meli/create_access_token.sql
+            splitStatements: false
+            endDelimiter: ";"
+
+  - changeSet:
+      id: create_bookmark
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/postgresql/meli/create_bookmark.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_user_bookmark
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/postgresql/meli/create_user_bookmark.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_wishlists
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/postgresql/wishlist/create_wishlist.sql
+            splitStatements: false
+            endDelimiter: ";"
+  - changeSet:
+      id: create_wishlist_bookmark
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/postgresql/wishlist/create_wishlist_bookmark.sql
+            splitStatements: false
+            endDelimiter: ";"
