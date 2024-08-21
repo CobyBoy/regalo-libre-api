@@ -1,11 +1,12 @@
-package com.regalo_libre.bookmarks;
+package com.regalo_libre.bookmarks.impl;
 
 import com.regalo_libre.auth.Auth0UserService;
 import com.regalo_libre.auth.model.Auth0User;
+import com.regalo_libre.bookmarks.BookmarkApiService;
+import com.regalo_libre.bookmarks.IBookmarksService;
+import com.regalo_libre.bookmarks.dto.BookmarkDTO;
 import com.regalo_libre.mercadolibre.auth.*;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
-import com.regalo_libre.mercadolibre.bookmark.Bookmark;
-import com.regalo_libre.mercadolibre.bookmark.BookmarkItem;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
 import jakarta.transaction.Transactional;
@@ -15,8 +16,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Flux;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +29,7 @@ public class BookmarksServiceImpl implements IBookmarksService {
     private final BookmarkRepository bookmarkRepository;
     private final IMercadoLibreAccessTokenService mercadoLibreAccessTokenService;
     private final Auth0UserService auth0UserService;
+    private final BookmarkApiService bookmarkApiService;
 
     @Cacheable(value = "userBookmarks", unless = "#result == null")
     public Page<BookmarkDTO> getAllBookmarks(Long userId, Pageable pageable) {
@@ -38,54 +38,24 @@ public class BookmarksServiceImpl implements IBookmarksService {
         return checkForApiBookmarksAndSavedInDbBookmarks(user, token, pageable);
     }
 
-    private List<BookmarkedProduct> getAllBookmarks(MercadoLibreAccessToken token) {
-        WebClient webClient = mercadoLibreAccessTokenService.getWebClientWithABearerToken(token.getAccessToken());
-        Flux<Bookmark> bookmarksFlux = fetchBookmarksFromApi(webClient);
-        return fetchBookmarksByItemId(bookmarksFlux, webClient);
-    }
-
-    private Flux<Bookmark> fetchBookmarksFromApi(WebClient webClient) {
-        String bookmarksUrl = "/users/me/bookmarks";
-        return webClient.get()
-                .uri(bookmarksUrl)
-                .retrieve()
-                .bodyToFlux(Bookmark.class);
-    }
-
-    private List<BookmarkedProduct> fetchBookmarksByItemId(Flux<Bookmark> bookmarksFlux, WebClient webClient) {
-        return bookmarksFlux.flatMapSequential(bookmark ->
-                        webClient.get()
-                                .uri("/items?ids={itemId}", bookmark.getItemId())
-                                .retrieve()
-                                .bodyToFlux(BookmarkItem.class)
-                                .map(bookmarkItem -> {
-                                    BookmarkedProduct product = bookmarkItem.body();
-                                    product.setBookmarkedDate(bookmark.getBookmarkedDate());
-                                    return product;
-                                })
-                )
-                .collectList()
-                .block();
-    }
-
     private Page<BookmarkDTO> checkForApiBookmarksAndSavedInDbBookmarks(Auth0User user,
                                                                         MercadoLibreAccessToken token,
                                                                         Pageable pageable) {
-        List<BookmarkedProduct> userApiBookmarks = getAllBookmarks(token);
+        List<BookmarkedProduct> userApiBookmarks = bookmarkApiService.getAllBookmarks(token);
         // Get all from bookmark table, not only from the user
         List<BookmarkedProduct> allExistingBookmarks = bookmarkRepository.findAll();
         if (userApiBookmarks.isEmpty() && allExistingBookmarks.isEmpty()) {
             // If no api products and no bookmarks
             return Page.empty();
         }
-        return synchronizeBookmarks(user, userApiBookmarks, allExistingBookmarks, pageable);
+        synchronizeBookmarks(user, userApiBookmarks, allExistingBookmarks);
+        return getFavoritesDto(user.getId(), pageable);
     }
 
     @Transactional
-    private Page<BookmarkDTO> synchronizeBookmarks(Auth0User user,
-                                                   List<BookmarkedProduct> userApiBookmarks,
-                                                   List<BookmarkedProduct> allExistingBookmarks,
-                                                   Pageable pageable
+    private void synchronizeBookmarks(Auth0User user,
+                                      List<BookmarkedProduct> userApiBookmarks,
+                                      List<BookmarkedProduct> allExistingBookmarks
     ) {
         saveMeLiBookmarksIfDbIsEmpty(user, userApiBookmarks, allExistingBookmarks);
 
@@ -109,7 +79,6 @@ public class BookmarksServiceImpl implements IBookmarksService {
             auth0UserService.saveAuth0User(user);
         }
         removeBookmarksThatDontBelongToAnyUser();
-        return getFavoritesDto(user.getId(), pageable);
     }
 
     @Transactional
@@ -187,7 +156,9 @@ public class BookmarksServiceImpl implements IBookmarksService {
     }
 
     @Transactional
-    private void removeBookmarksThatHaveBeenRemovedFromMeli(Auth0User user, List<BookmarkedProduct> allExistingBookmarks, Map<String, BookmarkedProduct> existingProductMap, Map<String, BookmarkedProduct> apiProductMap) {
+    private void removeBookmarksThatHaveBeenRemovedFromMeli(Auth0User user, List<BookmarkedProduct> allExistingBookmarks,
+                                                            Map<String, BookmarkedProduct> existingProductMap,
+                                                            Map<String, BookmarkedProduct> apiProductMap) {
         // Get the current bookmarks that are not in the api and remove them to be in sync
         List<BookmarkedProduct> bookmarksToRemoveForThisUser = getListOfBookmarksToRemoveThatAreNotOnMeli(allExistingBookmarks, existingProductMap, apiProductMap);
         if (!bookmarksToRemoveForThisUser.isEmpty()) {
