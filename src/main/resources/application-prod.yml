@@ -1,0 +1,19 @@
+spring:
+  devtools:
+    restart:
+      enabled: false
+  datasource:
+    url: jdbc:${JDBC_PROD}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PW}
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        hbm2ddl:
+          auto: validate
+  liquibase:
+    enabled: true
+    change-log: classpath:/liquibase/master.yml
