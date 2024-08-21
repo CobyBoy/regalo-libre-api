@@ -1,4 +1,4 @@
-package com.regalo_libre.bookmarks;
+package com.regalo_libre.bookmarks.dto;
 
 import java.util.List;
 

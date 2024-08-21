@@ -1,5 +1,6 @@
 package com.regalo_libre.bookmarks;
 
+import com.regalo_libre.bookmarks.dto.BookmarkDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
