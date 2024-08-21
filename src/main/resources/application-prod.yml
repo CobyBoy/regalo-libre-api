@@ -3,15 +3,17 @@ spring:
     restart:
       enabled: false
   datasource:
-    url: jdbc:${JDBC_DEV}
+    url: jdbc:${JDBC_PROD}
+    username: ${PROD_DB_USERNAME}
+    password: ${PROD_DB_PW}
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create-drop
     properties:
       hibernate:
-        format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        show_sql: true
+        hbm2ddl:
+          auto: validate
   liquibase:
     enabled: true
-    change-log: classpath:/liquibase/master-dev.yml
+    change-log: classpath:/liquibase/master.yml
