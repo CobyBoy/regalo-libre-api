@@ -126,7 +126,7 @@
 				<includes>
 					<include>**/*.yml</include>
 					<include>*.p12</include>
-					<include>liquibase/*</include>
+					<include>liquibase/**/*</include>
 				</includes>
 			</resource>
 		</resources>
