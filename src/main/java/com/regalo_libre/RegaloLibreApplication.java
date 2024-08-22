@@ -8,10 +8,10 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @SpringBootApplication
 @EnableAsync
 @EnableCaching
-public class WishlistApplication {
+public class RegaloLibreApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(WishlistApplication.class, args);
+		SpringApplication.run(RegaloLibreApplication.class, args);
 	}
 
 }
