@@ -21,6 +21,9 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
+      - name: Check connectivity
+        run: nc -zv ${{ secrets.EC2_HOST }} 22
+
       - name: Deploy to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
