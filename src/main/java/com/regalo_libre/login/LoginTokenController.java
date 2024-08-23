@@ -1,6 +1,7 @@
 package com.regalo_libre.login;
 
 import com.regalo_libre.auth.jwt.Auth0AccessToken;
+import com.regalo_libre.login.exception.Auth0TokenIsUndefinedException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.*;
@@ -17,6 +18,9 @@ public class LoginTokenController {
 
     @GetMapping("/api/v1/token")
     public ResponseEntity<Object> getAuth0Token(@RequestParam("code") String code) {
+        if (code.equals("undefined")) {
+            throw new Auth0TokenIsUndefinedException("Error obteniendo código de autorización.");
+        }
         Auth0AccessToken response = loginTokenService.getAuth0Token(code);
 
         log.info("Returning auth0 token {}", response);

@@ -2,6 +2,7 @@ package com.regalo_libre.common.exception;
 
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.regalo_libre.common.dtos.ApiErrorDto;
+import com.regalo_libre.login.exception.Auth0TokenIsUndefinedException;
 import com.regalo_libre.mercadolibre.auth.exception.TokenNotFoundException;
 import com.regalo_libre.profile.exception.ProfileNotPublicException;
 import com.regalo_libre.profile.exception.ProfileNicknameAlreadyExists;
@@ -175,8 +176,19 @@ public class RestExceptionHandler {
     }
 
     @ExceptionHandler(ProfileNicknameAlreadyExists.class)
-    public ResponseEntity<ApiErrorDto> handleProfileNicknameAlreadyExists(ProfileNicknameAlreadyExists ex) {
+    public ResponseEntity<ApiErrorDto> handleProfileNicknameAlreadyExistsException(ProfileNicknameAlreadyExists ex) {
         HttpStatus httpStatus = HttpStatus.CONFLICT;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(Auth0TokenIsUndefinedException.class)
+    public ResponseEntity<ApiErrorDto> handleAuth0TokenIsUndefinedException(Auth0TokenIsUndefinedException ex) {
+        HttpStatus httpStatus = HttpStatus.FORBIDDEN;
         return ResponseEntity.status(httpStatus)
                 .body(ApiErrorDto.builder()
                         .httpStatus(httpStatus)
