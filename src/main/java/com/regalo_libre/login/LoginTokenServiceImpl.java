@@ -4,6 +4,7 @@ import com.regalo_libre.auth.config.Auth0PropertiesConfig;
 import com.regalo_libre.auth.jwt.Auth0AccessToken;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -19,6 +20,9 @@ import org.springframework.web.client.RestTemplate;
 public class LoginTokenServiceImpl {
     private final Auth0PropertiesConfig auth0PropertiesConfig;
 
+    @Value("${ui.url}")
+    private String uiUrl;
+
     public Auth0AccessToken getAuth0Token(String code) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
@@ -29,9 +33,10 @@ public class LoginTokenServiceImpl {
         map.add("client_id", auth0PropertiesConfig.getClientId());
         map.add("client_secret", auth0PropertiesConfig.getClientSecret());
         map.add("code", code);
-        map.add("redirect_uri", "https://192.168.0.37:4200");
+        map.add("redirect_uri", uiUrl);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        log.info("Getting auth0 token with {}", map);
         Auth0AccessToken response;
         try {
             response = restTemplate.postForEntity(
@@ -40,7 +45,7 @@ public class LoginTokenServiceImpl {
                     Auth0AccessToken.class
             ).getBody();
         } catch (HttpClientErrorException e) {
-            log.error(e.getMessage());
+            log.error("Failed to get auth0 token {}", e.getMessage());
             throw e;
         }
         log.info("Returning auth0 token {}", response);
