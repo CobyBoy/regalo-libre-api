@@ -21,8 +21,16 @@ jobs:
       - name: Build with Maven
         run: mvn clean package -DskipTests
 
+      - name: Verify JAR File
+        run: |
+          echo "Listing files in target directory..."
+          ls -l target/
+
+
       - name: Check connectivity
-        run: nc -zv ${{ secrets.EC2_HOST }} 22
+        run: |
+          echo "Checking network connectivity to ${HOST} on port 22..."
+          nc -zv ${{ secrets.EC2_HOST }} 22
 
       - name: Deploy to EC2
         env:
@@ -31,8 +39,10 @@ jobs:
           USER: ${{ secrets.EC2_USER }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          scp -i private_key -o StrictHostKeyChecking=no target/RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:~/RegaloLibre-0.0.1-SNAPSHOT.jar
-          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
+          echo "Transferring JAR file to EC2..."
+          scp -i private_key -o StrictHostKeyChecking=no -vvv target/RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:~/RegaloLibre-0.0.1-SNAPSHOT.jar
+          echo "Deploying application on EC2..."
+          ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} '
             pkill -f RegaloLibre-0.0.1-SNAPSHOT.jar
             nohup java -jar RegaloLibre-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
           '
