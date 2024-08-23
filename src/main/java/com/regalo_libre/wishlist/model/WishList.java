@@ -1,8 +1,7 @@
 package com.regalo_libre.wishlist.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.regalo_libre.auth.model.Auth0User;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
-import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
 import com.regalo_libre.utils.IdGenerator;
 import jakarta.persistence.*;
 import lombok.*;
@@ -21,15 +20,16 @@ import java.util.UUID;
 @Table(name = "wishlist", schema = "wishlist")
 public class WishList {
     @Id
-    @Column(updatable = false)
+    @Column(updatable = false, name = "wishlist_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Long wishlistId;
     @Column(unique = true, nullable = false, updatable = false, name = "private_id")
     private UUID privateId;
     @Column(unique = true, nullable = false, updatable = false, name = "public_id")
     private String publicId;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String name;
+    @Column(length = 300)
     private String description;
     @Column
     private Boolean isPrivate;
@@ -39,20 +39,16 @@ public class WishList {
             name = "wishlist_bookmark",
             schema = "wishlist",
             joinColumns = @JoinColumn(name = "wishlist_id"),
-            inverseJoinColumns = @JoinColumn(name = "bookmark_id", referencedColumnName = "id"))
+            inverseJoinColumns = @JoinColumn(name = "bookmark_id", referencedColumnName = "meli_id"))
     private List<BookmarkedProduct> gifts = new ArrayList<>();
+
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false, referencedColumnName = "id")
-    @JsonIgnore
-    private MercadoLibreUser user;
+    @JoinColumn(name = "auth0_user_id", nullable = false, referencedColumnName = "auth0_user_id")
+    private Auth0User user;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     @Transient
     private int totalGifts;
-
-    public void setUser(MercadoLibreUser user) {
-        this.user = user;
-    }
 
     @PrePersist
     public void generateIds() {

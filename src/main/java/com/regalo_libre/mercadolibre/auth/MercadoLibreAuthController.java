@@ -1,19 +1,18 @@
 package com.regalo_libre.mercadolibre.auth;
 
-import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUserDTO;
-import com.regalo_libre.mercadolibre.auth.service.MercadoLibreAuthClientServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/tokenold")
+@RequestMapping("api/v1/meli")
 public class MercadoLibreAuthController {
-    private final MercadoLibreAuthClientServiceImpl mercadoLibreAuthClientServiceImpl;
+    private final IMercadoLibreAccessTokenService mercadoLibreAccessTokenService;
 
-    @GetMapping
-    public ResponseEntity<MercadoLibreUserDTO> getMercadoLibreUserData(@RequestParam(name = "authorizationCode") String authorizationCode) {
-        return ResponseEntity.ok(mercadoLibreAuthClientServiceImpl.getMercadoLibreUserData(authorizationCode));
+    @GetMapping("code")
+    public RedirectView getMercadoLibreUserData(@RequestParam(name = "code") String code) {
+        mercadoLibreAccessTokenService.exchangeCodeForToken(code);
+        return new RedirectView("https://192.168.0.37:4200/user/lists");
     }
 }

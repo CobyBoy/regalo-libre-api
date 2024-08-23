@@ -1,10 +1,10 @@
 package com.regalo_libre.mercadolibre.auth.model;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -15,19 +15,17 @@ import lombok.*;
 @Table(name = "access_token", schema = "meli")
 public class MercadoLibreAccessToken {
     @Id
-    @Column(name = "user_id")
     @JsonProperty("user_id")
     private Long userId;
     @JsonProperty("access_token")
     private String accessToken;
-    @JsonProperty("expires_in")
-    private int expiresIn;
-    private String scope;
     @JsonProperty("token_type")
     private String tokenType;
-    @OneToOne
-    @MapsId
-    @JoinColumn(name = "user_id")
-    @JsonIgnore
-    private MercadoLibreUser mercadoLibreUser;
+    @JsonProperty("expires_in")
+    private Integer expiresIn;
+    private String scope;
+    @JsonProperty("refresh_token")
+    private String refreshToken;
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
 }

@@ -1,12 +1,14 @@
 package com.regalo_libre.wishlist;
 
 
-import com.regalo_libre.wishlist.dto.EditListDTO;
-import com.regalo_libre.wishlist.dto.WishListCreateRequestDto;
-import com.regalo_libre.wishlist.dto.WishListDto;
+import com.regalo_libre.wishlist.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,20 +17,28 @@ import java.util.List;
 @RequestMapping("/api/v1/lists")
 @RequiredArgsConstructor
 public class WishlistController {
-    private final WishlistServiceImpl wishListService;
+    private final WishlistService wishListService;
 
     @GetMapping()
-    public ResponseEntity<List<WishListDto>> getWishLists(@RequestParam Long userId) {
-        return ResponseEntity.ok(wishListService.getWishListsByUserId(userId));
+    public ResponseEntity<Page<WishListDto>> getAllWishlists(@AuthenticationPrincipal Long userId,
+                                                             @RequestParam int page,
+                                                             @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(wishListService.getAllWishlists(userId, pageable));
     }
 
-    @GetMapping("/details/{id}")
-    public ResponseEntity<WishListDto> getWishlistById(@PathVariable Long id) {
+    @GetMapping("/modal")
+    public ResponseEntity getAllWishlistsForAddGiftsModal(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(wishListService.getAllWishlistsForModal(userId));
+    }
+
+    @GetMapping("/{id}/details")
+    public ResponseEntity<WishListDetailDto> findWishlistById(@PathVariable Long id) {
         return ResponseEntity.ok(wishListService.findWishlistById(id));
     }
 
     @PostMapping()
-    public ResponseEntity<WishListDto> createWishlist(@RequestBody WishListCreateRequestDto wishListRequest, @RequestParam Long userId) {
+    public ResponseEntity<WishListDto> createWishlist(@RequestBody WishListCreateRequestDto wishListRequest, @AuthenticationPrincipal Long userId) {
         return ResponseEntity.status(HttpStatus.CREATED).body(wishListService.createWishlist(wishListRequest, userId));
     }
 
@@ -44,9 +54,8 @@ public class WishlistController {
     }
 
     @PutMapping("/{id}/gifts")
-    public ResponseEntity<Void> addProductsToWishList(@PathVariable Long id, @RequestBody List<String> productsIds) {
-        wishListService.addProductsToWishlist(id, productsIds);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<WishlistServiceImpl.AddProductsResponse> addProductsToWishList(@PathVariable Long id, @RequestBody List<String> productsIds) {
+        return ResponseEntity.ok(wishListService.addProductsToWishlist(id, productsIds));
     }
 
     @DeleteMapping("/{id}/gifts")
@@ -55,19 +64,19 @@ public class WishlistController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/public/{id}")
-    public ResponseEntity<WishListDto> getPublicWishlistByUserId(@PathVariable String id) {
-        return ResponseEntity.ok(wishListService.getPublicWishlistByUserId(id));
-    }
-
     @GetMapping("/public")
-    public ResponseEntity getAllPublicWishlistsByUserId(@RequestParam Long userId) {
-        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByUserId(userId));
+    public ResponseEntity<List<WishListDto>> findAllPublicWishlistsByUserId(@AuthenticationPrincipal Long userId) {
+        return ResponseEntity.ok(wishListService.findAllPublicWishlistsByUserId(userId));
     }
 
-    @GetMapping("/user/{nickname}")
-    public ResponseEntity getAllPublicWishlistsByNickname(@PathVariable String nickname) {
-        return ResponseEntity.ok(wishListService.getAllPublicWishlistsByNickname(nickname));
+    @GetMapping("/public/{id}")
+    public ResponseEntity<WishListDetailDto> findPublicWishlist(@PathVariable String id) {
+        return ResponseEntity.ok(wishListService.findPublicWishlistById(id));
+    }
+
+    @GetMapping("/public/user/{nickname}")
+    public ResponseEntity<List<WishListDto>> findAllPublicWishlistsByNickname(@PathVariable String nickname) {
+        return ResponseEntity.ok(wishListService.findAllPublicWishlistsByUserNickname(nickname));
     }
 
 }

@@ -35,18 +35,15 @@ public class SecurityConfig {
         log.info("Running on" + environment);
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/meli/code").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/login/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/token/**").permitAll();
-                    // http.requestMatchers(HttpMethod.GET, "/oauth2/**").permitAll();
-                    /*http.requestMatchers(HttpMethod.POST, "/api/user/**").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/token/**").permitAll();
-
-                    http.requestMatchers(HttpMethod.GET, "/error/**").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/lists/user/**").permitAll();
-                    http.requestMatchers(HttpMethod.GET, "/api/lists/public/**").permitAll();
-                    http.requestMatchers(new RegexRequestMatcher("/api/profile/[^/]+", "GET")).permitAll();*/
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/lists/public/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/lists/user/**").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/profile/public/**").permitAll();
+                    http.requestMatchers("/actuator/health", "/actuator/info", "/actuator/caches", "/actuator/metrics").permitAll();
                     http.anyRequest().authenticated();
                 })
                 .cors((cors) -> cors.configurationSource(corsConfigurationSource()))
@@ -58,7 +55,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("https://localhost:4200"));
+        configuration.setAllowedOrigins(List.of("https://localhost:4200", "https://192.168.0.37:4200", "https://regalo-libre.vercel.app"));
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("*"));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

@@ -1,0 +1,62 @@
+spring:
+  application:
+    name: regalo-libre-api
+  devtools:
+    restart:
+      enabled: true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    hibernate:
+      ddl-auto: create-drop
+server:
+  ssl:
+    key-store-type: PKCS12
+    key-store: classpath:keystore.p12
+    key-store-password: ${SSL_KEYSTORE}
+    key-alias: localhost
+  compression:
+    enabled: true
+    mime-types: application/json, application/xml, text/html, text/xml, text/plain
+    min-response-size: 1024
+  port: 8080
+meli:
+  client_id: ${MELI_CLIENT_ID}
+  client_secret: ${MELI_CLIENT_SECRET}
+  redirect_uri: ${LOCAL_MELI_REDIRECT_URI}
+  token_url: https://api.mercadolibre.com/oauth/token
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+        security.oauth2: TRACE
+        web: DEBUG
+okta:
+  oauth2:
+    authorization-url: ${AUTH0_URL}/authorize
+    logout-url: ${AUTH0_URL}/v2/logout
+    issuer: ${AUTH0_URL}/
+    client-id: ${AUTH0_CLIENT_ID}
+    client-secret: ${AUTH0_CLIENT_SECRET}
+    audience: ${AUTH0_URL}/api/v2/
+    jwks-url: ${AUTH0_URL}/.well-known/jwks.json
+    redirect-login-uri: https://192.168.0.37:4200/callback
+    login-token-url: ${AUTH0_URL}/oauth/token
+    user-info-url: ${AUTH0_URL}/userinfo
+    api-management-audience: ${AUTH0_URL}/api/v2/
+    api-management-token-url: ${AUTH0_URL}/oauth/token
+    api-management-users-url: ${AUTH0_URL}/api/v2/users/
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, metrics, info, prometheus, caches
+  endpoint:
+    health:
+      show-details: always

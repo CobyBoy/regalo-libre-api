@@ -1,14 +1,17 @@
 spring:
+  devtools:
+    restart:
+      enabled: false
   datasource:
-    url: jdbc:sqlserver://localhost;databaseName=wishlist-db;encrypt=true;trustServerCertificate=true;integratedSecurity=true
-    username:
-    password:
-    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    url: jdbc:${JDBC_DEV}
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.SQLServerDialect
+        dialect: org.hibernate.dialect.PostgreSQLDialect
         show_sql: true
+  liquibase:
+    enabled: true
+    change-log: classpath:/liquibase/master-dev.yml

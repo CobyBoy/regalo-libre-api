@@ -2,7 +2,7 @@ package com.regalo_libre.mercadolibre.bookmark;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.regalo_libre.mercadolibre.auth.model.MercadoLibreUser;
+import com.regalo_libre.auth.model.Auth0User;
 import com.regalo_libre.wishlist.model.WishList;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,7 +22,7 @@ public class BookmarkedProduct {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "unique_id")
     private Long uniqueId;
-    @Column(name = "id", unique = true, nullable = false)
+    @Column(name = "meli_id", unique = true, nullable = false)
     private String id;
     @Column(name = "currency_id")
     @JsonProperty("currency_id")
@@ -35,7 +35,7 @@ public class BookmarkedProduct {
 
     @ManyToMany(mappedBy = "bookmarkedProducts")
     @JsonIgnore
-    private List<MercadoLibreUser> users;
+    private List<Auth0User> users;
 
     private Long price;
     private String status;
@@ -45,9 +45,9 @@ public class BookmarkedProduct {
     private String title;
     private String bookmarkedDate;
 
-    public void setUsers(List<MercadoLibreUser> users) {
+    public void setUsers(List<Auth0User> users) {
         this.users = users;
-        for (MercadoLibreUser user : users) {
+        for (Auth0User user : users) {
             user.addBookmarkedProduct(this);
         }
     }
