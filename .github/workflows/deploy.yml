@@ -37,6 +37,7 @@ jobs:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
+          SPRING_PROFILES_ACTIVE: 'prod'
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           echo "Transferring JAR file to EC2..."
