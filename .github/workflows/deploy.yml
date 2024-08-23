@@ -41,8 +41,13 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           echo "Transferring JAR file to EC2..."
           scp -i private_key -o StrictHostKeyChecking=no -vvv target/RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:~/RegaloLibre-0.0.1-SNAPSHOT.jar
+          echo "Checking transferred file..."
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l ~/RegaloLibre-0.0.1-SNAPSHOT.jar'
           echo "Deploying application on EC2..."
           ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} '
-            pkill -f RegaloLibre-0.0.1-SNAPSHOT.jar
-            nohup java -jar RegaloLibre-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+            echo "Stopping existing application..."
+            pkill -f RegaloLibre-0.0.1-SNAPSHOT.jar || true
+            echo "Starting new application..."
+            SPRING_PROFILES_ACTIVE=prod nohup java -jar RegaloLibre-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+            echo "Deployment complete."
           '
