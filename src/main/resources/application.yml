@@ -13,17 +13,6 @@ spring:
             non_contextual_creation: true
     hibernate:
       ddl-auto: create-drop
-server:
-  ssl:
-    key-store-type: PKCS12
-    key-store: classpath:keystore.p12
-    key-store-password: ${SSL_KEYSTORE}
-    key-alias: localhost
-  compression:
-    enabled: true
-    mime-types: application/json, application/xml, text/html, text/xml, text/plain
-    min-response-size: 1024
-  port: 8080
 meli:
   client_id: ${MELI_CLIENT_ID}
   client_secret: ${MELI_CLIENT_SECRET}
