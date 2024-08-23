@@ -46,9 +46,20 @@ jobs:
           ssh -i private_key -o StrictHostKeyChecking=no -o ConnectTimeout=30 ${USER}@${HOST} '
             set -x
             echo "Current working directory: $(pwd)"
-            pkill -f RegaloLibre-0.0.1-SNAPSHOT.jar || true
-            sleep 5
-            pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar || echo "No existing process found"
+            PID=$(pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar)
+            if [ -n "$PID" ]; then
+              echo "Stopping process with PID: $PID"
+              kill $PID
+              sleep 5
+              if kill -0 $PID 2>/dev/null; then
+                echo "Process did not stop gracefully, force killing..."
+                kill -9 $PID
+              fi
+            else
+              echo "No existing process found"
+            fi
+            echo "Checking if process is stopped..."
+            pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar || echo "Process is not running"
           '
           
           echo "Starting new application..."
@@ -56,11 +67,10 @@ jobs:
             set -x
             cd ~
             nohup java -jar RegaloLibre-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > app.log 2>&1 &
-            PID=$!
-            echo "Started process with PID: $PID"
+            NEW_PID=$!
+            echo "Started process with PID: $NEW_PID"
             sleep 15
-            if ps -p $PID > /dev/null
-            then
+            if ps -p $NEW_PID > /dev/null; then
               echo "Application started successfully"
               tail -n 50 app.log
             else
