@@ -45,16 +45,23 @@ jobs:
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l ~/RegaloLibre-0.0.1-SNAPSHOT.jar'
           echo "Deploying application on EC2..."
           ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} '
+            set -x
+            echo "Current working directory: $(pwd)"
             echo "Stopping existing application..."
             pkill -f RegaloLibre-0.0.1-SNAPSHOT.jar || true
+            sleep 5
+            echo "Checking if old process is stopped..."
+            pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar || echo "No existing process found"
             echo "Starting new application..."
             cd ~
-            SPRING_PROFILES_ACTIVE=prod java -Dspring.profiles.active=prod -jar RegaloLibre-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-            sleep 10
-            if pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar > /dev/null
+            nohup java -jar RegaloLibre-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod > app.log 2>&1 &
+            PID=$!
+            echo "Started process with PID: $PID"
+            sleep 15
+            if ps -p $PID > /dev/null
             then
               echo "Application started successfully"
-              tail -n 20 app.log
+              tail -n 50 app.log
             else
               echo "Application failed to start"
               cat app.log
