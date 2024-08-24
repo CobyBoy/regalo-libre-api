@@ -41,11 +41,6 @@ jobs:
         with:
           name: RegaloLibre-jar
 
-  deploy:
-    name: Start the Web Service on EC2
-    runs-on: ubuntu-latest
-    needs: [ build, clean ]
-    steps:
       - name: Test SSH Connectivity
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
@@ -53,7 +48,7 @@ jobs:
           USER: ${{ secrets.EC2_USER }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} 'echo "SSH connection successful"'
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'echo "SSH connection successful"'
 
       - name: Remove file
         env:
@@ -85,6 +80,11 @@ jobs:
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar'
           echo "File transferred"
 
+  deploy:
+    name: Start the Web Service on EC2
+    runs-on: ubuntu-latest
+    needs: [ build, clean ]
+    steps:
       - name: Stop Existing Application
         continue-on-error: true
         env:
