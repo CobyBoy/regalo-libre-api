@@ -88,6 +88,9 @@ jobs:
             # List contents of the current directory
             echo "Contents of the current directory:"
             ls -l
+            # Check if the log file exists and its size
+            echo "Checking the existence and size of app.log"
+            ls -l /home/ec2-user/app.log || echo "app.log does not exist"
           '
       
 
