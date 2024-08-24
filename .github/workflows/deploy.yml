@@ -46,17 +46,17 @@ jobs:
           echo 'Checking network connectivity to ${HOST} on port 22...'
           nc -zv ${{ secrets.EC2_HOST }} 22
 
-      - name: Transfer JAR to EC2
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo '$PRIVATE_KEY' > private_key && chmod 600 private_key
-          echo 'Transferring JAR file to EC2...'
-          scp -i private_key -o StrictHostKeyChecking=no -vvv RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:/home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
-          echo 'Checking transferred file...'
-          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar'
+      #      - name: Transfer JAR to EC2
+      #        env:
+      #          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+      #          HOST: ${{ secrets.EC2_HOST }}
+      #          USER: ${{ secrets.EC2_USER }}
+      #        run: |
+      #          echo '$PRIVATE_KEY' > private_key && chmod 600 private_key
+      #          echo 'Transferring JAR file to EC2...'
+      #          scp -i private_key -o StrictHostKeyChecking=no -vvv RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:/home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
+      #          echo 'Checking transferred file...'
+      #          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar'
 
       - name: Stop Existing Application
         env:
