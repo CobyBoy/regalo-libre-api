@@ -130,12 +130,10 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
-            echo "Checking the existence and size of app.log"
-            ls -l /home/ec2-user/app.log || echo "app.log does not exist"
             echo "Checking for existing application process..."
-            ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
+            ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar | grep -v grep
+            echo ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar | grep -v grep
             echo "Stopping existing application..."
-            echo ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
             PID=$(pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar)
             echo "Found PID: $PID"
             if [ -n "$PID" ]; then
