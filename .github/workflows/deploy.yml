@@ -46,6 +46,17 @@ jobs:
           echo 'Checking network connectivity to ${HOST} on port 22...'
           nc -zv ${{ secrets.EC2_HOST }} 22
 
+      - name: Test SSH Connectivity
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} 'echo "SSH connection successful"'
+      
+      
+
       #      - name: Transfer JAR to EC2
       #        env:
       #          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
