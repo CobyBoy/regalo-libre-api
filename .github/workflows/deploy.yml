@@ -124,6 +124,7 @@ jobs:
           echo "File transferred"
 
       - name: Stop Existing Application
+        continue-on-error: true
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
           HOST: ${{ secrets.EC2_HOST }}
