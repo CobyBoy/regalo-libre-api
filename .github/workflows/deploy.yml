@@ -32,7 +32,7 @@ jobs:
           path: target/RegaloLibre-0.0.1-SNAPSHOT.jar
 
   clean:
-    name: Clean
+    name: Transfer JAR & Stop Service on EC2
     runs-on: ubuntu-latest
     needs: build
     steps:
@@ -80,11 +80,6 @@ jobs:
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar'
           echo "File transferred"
 
-  deploy:
-    name: Start the Web Service on EC2
-    runs-on: ubuntu-latest
-    needs: [ build, clean ]
-    steps:
       - name: Stop Existing Application
         continue-on-error: true
         env:
@@ -109,6 +104,11 @@ jobs:
             echo "Ready to start new app"
           ' || true
 
+  deploy:
+    name: Start the Web Service on EC2
+    runs-on: ubuntu-latest
+    needs: [ build, clean ]
+    steps:
       - name: Start New Application
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
