@@ -145,35 +145,35 @@ jobs:
             fi
             echo "Ready to start new app"
           '
-#
-#      - name: Start New Application
-#        env:
-#          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-#          HOST: ${{ secrets.EC2_HOST }}
-#          USER: ${{ secrets.EC2_USER }}
-#        run: |
-#          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
-#            echo "Starting new application..."
-#            cd /home/ec2-user
-#            nohup SPRING_PROFILES_ACTIVE=prod java -jar RegaloLibre-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-#            sleep 60
-#          '
-#      - name: Verify Application Start
-#        env:
-#          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-#          HOST: ${{ secrets.EC2_HOST }}
-#          USER: ${{ secrets.EC2_USER }}
-#        run: |
-#          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
-#            echo "Checking if application started..."
-#            ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
-#            if pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar > /dev/null
-#            then
-#              echo "Application started successfully"
-#              tail -n 20 /home/ec2-user/app.log
-#            else
-#              echo "Application failed to start"
-#              cat /home/ec2-user/app.log
-#              exit 1
-#            fi
-#            '
+
+      - name: Start New Application
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
+            echo "Starting new application..."
+            cd /home/ec2-user
+            nohup SPRING_PROFILES_ACTIVE=prod java -jar RegaloLibre-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+            sleep 60
+          '
+      - name: Verify Application Start
+        env:
+          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+          HOST: ${{ secrets.EC2_HOST }}
+          USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
+            echo "Checking if application started..."
+            ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
+            if pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar > /dev/null
+            then
+              echo "Application started successfully"
+              tail -n 20 /home/ec2-user/app.log
+            else
+              echo "Application failed to start"
+              cat /home/ec2-user/app.log
+              exit 1
+            fi
+            '
