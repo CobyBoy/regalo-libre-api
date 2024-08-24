@@ -22,8 +22,6 @@ public class LoginTokenController {
             throw new Auth0TokenIsUndefinedException("Error obteniendo código de autorización.");
         }
         Auth0AccessToken response = loginTokenService.getAuth0Token(code);
-
-        log.info("Returning auth0 token {}", response);
         return ResponseEntity.ok(response);
     }
 
