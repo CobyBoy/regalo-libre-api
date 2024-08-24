@@ -104,9 +104,10 @@ jobs:
           if [ -f /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar ]; then
             echo "Removing old JAR file..."
             rm /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
+          else
+            echo "File does not exist"
           fi
           '
-
 
       - name: Transfer JAR to EC2
         env:
@@ -114,10 +115,10 @@ jobs:
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
         run: |
-          echo '$PRIVATE_KEY' > private_key && chmod 600 private_key
-          echo 'Transferring JAR file to EC2...'
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+          echo "Transferring JAR file to EC2..."
           scp -i private_key -o StrictHostKeyChecking=no RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:/home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
-          echo 'Checking transferred file...'
+          echo "Checking transferred file..."
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar'
 
 #      - name: Stop Existing Application
