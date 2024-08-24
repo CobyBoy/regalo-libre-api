@@ -64,14 +64,14 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar'
 
-      - name: Print Current Directory
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'pwd' 'echo "pwd command executed"'
+      #      - name: Print Current Directory
+      #        env:
+      #          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+      #          HOST: ${{ secrets.EC2_HOST }}
+      #          USER: ${{ secrets.EC2_USER }}
+      #        run: |
+      #          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+      #          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'pwd' 'echo "pwd command executed"'
 
       - name: Check Application Logs
         env:
@@ -84,7 +84,7 @@ jobs:
             # Print the current directory
             echo "Current directory:"
             pwd
-          
+
             # List contents of the current directory
             echo "Contents of the current directory:"
             ls -l
@@ -101,8 +101,15 @@ jobs:
           USER: ${{ secrets.EC2_USER }}
         run: |
           echo '$PRIVATE_KEY' > private_key && chmod 600 private_key
+          # Remove the old JAR file if it exists
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
+          if [ -f /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar ]; then
+          echo "Removing old JAR file..."
+          rm /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
+          fi
+          '
           echo 'Transferring JAR file to EC2...'
-          cp -i private_key -o StrictHostKeyChecking=no RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:/home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
+          scp -i private_key -o StrictHostKeyChecking=no RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:/home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
           echo 'Checking transferred file...'
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar'
 
