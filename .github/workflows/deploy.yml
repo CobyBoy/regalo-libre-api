@@ -104,8 +104,8 @@ jobs:
           # Remove the old JAR file if it exists
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
           if [ -f /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar ]; then
-          echo "Removing old JAR file..."
-          rm /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
+            echo "Removing old JAR file..."
+            rm /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
           fi
           '
           echo 'Transferring JAR file to EC2...'
