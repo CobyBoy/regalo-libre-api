@@ -25,11 +25,22 @@ jobs:
           echo "Listing files in target directory..."
           ls -l target/
 
+      - name: Upload JAR
+        uses: actions/upload-artifact@v2
+        with:
+          name: RegaloLibre-jar
+          path: target/RegaloLibre-0.0.1-SNAPSHOT.jar
+
   deploy:
     name: Start the Web Service on EC2
     runs-on: ubuntu-latest
     needs: [ build ]
     steps:
+      - name: Download JAR
+        uses: actions/download-artifact@v2
+        with:
+          name: RegaloLibre-jar
+
       - name: Check connectivity
         run: |
           echo "Checking network connectivity to ${HOST} on port 22..."
@@ -43,11 +54,13 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           echo "Transferring JAR file to EC2..."
-          scp -i private_key -o StrictHostKeyChecking=no -vvv target/RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:~/RegaloLibre-0.0.1-SNAPSHOT.jar
+          scp -i private_key -o StrictHostKeyChecking=no -vvv RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:/home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
           echo "Checking transferred file..."
-          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l ~/RegaloLibre-0.0.1-SNAPSHOT.jar'
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar'
           echo "Deploying application on EC2..."
           ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} '
+            echo "Checking for existing application process..."
+            ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
             echo "Stopping existing application..."
             pkill -f RegaloLibre-0.0.1-SNAPSHOT.jar || true
             echo "Starting new application..."
