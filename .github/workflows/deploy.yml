@@ -75,6 +75,7 @@ jobs:
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
         run: |
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} '
             echo "Checking for existing application process..."
             ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
