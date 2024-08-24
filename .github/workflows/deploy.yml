@@ -79,7 +79,7 @@ jobs:
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
         run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key tee -a /home/ec2-user/app.log
+          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key && tee -a /home/ec2-user/app.log
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/app.log'
       
 
