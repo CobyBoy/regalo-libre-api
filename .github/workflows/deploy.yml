@@ -55,15 +55,6 @@ jobs:
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} 'echo "SSH connection successful"'
 
-      - name: Test Simple Command
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'echo "Simple command executed"'
-
       - name: Check for Application Process
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
@@ -90,11 +81,6 @@ jobs:
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
           ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/app.log'
-      
-      
-      
-      
-      
       
 
       #      - name: Transfer JAR to EC2
@@ -124,9 +110,14 @@ jobs:
             if [ -n "$PID" ]; then
               kill $PID
               echo "Application stopped"
+              tail -n 20 /home/ec2-user/app.log
             else
               echo "No application process found"
+              cat /home/ec2-user/app.log
+              exit 1
             fi
+            sleep 10
+            echo "Application stopped"
           '
 
       - name: Start New Application
