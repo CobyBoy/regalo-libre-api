@@ -156,7 +156,7 @@ jobs:
             echo "Starting new application..."
             cd /home/ec2-user
             nohup SPRING_PROFILES_ACTIVE=prod java -jar RegaloLibre-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-            sleep 60
+            "Application started"
           '
       - name: Verify Application Start
         env:
