@@ -134,7 +134,7 @@ jobs:
             echo "Checking for existing application process..."
             ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar | grep -v grep
             echo "Stopping existing application..."
-            PID=$(ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar | grep -v grep
+            PID=$(pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar)
             echo "Found PID: $PID"
             if [ -n "$PID" ]; then kill $PID
               echo "Application stopped"
