@@ -92,70 +92,70 @@ jobs:
             echo "Checking the existence and size of app.log"
             ls -l /home/ec2-user/app.log || echo "app.log does not exist"
           '
-      
 
-      #      - name: Transfer JAR to EC2
-      #        env:
-      #          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-      #          HOST: ${{ secrets.EC2_HOST }}
-      #          USER: ${{ secrets.EC2_USER }}
-      #        run: |
-      #          echo '$PRIVATE_KEY' > private_key && chmod 600 private_key
-      #          echo 'Transferring JAR file to EC2...'
-      #          scp -i private_key -o StrictHostKeyChecking=no -vvv RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:/home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
-      #          echo 'Checking transferred file...'
-      #          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar'
 
-      - name: Stop Existing Application
+      - name: Transfer JAR to EC2
         env:
           PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
           HOST: ${{ secrets.EC2_HOST }}
           USER: ${{ secrets.EC2_USER }}
         run: |
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} '
-            echo "Checking the existence and size of app.log"
-            ls -l /home/ec2-user/app.log || echo "app.log does not exist"
-            echo "Checking for existing application process..."
-            ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
-            echo "Stopping existing application..."
-            PID=$(pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar)
-            if [ -n "$PID" ]; then
-              kill $PID
-              echo "Application stopped"
-            else
-              echo "No application process found"
-            fi
-          '
+          echo '$PRIVATE_KEY' > private_key && chmod 600 private_key
+          echo 'Transferring JAR file to EC2...'
+          cp -i private_key -o StrictHostKeyChecking=no RegaloLibre-0.0.1-SNAPSHOT.jar ${USER}@${HOST}:/home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar
+          echo 'Checking transferred file...'
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} 'ls -l /home/ec2-user/RegaloLibre-0.0.1-SNAPSHOT.jar'
 
-      - name: Start New Application
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
-            echo "Starting new application..."
-            cd /home/ec2-user
-            nohup SPRING_PROFILES_ACTIVE=prod java -jar RegaloLibre-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
-            sleep 60
-          '
-      - name: Verify Application Start
-        env:
-          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
-          HOST: ${{ secrets.EC2_HOST }}
-          USER: ${{ secrets.EC2_USER }}
-        run: |
-          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
-            echo "Checking if application started..."
-            ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
-            if pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar > /dev/null
-            then
-              echo "Application started successfully"
-              tail -n 20 /home/ec2-user/app.log
-            else
-              echo "Application failed to start"
-              cat /home/ec2-user/app.log
-              exit 1
-            fi
-            '
+#      - name: Stop Existing Application
+#        env:
+#          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+#          HOST: ${{ secrets.EC2_HOST }}
+#          USER: ${{ secrets.EC2_USER }}
+#        run: |
+#          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
+#          ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} '
+#            echo "Checking the existence and size of app.log"
+#            ls -l /home/ec2-user/app.log || echo "app.log does not exist"
+#            echo "Checking for existing application process..."
+#            ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
+#            echo "Stopping existing application..."
+#            PID=$(pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar)
+#            if [ -n "$PID" ]; then
+#              kill $PID
+#              echo "Application stopped"
+#            else
+#              echo "No application process found"
+#            fi
+#          '
+#
+#      - name: Start New Application
+#        env:
+#          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+#          HOST: ${{ secrets.EC2_HOST }}
+#          USER: ${{ secrets.EC2_USER }}
+#        run: |
+#          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
+#            echo "Starting new application..."
+#            cd /home/ec2-user
+#            nohup SPRING_PROFILES_ACTIVE=prod java -jar RegaloLibre-0.0.1-SNAPSHOT.jar > app.log 2>&1 &
+#            sleep 60
+#          '
+#      - name: Verify Application Start
+#        env:
+#          PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }}
+#          HOST: ${{ secrets.EC2_HOST }}
+#          USER: ${{ secrets.EC2_USER }}
+#        run: |
+#          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
+#            echo "Checking if application started..."
+#            ps aux | grep RegaloLibre-0.0.1-SNAPSHOT.jar
+#            if pgrep -f RegaloLibre-0.0.1-SNAPSHOT.jar > /dev/null
+#            then
+#              echo "Application started successfully"
+#              tail -n 20 /home/ec2-user/app.log
+#            else
+#              echo "Application failed to start"
+#              cat /home/ec2-user/app.log
+#              exit 1
+#            fi
+#            '
