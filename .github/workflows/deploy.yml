@@ -129,7 +129,7 @@ jobs:
           USER: ${{ secrets.EC2_USER }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -i private_key -o StrictHostKeyChecking=no -vvv ${USER}@${HOST} '
+          ssh -i private_key -o StrictHostKeyChecking=no ${USER}@${HOST} '
             echo "Checking the existence and size of app.log"
             ls -l /home/ec2-user/app.log || echo "app.log does not exist"
             echo "Checking for existing application process..."
