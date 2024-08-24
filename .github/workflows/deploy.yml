@@ -80,7 +80,6 @@ jobs:
           USER: ${{ secrets.EC2_USER }}
         run: |
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          echo "Starting log capture at $(date)" >> /home/ec2-user/app.log
       
 
       #      - name: Transfer JAR to EC2
