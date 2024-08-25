@@ -44,4 +44,11 @@ okta:
     api-management-token-url: ${AUTH0_URL}/oauth/token
     api-management-users-url: ${AUTH0_URL}/api/v2/users/
 ui:
-  url: https://regalolibre.vercel.app
+  url: https://regalolibre.app
+logging:
+  level:
+    org:
+      springframework:
+        security: INFO
+        security.oauth2: INFO
+        web: INFO
