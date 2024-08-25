@@ -2,8 +2,10 @@ package com.regalo_libre.auth.jwt;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.ToString;
 
 @Getter
+@ToString
 public class Auth0AccessToken {
     @JsonProperty("access_token")
     String accessToken;
