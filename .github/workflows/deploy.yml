@@ -26,7 +26,7 @@ jobs:
           ls -l target/
 
       - name: Upload JAR
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: RegaloLibre-jar
           path: target/RegaloLibre-0.0.1-SNAPSHOT.jar
@@ -37,7 +37,7 @@ jobs:
     needs: build
     steps:
       - name: Download JAR
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: RegaloLibre-jar
 
