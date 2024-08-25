@@ -43,7 +43,7 @@ public class AppConfig {
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager("userBookmarksCache");
         cacheManager.setCaffeine(Caffeine.newBuilder()
-                .expireAfterWrite(1, TimeUnit.MINUTES)
+                .expireAfterWrite(60, TimeUnit.MINUTES)
                 .maximumSize(100));
         return cacheManager;
     }
