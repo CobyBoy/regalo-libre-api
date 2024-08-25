@@ -9,7 +9,7 @@ import org.springframework.web.servlet.view.RedirectView;
 @RequiredArgsConstructor
 @RequestMapping("api/v1/meli")
 public class MercadoLibreAuthController {
-    private final IMercadoLibreAccessTokenService mercadoLibreAccessTokenService;
+    private final MercadoLibreAccessTokenService mercadoLibreAccessTokenService;
     @Value("${ui.url}")
     private String uiUrl;
 
