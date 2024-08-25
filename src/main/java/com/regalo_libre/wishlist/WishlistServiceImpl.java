@@ -57,7 +57,8 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     public Page<WishListDto> getAllWishlists(Long userId, Pageable pageable) {
-        return wishlistRepository.findAllByUserId(userId, pageable).map(WishListDto::new);
+        Auth0User auth0User = auth0UserService.getAuth0UserById(userId);
+        return wishlistRepository.findAllByUserId(auth0User.getId(), pageable).map(WishListDto::new);
     }
 
     @Override
