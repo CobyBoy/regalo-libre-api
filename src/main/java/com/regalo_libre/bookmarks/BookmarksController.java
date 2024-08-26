@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("api/v1/favorites")
 @RequiredArgsConstructor
 public class BookmarksController {
-    private final IBookmarksService favoritesService;
+    private final BookmarksService favoritesService;
 
     @GetMapping
     public ResponseEntity<Page<BookmarkDTO>> getAllFavorites(@AuthenticationPrincipal Long userId,
                                                              @RequestParam int page,
                                                              @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(favoritesService.getAllBookmarks(userId, pageable));
+        return ResponseEntity.ok(favoritesService.fetchAllBookmarks(userId, pageable));
     }
 }
