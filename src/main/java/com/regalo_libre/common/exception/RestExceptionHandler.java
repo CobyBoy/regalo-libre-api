@@ -15,6 +15,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.client.HttpClientErrorException;
@@ -216,6 +217,17 @@ public class RestExceptionHandler {
                         .httpStatus(httpStatus)
                         .statusCode(httpStatus.value())
                         .message(ex.getMessage())
+                        .build());
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ApiErrorDto> handleValidationExceptions(MethodArgumentNotValidException ex) {
+        HttpStatus httpStatus = HttpStatus.BAD_REQUEST;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getBindingResult().getFieldError().getDefaultMessage())
                         .build());
     }
 }
