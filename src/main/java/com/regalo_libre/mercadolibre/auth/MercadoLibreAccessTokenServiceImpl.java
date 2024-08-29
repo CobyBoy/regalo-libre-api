@@ -20,7 +20,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -45,6 +44,7 @@ public class MercadoLibreAccessTokenServiceImpl implements MercadoLibreAccessTok
         map.add("redirect_uri", mercadoLibreConfig.getRedirectUri());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        log.info("Getting Mercado Libre token with {}", map);
 
         ResponseEntity<MercadoLibreAccessToken> response = restTemplate.postForEntity(mercadoLibreConfig.getTokenUrl(), request, MercadoLibreAccessToken.class);
         if (response.getBody() != null) {
@@ -73,6 +73,7 @@ public class MercadoLibreAccessTokenServiceImpl implements MercadoLibreAccessTok
 
     @Transactional
     private MercadoLibreAccessToken saveAccessToken(MercadoLibreAccessToken accessToken) {
+        log.info("Saving Mercado Libre access token");
         accessToken.setExpiresAt(LocalDateTime.now().plusSeconds(accessToken.getExpiresIn()));
         return mercadoLibreAccessTokenRepository.save(accessToken);
     }
@@ -97,6 +98,8 @@ public class MercadoLibreAccessTokenServiceImpl implements MercadoLibreAccessTok
         params.add("client_id", mercadoLibreConfig.getClientId());
         params.add("client_secret", mercadoLibreConfig.getClientSecret());
         params.add("refresh_token", refreshToken);
+
+        log.info("Refreshing Mercado Libre token with {}", params);
 
         ResponseEntity<MercadoLibreAccessToken> response = restTemplate.postForEntity(mercadoLibreConfig.getTokenUrl(), params, MercadoLibreAccessToken.class);
         MercadoLibreAccessToken newToken = response.getBody();

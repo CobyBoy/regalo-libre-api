@@ -1,3 +1,4 @@
+
 name: Deploy to EC2
 
 on:
@@ -6,9 +7,19 @@ on:
       - master
 
 jobs:
+  remove-old-artifacts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions: write-all
+    steps:
+      - name: Remove old artifacts
+        uses: c-hive/gha-remove-artifacts@v1
+        with:
+          age: '3 days'
   build:
     name: Build
     runs-on: ubuntu-latest
+    needs: remove-old-artifacts
     steps:
       - uses: actions/checkout@v4
       - name: Set up JDK 17
