@@ -32,7 +32,7 @@ public class Auth0User {
     @JoinColumn(name = "profile_id")
     private Profile profile;
 
-    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "user_bookmark",
             schema = "meli",

@@ -1,5 +1,6 @@
 package com.regalo_libre.profile;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +18,7 @@ public class ProfileController {
     }
 
     @PostMapping
-    public ResponseEntity<EditProfileDTO> editProfile(@RequestBody EditProfileDTO profileDTO) {
+    public ResponseEntity<EditProfileDTO> editProfile(@Valid @RequestBody EditProfileDTO profileDTO) {
         return ResponseEntity.ok(profileService.editProfile(profileDTO));
     }
 
