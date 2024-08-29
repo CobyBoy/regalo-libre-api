@@ -13,9 +13,23 @@ jobs:
 
     steps:
       - name: Remove old artifacts
-        uses: c-hive/gha-remove-artifacts@v1
+        uses: actions/github-script@v6
+        id: artifact
         with:
-          age: '3 days'
+          script: |
+            const res = await github.rest.actions.listArtifactsForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            })
+            
+            res.data.artifacts
+              .forEach(({ id }) => {
+                github.rest.actions.deleteArtifact({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  artifact_id: id,
+                })
+              })
   build:
     name: Build
     runs-on: ubuntu-latest
