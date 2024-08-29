@@ -42,6 +42,7 @@ public class MercadoLibreAccessTokenServiceImpl implements IMercadoLibreAccessTo
         map.add("redirect_uri", mercadoLibreConfig.getRedirectUri());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
+        log.info("Getting Mercado Libre token with {}", map);
 
         ResponseEntity<MercadoLibreAccessToken> response = restTemplate.postForEntity(mercadoLibreConfig.getTokenUrl(), request, MercadoLibreAccessToken.class);
         saveAccessToken(Objects.requireNonNull(response.getBody()));
@@ -63,6 +64,7 @@ public class MercadoLibreAccessTokenServiceImpl implements IMercadoLibreAccessTo
 
     @Transactional
     private void saveAccessToken(MercadoLibreAccessToken accessToken) {
+        log.info("Saving Mercado Libre access token");
         accessToken.setExpiresAt(LocalDateTime.now().plusSeconds(accessToken.getExpiresIn()));
         mercadoLibreAccessTokenRepository.save(accessToken);
     }
@@ -87,6 +89,8 @@ public class MercadoLibreAccessTokenServiceImpl implements IMercadoLibreAccessTo
         params.add("client_id", mercadoLibreConfig.getClientId());
         params.add("client_secret", mercadoLibreConfig.getClientSecret());
         params.add("refresh_token", refreshToken);
+
+        log.info("Refreshing Mercado Libre token with {}", params);
 
         ResponseEntity<MercadoLibreAccessToken> response = restTemplate.postForEntity(mercadoLibreConfig.getTokenUrl(), params, MercadoLibreAccessToken.class);
         MercadoLibreAccessToken newToken = response.getBody();
