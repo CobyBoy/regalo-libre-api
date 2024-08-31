@@ -75,7 +75,7 @@ public class Auth0UserServiceImpl implements Auth0UserService {
                 .biography("")
                 .isPrivate(true)
                 .meliNickname(userInfo.nickname)
-                .appNickname(userInfo.nickname)
+                .appNickname(userInfo.nickname.replace(" ", "_").toLowerCase())
                 .pictureUrl(userInfo.pictureUrl)
                 .name(userInfo.name)
                 .build();

@@ -1,7 +1,7 @@
 package com.regalo_libre.bookmarks.impl;
 
 import com.regalo_libre.bookmarks.BookmarkApiService;
-import com.regalo_libre.mercadolibre.auth.IMercadoLibreAccessTokenService;
+import com.regalo_libre.mercadolibre.auth.MercadoLibreAccessTokenService;
 import com.regalo_libre.mercadolibre.auth.model.MercadoLibreAccessToken;
 import com.regalo_libre.mercadolibre.bookmark.Bookmark;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkItem;
@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class BookmarkApiServiceImpl implements BookmarkApiService {
-    private final IMercadoLibreAccessTokenService mercadoLibreAccessTokenService;
+    private final MercadoLibreAccessTokenService mercadoLibreAccessTokenService;
 
     public List<BookmarkedProduct> getAllBookmarks(MercadoLibreAccessToken token) {
         WebClient webClient = mercadoLibreAccessTokenService.getWebClientWithABearerToken(token.getAccessToken());
