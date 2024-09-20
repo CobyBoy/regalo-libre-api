@@ -13,12 +13,15 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.regalo_libre.auth.config.Auth0PropertiesConfig;
 import com.regalo_libre.common.dtos.ApiErrorDto;
+import com.regalo_libre.common.exception.JwkProviderException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.Cache;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
@@ -40,6 +43,7 @@ import java.util.Collections;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final Auth0PropertiesConfig auth0PropertiesConfig;
     private static final Duration CLOCK_SKEW = Duration.ofMinutes(5);
+    private final CacheManager cacheManager;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -99,10 +103,27 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     public DecodedJWT verifyAndDecodeToken(String token) throws JWTVerificationException, MalformedURLException, JwkException {
         DecodedJWT jwt = JWT.decode(token);
-        JwkProvider provider = new UrlJwkProvider(new URL(auth0PropertiesConfig.getJwksUrl()));
-        Jwk jwk = provider.get(jwt.getKeyId());
-        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
+        String keyId = jwt.getKeyId();
+        Cache jwkCache = cacheManager.getCache("jwkCache");
 
+        Jwk jwk = null;
+        Cache.ValueWrapper valueWrapper = jwkCache.get(keyId);
+        if (valueWrapper != null) {
+            jwk = (Jwk) valueWrapper.get();
+        }
+        if (jwk == null) {
+            try {
+                // If the JWK is not in the cache, fetch it from the provider
+                JwkProvider provider = new UrlJwkProvider(new URL(auth0PropertiesConfig.getJwksUrl()));
+                jwk = provider.get(keyId);
+                jwkCache.put(keyId, jwk);
+            } catch (JwkException | MalformedURLException e) {
+                log.error("Failed to retrieve JWK for keyId {}", keyId);
+                throw new JwkProviderException(e.getMessage());
+            }
+        }
+
+        Algorithm algorithm = Algorithm.RSA256((RSAPublicKey) jwk.getPublicKey(), null);
         JWTVerifier verifier = JWT.require(algorithm)
                 .withIssuer(auth0PropertiesConfig.getIssuer())
                 .withAudience(auth0PropertiesConfig.getAudience())
