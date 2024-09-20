@@ -110,6 +110,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         Cache.ValueWrapper valueWrapper = jwkCache.get(keyId);
         if (valueWrapper != null) {
             jwk = (Jwk) valueWrapper.get();
+            log.info("Retrieving jwk from cache");
         }
         if (jwk == null) {
             try {
@@ -117,6 +118,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 JwkProvider provider = new UrlJwkProvider(new URL(auth0PropertiesConfig.getJwksUrl()));
                 jwk = provider.get(keyId);
                 jwkCache.put(keyId, jwk);
+                log.info("Retrieving jwk from provider");
             } catch (JwkException | MalformedURLException e) {
                 log.error("Failed to retrieve JWK for keyId {}", keyId);
                 throw new JwkProviderException(e.getMessage());
