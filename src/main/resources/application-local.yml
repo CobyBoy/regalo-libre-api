@@ -24,10 +24,5 @@ server:
     key-store: classpath:keystore.p12
     key-store-password: ${SSL_KEYSTORE}
     key-alias: localhost
-  compression:
-    enabled: true
-    mime-types: application/json, application/xml, text/html, text/xml, text/plain
-    min-response-size: 1024
-  port: 8080
 ui:
   url: https://192.168.0.37:4200
