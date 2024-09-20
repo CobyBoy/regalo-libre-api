@@ -230,4 +230,15 @@ public class RestExceptionHandler {
                         .message(ex.getBindingResult().getFieldError().getDefaultMessage())
                         .build());
     }
+
+    @ExceptionHandler(JwkProviderException.class)
+    public ResponseEntity<ApiErrorDto> handleJwkProviderException(JwkProviderException ex) {
+        HttpStatus httpStatus = HttpStatus.UNAUTHORIZED;
+        return ResponseEntity.status(httpStatus)
+                .body(ApiErrorDto.builder()
+                        .httpStatus(httpStatus)
+                        .statusCode(httpStatus.value())
+                        .message(ex.getMessage())
+                        .build());
+    }
 }
