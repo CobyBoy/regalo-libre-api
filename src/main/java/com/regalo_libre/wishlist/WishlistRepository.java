@@ -1,5 +1,6 @@
 package com.regalo_libre.wishlist;
 
+import com.regalo_libre.wishlist.dto.DashboardWishlistDto;
 import com.regalo_libre.wishlist.model.WishList;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,8 +12,15 @@ import java.util.List;
 
 @Repository
 public interface WishlistRepository extends JpaRepository<WishList, Long> {
-    @Query("SELECT DISTINCT w FROM WishList w LEFT JOIN FETCH w.gifts LEFT JOIN FETCH w.user u LEFT JOIN FETCH u.profile WHERE w.user.id = :auth0UserId ORDER BY w.createdAt DESC")
-    Page<WishList> findAllByUserId(Long auth0UserId, Pageable pageable);
+
+    @Query("SELECT new com.regalo_libre.wishlist.dto.DashboardWishlistDto(w.name, SIZE(w.gifts), w.wishlistId, w.publicId, w.isPrivate) " +
+            "FROM WishList w " +
+            "LEFT JOIN w.gifts " +
+            "LEFT JOIN w.user u " +
+            "LEFT JOIN u.profile " +
+            "WHERE w.user.id = :auth0UserId " +
+            "ORDER BY w.createdAt DESC")
+    Page<DashboardWishlistDto> findAllWishlistForDashboardByUserId(Long auth0UserId, Pageable pageable);
 
     List<WishList> findAllByUserIdOrderByCreatedAtDesc(Long auth0UserId);
 

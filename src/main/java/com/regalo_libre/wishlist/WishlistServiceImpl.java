@@ -2,6 +2,7 @@ package com.regalo_libre.wishlist;
 
 import com.regalo_libre.auth.Auth0UserService;
 import com.regalo_libre.auth.model.Auth0User;
+import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
 import com.regalo_libre.wishlist.dto.*;
@@ -56,9 +57,10 @@ public class WishlistServiceImpl implements WishlistService {
         return new WishListDto(wishList);
     }
 
-    public Page<WishListDto> getAllWishlists(Long userId, Pageable pageable) {
-        Auth0User auth0User = auth0UserService.getAuth0UserById(userId);
-        return wishlistRepository.findAllByUserId(auth0User.getId(), pageable).map(WishListDto::new);
+    public Page<DashboardWishlistDto> getAllWishlistsForDashboard(Long userId, Pageable pageable) {
+        boolean auth0User = auth0UserService.existsById(userId);
+        if (!auth0User) throw new UserNotFoundException("Usuario no encontrado");
+        return wishlistRepository.findAllWishlistForDashboardByUserId(userId, pageable);
     }
 
     @Override

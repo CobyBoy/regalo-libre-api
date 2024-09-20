@@ -85,6 +85,10 @@ public class Auth0UserServiceImpl implements Auth0UserService {
         return repository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
     }
 
+    public Boolean existsById(Long userId) {
+        return repository.existsById(userId);
+    }
+
     public Auth0User findAuth0UserById(Long userId) {
         return repository.findById(userId).orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
     }
