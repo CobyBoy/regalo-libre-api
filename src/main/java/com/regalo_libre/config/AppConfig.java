@@ -41,7 +41,7 @@ public class AppConfig {
 
     @Bean
     public CacheManager cacheManager() {
-        CaffeineCacheManager cacheManager = new CaffeineCacheManager("userBookmarksCache");
+        CaffeineCacheManager cacheManager = new CaffeineCacheManager("userBookmarksCache", "jwkCache");
         cacheManager.setCaffeine(Caffeine.newBuilder()
                 .expireAfterWrite(60, TimeUnit.MINUTES)
                 .maximumSize(100));
