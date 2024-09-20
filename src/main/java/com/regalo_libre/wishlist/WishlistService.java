@@ -9,7 +9,7 @@ import java.util.List;
 public interface WishlistService {
     WishListDto createWishlist(WishListCreateRequestDto wishListRequest, Long userId);
 
-    Page<WishListDto> getAllWishlists(Long userId, Pageable pageable);
+    Page<DashboardWishlistDto> getAllWishlistsForDashboard(Long userId, Pageable pageable);
 
     List<WishlistDetailForModalDto> getAllWishlistsForModal(Long userId);
 
