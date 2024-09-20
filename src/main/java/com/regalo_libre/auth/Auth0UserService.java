@@ -12,4 +12,6 @@ public interface Auth0UserService {
     Auth0User findAuth0UserById(Long userId);
 
     void saveAuth0User(Auth0User user);
+
+    Boolean existsById(Long userId);
 }
