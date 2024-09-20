@@ -19,12 +19,12 @@ import java.util.List;
 public class WishlistController {
     private final WishlistService wishListService;
 
-    @GetMapping()
-    public ResponseEntity<Page<WishListDto>> getAllWishlists(@AuthenticationPrincipal Long userId,
-                                                             @RequestParam int page,
-                                                             @RequestParam int size) {
+    @GetMapping("/dashboard")
+    public ResponseEntity<Page<DashboardWishlistDto>> getAllWishlistsForDashboard(@AuthenticationPrincipal Long userId,
+                                                                                  @RequestParam int page,
+                                                                                  @RequestParam int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return ResponseEntity.ok(wishListService.getAllWishlists(userId, pageable));
+        return ResponseEntity.ok(wishListService.getAllWishlistsForDashboard(userId, pageable));
     }
 
     @GetMapping("/modal")
