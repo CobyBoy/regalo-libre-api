@@ -17,9 +17,6 @@ public interface WishlistRepository extends JpaRepository<WishList, Long> {
 
     @Query("SELECT new com.regalo_libre.wishlist.dto.DashboardWishlistDto(w.name, SIZE(w.gifts), w.wishlistId, w.publicId, w.isPrivate) " +
             "FROM WishList w " +
-            "LEFT JOIN w.gifts " +
-            "LEFT JOIN w.user u " +
-            "LEFT JOIN u.profile " +
             "WHERE w.user.id = :auth0UserId " +
             "ORDER BY w.createdAt DESC")
     Page<DashboardWishlistDto> findAllWishlistForDashboardByUserId(Long auth0UserId, Pageable pageable);
