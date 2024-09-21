@@ -25,7 +25,7 @@ public interface WishlistService {
 
     WishListDetailDto findPublicWishlistById(String id);
 
-    List<WishListDto> findAllPublicWishlistsByUserId(Long userId);
+    Page<PublicWishlistDto> findAllPublicWishlistsByUserId(Long userId, Pageable pageable);
 
-    List<WishListDto> findAllPublicWishlistsByUserNickname(String nickname);
+    Page<PublicProfileWishlistDto> findAllPublicWishlistsByUserNickname(String nickname, Pageable pageable);
 }

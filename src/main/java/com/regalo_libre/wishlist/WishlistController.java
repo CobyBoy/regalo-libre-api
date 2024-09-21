@@ -65,8 +65,11 @@ public class WishlistController {
     }
 
     @GetMapping("/public")
-    public ResponseEntity<List<WishListDto>> findAllPublicWishlistsByUserId(@AuthenticationPrincipal Long userId) {
-        return ResponseEntity.ok(wishListService.findAllPublicWishlistsByUserId(userId));
+    public ResponseEntity<Page<PublicWishlistDto>> findAllPublicWishlistsByUserId(@AuthenticationPrincipal Long userId,
+                                                                                  @RequestParam int page,
+                                                                                  @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(wishListService.findAllPublicWishlistsByUserId(userId, pageable));
     }
 
     @GetMapping("/public/{id}")
@@ -75,8 +78,11 @@ public class WishlistController {
     }
 
     @GetMapping("/public/user/{nickname}")
-    public ResponseEntity<List<WishListDto>> findAllPublicWishlistsByNickname(@PathVariable String nickname) {
-        return ResponseEntity.ok(wishListService.findAllPublicWishlistsByUserNickname(nickname));
+    public ResponseEntity<Page<PublicProfileWishlistDto>> findAllPublicWishlistsByNickname(@PathVariable String nickname,
+                                                                                           @RequestParam int page,
+                                                                                           @RequestParam int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return ResponseEntity.ok(wishListService.findAllPublicWishlistsByUserNickname(nickname, pageable));
     }
 
 }
