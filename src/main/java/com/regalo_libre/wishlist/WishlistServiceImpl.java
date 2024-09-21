@@ -138,12 +138,12 @@ public class WishlistServiceImpl implements WishlistService {
         return WishListDetailDto.builder().build().toDto(publicWishList);
     }
 
-    public List<WishListDto> findAllPublicWishlistsByUserId(Long userId) {
-        return wishlistRepository.findAllByUserIdAndIsPrivateFalseOrderByCreatedAtDesc(userId).stream().map(WishListDto::new).toList();
+    public Page<PublicWishlistDto> findAllPublicWishlistsByUserId(Long userId, Pageable pageable) {
+        return wishlistRepository.findAllByUserIdAndIsPrivateFalseOrderByCreatedAtDesc(userId, pageable);
     }
 
-    public List<WishListDto> findAllPublicWishlistsByUserNickname(String nickname) {
-        return wishlistRepository.findPublicWishlistForPublicProfile(nickname).stream().map(WishListDto::new).toList();
+    public Page<PublicProfileWishlistDto> findAllPublicWishlistsByUserNickname(String nickname, Pageable pageable) {
+        return wishlistRepository.findPublicWishlistForPublicProfile(nickname, pageable);
     }
 
     @Getter
