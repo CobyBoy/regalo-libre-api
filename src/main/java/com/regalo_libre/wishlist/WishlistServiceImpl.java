@@ -2,6 +2,7 @@ package com.regalo_libre.wishlist;
 
 import com.regalo_libre.auth.Auth0UserService;
 import com.regalo_libre.auth.model.Auth0User;
+import com.regalo_libre.bookmarks.dto.BookmarkDetailsDto;
 import com.regalo_libre.mercadolibre.auth.exception.UserNotFoundException;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkRepository;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +32,7 @@ import java.util.stream.Collectors;
 public class WishlistServiceImpl implements WishlistService {
     public static final String LA_LISTA_NO_EXISTE = "La lista no existe";
     private final WishlistRepository wishlistRepository;
-    private final BookmarkRepository mercadoLibreProductRepo;
+    private final BookmarkRepository bookmarkRepository;
     private final Auth0UserService auth0UserService;
 
     @Transactional
@@ -68,9 +70,10 @@ public class WishlistServiceImpl implements WishlistService {
         return wishlistRepository.findAllByUserIdOrderByCreatedAtDesc(userId).stream().map(WishlistDetailForModalDto::new).toList();
     }
 
-    public WishListDetailDto findWishlistById(Long id) {
+    public WishListDetailDto findWishlistById(Long id, Pageable pageable) {
         WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException(LA_LISTA_NO_EXISTE));
-        return WishListDetailDto.builder().build().toDto(wishList);
+        Page<BookmarkDetailsDto> giftsPage = bookmarkRepository.findGiftsByWishlistId(id, pageable);
+        return WishListDetailDto.builder().build().toDto(wishList, giftsPage);
     }
 
     @Transactional
@@ -94,7 +97,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     public AddProductsResponse addProductsToWishlist(Long id, List<String> productsIds) {
         WishList wishList = wishlistRepository.findById(id).orElseThrow(() -> new WishlistNotFoundException(LA_LISTA_NO_EXISTE));
-        List<BookmarkedProduct> newProducts = mercadoLibreProductRepo.findAllByIdIn(productsIds);
+        List<BookmarkedProduct> newProducts = bookmarkRepository.findAllByIdIn(productsIds);
         List<BookmarkedProduct> existingProducts = wishList.getGifts();
         Set<String> existingProductIds = existingProducts.stream()
                 .map(BookmarkedProduct::getId)
@@ -123,19 +126,21 @@ public class WishlistServiceImpl implements WishlistService {
     @Transactional
     public void removeProductsFromWishList(Long id, List<String> productsIds) {
         WishList wishList = wishlistRepository.findById(id).orElseThrow();
-        List<BookmarkedProduct> productsToDelete = mercadoLibreProductRepo.findAllByIdIn(productsIds);
+        List<BookmarkedProduct> productsToDelete = bookmarkRepository.findAllByIdIn(productsIds);
         var wishListProducts = wishList.getGifts();
         wishListProducts.removeAll(productsToDelete);
         wishList.setUpdatedAt(LocalDateTime.now());
         wishlistRepository.save(wishList);
     }
 
-    public WishListDetailDto findPublicWishlistById(String id) {
-        var publicWishList = wishlistRepository.findByPublicIdAndIsPrivateFalse(id);
+    public WishListDetailDto findPublicWishlistById(Long id) {
+        Pageable pageable = PageRequest.of(0, 15);
+        var publicWishList = wishlistRepository.findByWishlistIdAndIsPrivateFalse(id);
         if (publicWishList == null) {
             throw new PublicWishListNotFoundException("La lista no existe o no es pública");
         }
-        return WishListDetailDto.builder().build().toDto(publicWishList);
+        Page<BookmarkDetailsDto> giftsPage = bookmarkRepository.findGiftsByWishlistId(id, pageable);
+        return WishListDetailDto.builder().build().toDto(publicWishList, giftsPage);
     }
 
     public Page<PublicWishlistDto> findAllPublicWishlistsByUserId(Long userId, Pageable pageable) {
