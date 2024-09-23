@@ -1,9 +1,11 @@
 package com.regalo_libre.wishlist.dto;
 
+import com.regalo_libre.bookmarks.dto.BookmarkDetailsDto;
 import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
 import com.regalo_libre.utils.DtoConverter;
 import com.regalo_libre.wishlist.model.WishList;
 import lombok.Builder;
+import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,14 +23,13 @@ public record WishListDetailDto(
         Boolean isPrivate,
         int totalGifts,
         String user,
-        List<BookmarkedProduct> gifts
-) implements DtoConverter<WishList, WishListDetailDto> {
+        Page<BookmarkDetailsDto> gifts) {
 
-    public WishListDetailDto toDto(WishList wishList) {
+    public WishListDetailDto toDto(WishList wishList, Page<BookmarkDetailsDto> gifts) {
         return WishListDetailDto.builder()
                 .id(wishList.getWishlistId())
                 .createdAt(wishList.getCreatedAt())
-                .gifts(wishList.getGifts())
+                .gifts(gifts)
                 .description(wishList.getDescription())
                 .name(wishList.getName())
                 .publicId(wishList.getPublicId())
