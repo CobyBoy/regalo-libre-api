@@ -1,14 +1,11 @@
 package com.regalo_libre.wishlist.dto;
 
 import com.regalo_libre.bookmarks.dto.BookmarkDetailsDto;
-import com.regalo_libre.mercadolibre.bookmark.BookmarkedProduct;
-import com.regalo_libre.utils.DtoConverter;
 import com.regalo_libre.wishlist.model.WishList;
 import lombok.Builder;
 import org.springframework.data.domain.Page;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Builder
