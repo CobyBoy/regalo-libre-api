@@ -5,5 +5,7 @@ public record DashboardWishlistDto(
         long totalGifts,
         Long id,
         String publicId,
-        boolean isPrivate) {
+        boolean isPrivate,
+        String nickname
+) {
 }
