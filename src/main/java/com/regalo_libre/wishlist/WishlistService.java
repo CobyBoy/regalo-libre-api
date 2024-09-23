@@ -13,7 +13,7 @@ public interface WishlistService {
 
     List<WishlistDetailForModalDto> getAllWishlistsForModal(Long userId);
 
-    WishListDetailDto findWishlistById(Long id);
+    WishListDetailDto findWishlistById(Long id, Pageable pageable);
 
     WishListDto updateWishlistById(Long id, EditListDTO request);
 
@@ -23,7 +23,7 @@ public interface WishlistService {
 
     void removeProductsFromWishList(Long id, List<String> productsIds);
 
-    WishListDetailDto findPublicWishlistById(String id);
+    WishListDetailDto findPublicWishlistById(Long id);
 
     Page<PublicWishlistDto> findAllPublicWishlistsByUserId(Long userId, Pageable pageable);
 

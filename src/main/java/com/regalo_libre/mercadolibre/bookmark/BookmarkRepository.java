@@ -1,6 +1,7 @@
 package com.regalo_libre.mercadolibre.bookmark;
 
 import com.regalo_libre.bookmarks.dto.BookmarkDTO;
+import com.regalo_libre.bookmarks.dto.BookmarkDetailsDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -20,4 +21,10 @@ public interface BookmarkRepository extends JpaRepository<BookmarkedProduct, Lon
 
     @Query("SELECT B FROM BookmarkedProduct B WHERE B.users is EMPTY")
     List<BookmarkedProduct> findBookmarkWithoutUser();
+
+    @Query("SELECT new com.regalo_libre.bookmarks.dto.BookmarkDetailsDto(b.currencyId, b.id, b.permalink, b.price, b.status, b.thumbnail, b.title) " +
+            "FROM BookmarkedProduct b " +
+            "JOIN b.wishLists w " +
+            "WHERE w.wishlistId= :wishlistId")
+    Page<BookmarkDetailsDto> findGiftsByWishlistId(@Param("wishlistId") Long wishlistId, Pageable pageable);
 }
