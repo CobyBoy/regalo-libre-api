@@ -15,7 +15,7 @@ import java.util.List;
 @Repository
 public interface WishlistRepository extends JpaRepository<WishList, Long> {
 
-    @Query("SELECT new com.regalo_libre.wishlist.dto.DashboardWishlistDto(w.name, SIZE(w.gifts), w.wishlistId, w.publicId, w.isPrivate) " +
+    @Query("SELECT new com.regalo_libre.wishlist.dto.DashboardWishlistDto(w.name, SIZE(w.gifts), w.wishlistId, w.publicId, w.isPrivate, w.user.profile.appNickname) " +
             "FROM WishList w " +
             "WHERE w.user.id = :auth0UserId " +
             "ORDER BY w.createdAt DESC")
@@ -23,7 +23,7 @@ public interface WishlistRepository extends JpaRepository<WishList, Long> {
 
     List<WishList> findAllByUserIdOrderByCreatedAtDesc(Long auth0UserId);
 
-    WishList findByPublicIdAndIsPrivateFalse(String id);
+    WishList findByWishlistIdAndIsPrivateFalse(Long id);
 
     @Query("SELECT new com.regalo_libre.wishlist.dto.PublicWishlistDto(w.wishlistId, w.name, SIZE(w.gifts)) " +
             "FROM WishList w " +
@@ -37,6 +37,6 @@ public interface WishlistRepository extends JpaRepository<WishList, Long> {
             "ORDER BY w.createdAt DESC")
     Page<PublicProfileWishlistDto> findPublicWishlistForPublicProfile(String nickname, Pageable pageable);
 
-
     WishList findByNameAndUserId(String name, Long auth0UserId);
+
 }
