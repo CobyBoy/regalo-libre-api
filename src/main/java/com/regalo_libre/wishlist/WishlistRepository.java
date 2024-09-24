@@ -23,7 +23,8 @@ public interface WishlistRepository extends JpaRepository<WishList, Long> {
 
     List<WishList> findAllByUserIdOrderByCreatedAtDesc(Long auth0UserId);
 
-    WishList findByWishlistIdAndIsPrivateFalse(Long id);
+    @Query("SELECT w FROM WishList w WHERE w.user.profile.appNickname =:nickname AND w.wishlistId =:id AND w.isPrivate = false ")
+    WishList findByWishlistIdAndIsPrivateFalse(Long id, String nickname);
 
     @Query("SELECT new com.regalo_libre.wishlist.dto.PublicWishlistDto(w.wishlistId, w.name, SIZE(w.gifts)) " +
             "FROM WishList w " +
