@@ -23,7 +23,7 @@ public interface WishlistService {
 
     void removeProductsFromWishList(Long id, List<String> productsIds);
 
-    WishListDetailDto findPublicWishlistById(Long id);
+    WishListDetailDto findPublicWishlistByNicknameAndId(String nickname, Long id, Pageable pageable);
 
     Page<PublicWishlistDto> findAllPublicWishlistsByUserId(Long userId, Pageable pageable);
 
