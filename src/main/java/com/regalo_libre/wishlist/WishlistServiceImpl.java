@@ -133,9 +133,8 @@ public class WishlistServiceImpl implements WishlistService {
         wishlistRepository.save(wishList);
     }
 
-    public WishListDetailDto findPublicWishlistById(Long id) {
-        Pageable pageable = PageRequest.of(0, 15);
-        var publicWishList = wishlistRepository.findByWishlistIdAndIsPrivateFalse(id);
+    public WishListDetailDto findPublicWishlistByNicknameAndId(String nickname, Long id, Pageable pageable) {
+        var publicWishList = wishlistRepository.findByWishlistIdAndIsPrivateFalse(id, nickname);
         if (publicWishList == null) {
             throw new PublicWishListNotFoundException("La lista no existe o no es pública");
         }
