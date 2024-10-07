@@ -13,6 +13,7 @@ spring:
             non_contextual_creation: true
     hibernate:
       ddl-auto: update
+    open-in-view: false
 meli:
   client_id: ${MELI_CLIENT_ID}
   client_secret: ${MELI_CLIENT_SECRET}
