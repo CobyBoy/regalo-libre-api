@@ -1,13 +1,5 @@
 databaseChangeLog:
   - changeSet:
-      id: create_schemas
-      author: coby
-      changes:
-        - sqlFile:
-            path: liquibase/postgresql/create_schemas.sql
-            splitStatements: false
-            endDelimiter: ";"
-  - changeSet:
       id: create_profile
       author: coby
       changes:

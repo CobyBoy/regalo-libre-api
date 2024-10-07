@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "access_token", schema = "meli")
+@Table(name = "access_token")
 public class MercadoLibreAccessToken {
     @Id
     @JsonProperty("user_id")

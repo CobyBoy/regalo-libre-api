@@ -17,7 +17,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "wishlist", schema = "wishlist")
+@Table(name = "wishlist")
 public class WishList {
     @Id
     @Column(updatable = false, name = "wishlist_id")
@@ -37,7 +37,6 @@ public class WishList {
     @ManyToMany
     @JoinTable(
             name = "wishlist_bookmark",
-            schema = "wishlist",
             joinColumns = @JoinColumn(name = "wishlist_id"),
             inverseJoinColumns = @JoinColumn(name = "bookmark_id", referencedColumnName = "meli_id"))
     private List<BookmarkedProduct> gifts = new ArrayList<>();
