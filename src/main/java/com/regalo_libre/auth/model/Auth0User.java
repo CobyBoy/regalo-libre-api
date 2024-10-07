@@ -15,7 +15,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "auth0user", schema = "auth0")
+@Table(name = "auth0user")
 public class Auth0User {
     @Id
     @JsonProperty("sub")
@@ -35,7 +35,6 @@ public class Auth0User {
     @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "user_bookmark",
-            schema = "meli",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "auth0_user_id"),
             inverseJoinColumns = @JoinColumn(name = "meli_id", referencedColumnName = "meli_id"))
     private List<BookmarkedProduct> bookmarkedProducts = new ArrayList<>();
