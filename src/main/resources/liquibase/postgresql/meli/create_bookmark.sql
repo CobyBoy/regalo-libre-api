@@ -1,4 +1,4 @@
-CREATE TABLE meli.bookmark
+CREATE TABLE bookmark
 (
     unique_id       BIGSERIAL PRIMARY KEY,
     meli_id         VARCHAR(255) NOT NULL,

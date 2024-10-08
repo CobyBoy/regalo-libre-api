@@ -1,4 +1,4 @@
-CREATE TABLE wishlist.profile
+CREATE TABLE profile
 (
     profile_id    BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name          VARCHAR(50)  NOT NULL,

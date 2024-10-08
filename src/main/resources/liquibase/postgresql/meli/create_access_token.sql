@@ -1,4 +1,4 @@
-CREATE TABLE meli.access_token
+CREATE TABLE access_token
 (
     user_id       BIGINT       NOT NULL,
     access_token  VARCHAR(255) NOT NULL,
