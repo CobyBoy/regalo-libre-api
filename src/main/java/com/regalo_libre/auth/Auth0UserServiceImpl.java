@@ -97,4 +97,9 @@ public class Auth0UserServiceImpl implements Auth0UserService {
     public void saveAuth0User(Auth0User user) {
         repository.save(user);
     }
+
+    @Transactional
+    public Optional<Auth0User> findByProfileId(Long profileId) {
+        return repository.findByProfile_ProfileId(profileId);
+    }
 }

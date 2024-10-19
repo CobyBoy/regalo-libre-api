@@ -2,6 +2,8 @@ package com.regalo_libre.auth;
 
 import com.regalo_libre.auth.model.Auth0User;
 
+import java.util.Optional;
+
 public interface Auth0UserService {
     Auth0UserInfo getAuth0UserInfo(String authorizationHeader);
 
@@ -14,4 +16,6 @@ public interface Auth0UserService {
     void saveAuth0User(Auth0User user);
 
     Boolean existsById(Long userId);
+
+    Optional<Auth0User> findByProfileId(Long profileId);
 }

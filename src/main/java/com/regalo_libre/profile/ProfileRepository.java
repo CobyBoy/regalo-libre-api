@@ -14,4 +14,7 @@ public interface ProfileRepository extends JpaRepository<Profile, Long> {
 
     @Query("SELECT p FROM Profile p WHERE p.appNickname  = :username")
     Optional<Profile> findByAppNickname(@Param("username") String username);
+
+    @Query("SELECT p FROM Profile p WHERE p.profileId  = :profileId AND p.isPrivate = false")
+    Optional<Profile> findByProfileIdAndIsPrivateFalse(Long profileId);
 }
