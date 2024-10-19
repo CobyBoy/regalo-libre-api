@@ -27,13 +27,16 @@ public class ProfileServiceImpl implements ProfileService {
     public PublicProfileDTO findPublicProfileByUserNickname(String username, Long followerId) {
         Profile profile = profileRepository.findByAppNicknameAndIsPrivateFalse(username).orElseThrow(() -> new ProfileNotPublicException("Este perfil es privado"));
         var userToBeFollowed = auth0UserService.findByProfileId(profile.getProfileId());
-        var viewer = auth0UserService.findAuth0UserById(followerId);
         var follower = userFollowingRepository.findByFollowerIdAndFolloweeId(followerId, userToBeFollowed.get().getId());
         var followers = userFollowingRepository.findFollowersByUserId(userToBeFollowed.get().getId());
         var followees = userFollowingRepository.findFolloweesByUserId(userToBeFollowed.get().getId());
         boolean isFollowing = false;
         boolean isFollowedBy = false;
-        boolean showFollowButton = !viewer.getProfile().getAppNickname().equals(profile.getAppNickname());
+        boolean showFollowButton = false;
+        if (followerId != null) {
+            var viewer = auth0UserService.findAuth0UserById(followerId);
+            showFollowButton = !viewer.getProfile().getAppNickname().equals(profile.getAppNickname());
+        }
         if (follower.isPresent()) {
             isFollowing = follower.get().isFollowing();
             isFollowedBy = follower.get().isFollowedBy();
