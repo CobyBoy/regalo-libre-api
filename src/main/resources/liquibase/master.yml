@@ -56,3 +56,11 @@ databaseChangeLog:
             path: liquibase/postgresql/wishlist/create_wishlist_bookmark.sql
             splitStatements: false
             endDelimiter: ";"
+  - changeSet:
+      id: create_user_following.sql
+      author: coby
+      changes:
+        - sqlFile:
+            path: liquibase/postgresql/create_user_following.sql
+            splitStatements: false
+            endDelimiter: ";"
