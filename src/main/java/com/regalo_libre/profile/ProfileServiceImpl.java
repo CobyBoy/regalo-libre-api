@@ -26,17 +26,19 @@ public class ProfileServiceImpl implements ProfileService {
     @Transactional
     public PublicProfileDTO findPublicProfileByUserNickname(String username, Long followerId) {
         Profile profile = profileRepository.findByAppNicknameAndIsPrivateFalse(username).orElseThrow(() -> new ProfileNotPublicException("Este perfil es privado"));
-        var user = auth0UserService.findByProfileId(profile.getProfileId());
-        var follower = userFollowingRepository.findByFollowerIdAndFolloweeId(followerId, user.get().getId());
-        var followers = userFollowingRepository.findFollowersByUserId(user.get().getId());
-        var followees = userFollowingRepository.findFolloweesByUserId(user.get().getId());
+        var userToBeFollowed = auth0UserService.findByProfileId(profile.getProfileId());
+        var viewer = auth0UserService.findAuth0UserById(followerId);
+        var follower = userFollowingRepository.findByFollowerIdAndFolloweeId(followerId, userToBeFollowed.get().getId());
+        var followers = userFollowingRepository.findFollowersByUserId(userToBeFollowed.get().getId());
+        var followees = userFollowingRepository.findFolloweesByUserId(userToBeFollowed.get().getId());
         boolean isFollowing = false;
         boolean isFollowedBy = false;
+        boolean showFollowButton = !viewer.getProfile().getAppNickname().equals(profile.getAppNickname());
         if (follower.isPresent()) {
             isFollowing = follower.get().isFollowing();
             isFollowedBy = follower.get().isFollowedBy();
         }
-        return PublicProfileDTO.toDto(profile, followers.size(), followees.size(), user.get(), isFollowing, isFollowedBy);
+        return PublicProfileDTO.toDto(profile, followers.size(), followees.size(), isFollowing, isFollowedBy, showFollowButton);
     }
 
     @Transactional
