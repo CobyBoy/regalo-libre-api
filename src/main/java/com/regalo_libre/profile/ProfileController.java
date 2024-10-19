@@ -22,8 +22,13 @@ public class ProfileController {
         return ResponseEntity.ok(profileService.editProfile(profileDTO));
     }
 
-    @GetMapping("public/{username}")
-    public ResponseEntity<PublicProfileDTO> findPublicProfileByUserNickname(@PathVariable String username) {
-        return ResponseEntity.ok(profileService.findPublicProfileByUserNickname(username));
+    @GetMapping("public")
+    public ResponseEntity<PublicProfileDTO> findPublicProfileByUserNickname(@RequestParam String username, @AuthenticationPrincipal Long viewerId) {
+        return ResponseEntity.ok(profileService.findPublicProfileByUserNickname(username, viewerId));
     }
+
+    /*@GetMapping("public/{profileId}")
+    public ResponseEntity<PublicProfileDTO> findPublicProfileByProfileId(@PathVariable Long profileId, @AuthenticationPrincipal Long viewerId) {
+        return ResponseEntity.ok(profileService.findPublicProfileByProfileId(profileId, viewerId));
+    }*/
 }
