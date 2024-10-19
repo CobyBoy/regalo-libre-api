@@ -44,6 +44,8 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.GET, "/api/v1/lists/user/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/profile/public/**").permitAll();
                     http.requestMatchers(HttpMethod.GET, "/api/v1/lists/*/public/*").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/follow/followers").permitAll();
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/follow/followees").permitAll();
                     http.requestMatchers("/actuator/health", "/actuator/info", "/actuator/caches", "/actuator/metrics").permitAll();
                     http.anyRequest().authenticated();
                 })
