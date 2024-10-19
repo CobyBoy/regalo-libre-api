@@ -12,9 +12,10 @@ public record PublicProfileDTO(
         int follower_count,
         int following_count,
         boolean following,
-        boolean followed_by
+        boolean followed_by,
+        boolean show_follow_button
 ) {
-    static PublicProfileDTO toDto(Profile profile, int followers, int followees, Auth0User user, Boolean isFollowing, Boolean isFollowedBy) {
+    static PublicProfileDTO toDto(Profile profile, int followers, int followees, Boolean isFollowing, Boolean isFollowedBy, Boolean showFollowButton) {
         return PublicProfileDTO.builder()
                 .biography(profile.getBiography())
                 .picture_url(profile.getPictureUrl())
@@ -24,6 +25,7 @@ public record PublicProfileDTO(
                 .following_count(followees)
                 .following(isFollowing)
                 .followed_by(isFollowedBy)
+                .show_follow_button(showFollowButton)
                 .build();
     }
 }
