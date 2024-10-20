@@ -18,7 +18,7 @@ public class MercadoLibreAuthController {
     @GetMapping("code")
     public RedirectView getMercadoLibreUserData(@RequestParam(name = "code") String code) {
         mercadoLibreAccessTokenService.exchangeCodeForToken(code);
-        log.info("Redirecting after log in with Mercado Libre to {}", uiUrl + "/user/lists");
-        return new RedirectView(uiUrl + "/user/lists");
+        log.info("Redirecting after log in with Mercado Libre to {}", uiUrl + "/me/lists");
+        return new RedirectView(uiUrl + "/me/lists");
     }
 }
