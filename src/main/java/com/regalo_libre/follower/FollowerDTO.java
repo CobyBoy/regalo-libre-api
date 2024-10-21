@@ -8,7 +8,8 @@ import java.time.LocalDateTime;
 public record FollowerDTO(
         Long id,
         String username,
-        LocalDateTime followedDate
+        LocalDateTime followedDate,
+        String picture_url
 ) {
 
 }
