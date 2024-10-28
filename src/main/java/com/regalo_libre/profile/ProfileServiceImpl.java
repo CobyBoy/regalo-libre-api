@@ -70,7 +70,7 @@ public class ProfileServiceImpl implements ProfileService {
         return PublicProfileDTO.toDto(profile, followers.size(), user.get(), isFollowing, isFollowedBy);
     }*/
 
-    public Profile findProfileByAppNicknameAndIsPrivateFalse(String username) {
-        return profileRepository.findByAppNicknameAndIsPrivateFalse(username).orElseThrow(() -> new ProfileNotPublicException("Este perfil es privado"));
+    public Profile findProfileByAppNickname(String username) {
+        return profileRepository.findByAppNickname(username).orElseThrow(() -> new ProfileNotPublicException("Perfil no encontrado"));
     }
 }
