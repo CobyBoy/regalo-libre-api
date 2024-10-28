@@ -40,6 +40,7 @@ public class BookmarkApiServiceImpl implements BookmarkApiService {
                                 .bodyToFlux(BookmarkItem.class)
                                 .map(bookmarkItem -> {
                                     BookmarkedProduct product = bookmarkItem.body();
+                                    product.setThumbnail(product.getThumbnail().replaceFirst("http:", "https:").replaceAll("\\.(jpg|jpeg|png)$", ".webp"));
                                     product.setBookmarkedDate(bookmark.getBookmarkedDate());
                                     return product;
                                 })

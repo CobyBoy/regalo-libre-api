@@ -65,7 +65,7 @@ public class Auth0UserServiceImpl implements Auth0UserService {
                 .sub(userInfo.sub)
                 .name(userInfo.name)
                 .nickname(userInfo.nickname)
-                .pictureUrl(userInfo.pictureUrl)
+                .pictureUrl(userInfo.pictureUrl.replaceAll("\\.(jpg|jpeg|png)$", ".webp"))
                 .updatedAt(userInfo.updatedAt)
                 .build();
     }
@@ -76,7 +76,7 @@ public class Auth0UserServiceImpl implements Auth0UserService {
                 .isPrivate(true)
                 .meliNickname(userInfo.nickname)
                 .appNickname(userInfo.nickname.replace(" ", "_").toLowerCase())
-                .pictureUrl(userInfo.pictureUrl)
+                .pictureUrl(userInfo.pictureUrl.replaceAll("\\.(jpg|jpeg|png)$", ".webp"))
                 .name(userInfo.name)
                 .build();
     }

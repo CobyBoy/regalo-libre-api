@@ -48,14 +48,14 @@ public class FollowerService {
 
     @Transactional
     public List<FollowerDTO> getFollowers(String username) {
-        Profile profile = profileService.findProfileByAppNicknameAndIsPrivateFalse(username);
+        Profile profile = profileService.findProfileByAppNickname(username);
         var user = auth0UserService.findByProfileId(profile.getProfileId());
         return userFollowingRepository.findFollowersByUserId(user.get().getId());
     }
 
     @Transactional
     public List<FollowerDTO> getFollowees(String username) {
-        Profile profile = profileService.findProfileByAppNicknameAndIsPrivateFalse(username);
+        Profile profile = profileService.findProfileByAppNickname(username);
         var user = auth0UserService.findByProfileId(profile.getProfileId());
         return userFollowingRepository.findFolloweesByUserId(user.get().getId());
     }

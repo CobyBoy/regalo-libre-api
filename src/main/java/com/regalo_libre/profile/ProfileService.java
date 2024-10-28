@@ -9,5 +9,5 @@ public interface ProfileService {
 
     EditProfileDTO editProfile(EditProfileDTO profile);
 
-    Profile findProfileByAppNicknameAndIsPrivateFalse(String username);
+    Profile findProfileByAppNickname(String username);
 }
